@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}The Bottom Cycle - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>The Bottom Cycle</h1>
+    <p class="hero-subtitle">Bottom baryons at \( c_5 = 36 = 6^2 \)</p>
+</section>
+
+<section class="section">
+    <h2>Overview</h2>
+
+    <p>
+        The bottom baryon cycle begins at \( c_5 = 36 \), which has a special interpretation:
+    </p>
+
+    <div class="formula-highlight">
+        \[ c_5 = 36 = 6^2 = \text{(proton coefficient)}^2 \]
+    </div>
+
+    <p>
+        Like the strange cycle, bottom baryons follow the strangeness rule \( c_5 = 36 + |S| \),
+        and the charge window mirrors the strange baryons exactly (no shift, unlike charm).
+    </p>
+</section>
+
+<section class="section">
+    <h2>Bottom Baryon Formulas</h2>
+
+    <table class="formula-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>S</th>
+                <th>Q</th>
+                <th>Formula</th>
+                <th>Calc (MeV)</th>
+                <th>Exp (MeV)</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in bottom %}
+            <tr>
+                <td class="particle-cell">\( {{ p.latex_symbol }} \)</td>
+                <td>{{ p.strangeness }}</td>
+                <td>{{ "%+d"|format(p.charge) }}</td>
+                <td class="formula-cell">\( {{ p.formula_latex() }} \)</td>
+                <td>{{ "%.3f"|format(p.mass_mev()) }}</td>
+                <td>{{ "%.3f"|format(p.mass_exp) }}</td>
+                <td class="error-cell {% if p.error_kev()|abs < 5 %}error-good{% else %}error-ok{% endif %}">
+                    {{ "%.2f"|format(p.error_kev()) }} keV
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The Three Levels</h2>
+
+    {% for level in bottom_cycle.levels %}
+    <div class="cycle-card">
+        <div class="cycle-card-header">
+            <h3>Level \( {{ level.pi5 }} \): S = {{ level.strangeness }}</h3>
+        </div>
+
+        <div class="cycle-card-body">
+            <div class="cycle-terms">
+                <div class="term-group">
+                    <span class="term-label">Structure:</span>
+                    <span class="term-formula">\( {{ level.term }} \)</span>
+                </div>
+            </div>
+
+            <div class="cycle-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Charges:</span>
+                    <span class="meta-value">{{ level.charge_display }}</span>
+                </div>
+            </div>
+
+            <p class="cycle-description">{{ level.description }}</p>
+
+            <div class="cycle-particles">
+                {% for pkey in level.particles %}
+                {% set p = bottom_particles[pkey] %}
+                <div class="particle-chip">
+                    <span class="particle-symbol">\( {{ p.latex_symbol }} \)</span>
+                    <span class="particle-error">
+                        {{ "%.2f"|format(p.error_kev()|abs) }} keV
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="section">
+    <h2>Key Patterns</h2>
+
+    <div class="symmetry-grid">
+        <div class="symmetry-card">
+            <h3>Strangeness Rule</h3>
+            <div class="symmetry-formula">
+                \[ {{ bottom_cycle.patterns.strangeness_rule }} \]
+            </div>
+            <p>Same pattern as strange cycle: each strange quark adds 1 to \(c_5\).</p>
+        </div>
+
+        <div class="symmetry-card">
+            <h3>c&sub4; Scaling</h3>
+            <div class="symmetry-formula">
+                \[ {{ bottom_cycle.patterns.c4_scaling }} \]
+            </div>
+            <p>&Omega;<sub>b</sub> has c&sub4; = 2, while &Omega; has c&sub4; = 6. Ratio is 1/3.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Comparing Strange and Bottom</h2>
+
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Strange Cycle</th>
+                <th>Bottom Cycle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Base \(c_5\)</td>
+                <td>\( {{ bottom_cycle.comparison.strange_base }} \)</td>
+                <td>\( {{ bottom_cycle.comparison.bottom_base }} \)</td>
+            </tr>
+            <tr>
+                <td>Interpretation</td>
+                <td>\( 6 + |S| \) from \( \lfloor 2\pi \rfloor \)</td>
+                <td>\( {{ bottom_cycle.comparison.c5_squared }} \)</td>
+            </tr>
+            <tr>
+                <td>Charge window</td>
+                <td>S=0: +2 to -1, S=-3: -1 only</td>
+                <td>Same (no shift unlike charm)</td>
+            </tr>
+            <tr>
+                <td>\(c_4\) for \(\Omega\)</td>
+                <td>6</td>
+                <td>2 (= 6/3)</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The 6&sup2; Connection</h2>
+
+    <p>
+        The base coefficient 36 = 6&sup2; suggests a "squaring" relationship between
+        the proton (6&pi;&sup5;) and bottom baryons (36&pi;&sup5;):
+    </p>
+
+    <div class="formula-highlight">
+        \[ \text{Bottom base} = (\text{Proton coefficient})^2 = 6^2 = 36 \]
+    </div>
+
+    <p>
+        Alternatively, we can view 36 &asymp; 4&pi;&sup2; &asymp; 39.5, which would give:
+    </p>
+
+    <div class="formula-highlight">
+        \[ 36\pi^5 \approx 4\pi^7 \]
+    </div>
+
+    <p>
+        This suggests bottom baryons might also be understood as living at the &pi;&sup7; level,
+        similar to how double-charm baryons (22&pi;&sup5; &asymp; 7&pi;&sup6;) bridge power levels.
+    </p>
+</section>
+
+<section class="section">
+    <h2>Shared Correction Patterns</h2>
+
+    <p>
+        Several correction terms appear across cycles with the same magnitude but opposite signs:
+    </p>
+
+    <h3>The 4&pi;/5 Family</h3>
+
+    <table class="formula-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>Cycle</th>
+                <th>Correction</th>
+                <th>4&pi;/5 term</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( \Xi_c^{*+} \)</td>
+                <td>Charm</td>
+                <td>\( +\frac{4\pi}{5} \)</td>
+                <td class="error-good">\( +\frac{4\pi}{5} \)</td>
+            </tr>
+            <tr>
+                <td>\( \Xi_b^0 \)</td>
+                <td>Bottom</td>
+                <td>\( -\frac{4\pi}{5} \)</td>
+                <td class="error-good">\( -\frac{4\pi}{5} \)</td>
+            </tr>
+            <tr>
+                <td>\( \Omega_c^0 \)</td>
+                <td>Charm</td>
+                <td>\( -\frac{4\pi}{5} + \frac{4}{5} \)</td>
+                <td>\( -\frac{4\pi}{5} \)</td>
+            </tr>
+            <tr>
+                <td>\( \Sigma_c^{*+} \)</td>
+                <td>Charm</td>
+                <td>\( -\frac{4\pi}{5} - \frac{8}{5} \)</td>
+                <td>\( -\frac{4\pi}{5} \)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <strong>&Xi;<sub>c</sub><sup>*+</sup> and &Xi;<sub>b</sub><sup>0</sup> are exact opposites: &pm;4&pi;/5</strong>
+    </p>
+
+    <h3>The 18&pi;/5 Family</h3>
+
+    <table class="formula-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>Cycle</th>
+                <th>Correction</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( \Sigma^+ \)</td>
+                <td>Strange</td>
+                <td>\( -\frac{18\pi}{5} + \frac{4}{5} \)</td>
+            </tr>
+            <tr>
+                <td>\( \Sigma_b^+ \)</td>
+                <td>Bottom</td>
+                <td>\( +\frac{18\pi}{5} \)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <strong>&Sigma;<sup>+</sup> and &Sigma;<sub>b</sub><sup>+</sup> share 18&pi;/5 with opposite signs.</strong>
+    </p>
+
+    <h3>The Omega &pi; Coefficients</h3>
+
+    <table class="formula-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>Correction</th>
+                <th>&pi; coefficient</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( \Omega^- \)</td>
+                <td>\( \frac{6}{5}(e^{-\pi} - \pi) \)</td>
+                <td>\( -\frac{6}{5} \)</td>
+            </tr>
+            <tr>
+                <td>\( \Omega_c^0 \)</td>
+                <td>\( -\frac{4\pi}{5} + \frac{4}{5} \)</td>
+                <td>\( -\frac{4}{5} \)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Ratio: 6/4 = 3/2. Both Omegas have negative &pi; coefficients with k/5 form.
+    </p>
+
+    <h3>The Universal k/5 Pattern</h3>
+
+    <p>
+        All corrections across strange, charm, and bottom cycles use the <strong>k/5 denominator</strong>:
+    </p>
+
+    <ul>
+        <li><strong>Strange:</strong> k/5 with e<sup>-&pi;</sup> terms</li>
+        <li><strong>Charm:</strong> k/5 with &pi; terms</li>
+        <li><strong>Bottom:</strong> k/5 with &pi; terms (simpler, no e<sup>-&pi;</sup>)</li>
+    </ul>
+</section>
+{% endblock %}

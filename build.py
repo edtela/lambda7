@@ -18,7 +18,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / 'data'))
 
 from jinja2 import Environment, FileSystemLoader
-from baryons import PARTICLES, BARYON_CYCLE, get_octet, get_decuplet
+from baryons import (
+    PARTICLES, BARYON_CYCLE, get_octet, get_decuplet,
+    CHARM_PARTICLES, CHARM_CYCLE, get_charm_octet, get_charm_decuplet,
+    DOUBLE_CHARM_PARTICLES, get_double_charm,
+    BOTTOM_PARTICLES, BOTTOM_CYCLE, get_bottom
+)
 
 # Paths
 ROOT = Path(__file__).parent
@@ -53,12 +58,26 @@ def build():
         'octet': get_octet(),
         'decuplet': get_decuplet(),
         'cycle': BARYON_CYCLE,
+        # Charm baryon data
+        'charm_particles': CHARM_PARTICLES,
+        'charm_octet': get_charm_octet(),
+        'charm_decuplet': get_charm_decuplet(),
+        'charm_cycle': CHARM_CYCLE,
+        # Double-charm baryon data
+        'double_charm_particles': DOUBLE_CHARM_PARTICLES,
+        'double_charm': get_double_charm(),
+        # Bottom baryon data
+        'bottom_particles': BOTTOM_PARTICLES,
+        'bottom': get_bottom(),
+        'bottom_cycle': BOTTOM_CYCLE,
     }
 
     # Pages to build
     pages = [
         ('index.html', 'index.html'),
         ('baryon_cycle.html', 'baryon_cycle.html'),
+        ('charm_cycle.html', 'charm_cycle.html'),
+        ('bottom_cycle.html', 'bottom_cycle.html'),
         ('formulas.html', 'formulas.html'),
     ]
 
