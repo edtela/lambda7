@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Mass Formulas - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Mass Formulas</h1>
+    <p class="hero-subtitle">Complete baryon mass formulas with Lorentz corrections</p>
+</section>
+
+<section class="section">
+    <h2>Octet Baryons (spin-1/2)</h2>
+
+    <table class="formula-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>S</th>
+                <th>Q</th>
+                <th>Formula</th>
+                <th>Calc (MeV)</th>
+                <th>Exp (MeV)</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in octet %}
+            <tr>
+                <td class="particle-cell">\( {{ p.latex_symbol }} \)</td>
+                <td>{{ p.strangeness }}</td>
+                <td>{{ "%+d"|format(p.charge) }}</td>
+                <td class="formula-cell">\( {{ p.formula_latex() }} \)</td>
+                <td>{{ "%.3f"|format(p.mass_mev()) }}</td>
+                <td>{{ "%.3f"|format(p.mass_exp) }}</td>
+                <td class="error-cell {% if p.error_ev()|abs < 100 %}error-excellent{% elif p.error_kev()|abs < 2 %}error-good{% else %}error-ok{% endif %}">
+                    {% if p.error_ev()|abs < 1000 %}
+                        {{ "%.1f"|format(p.error_ev()) }} eV
+                    {% else %}
+                        {{ "%.2f"|format(p.error_kev()) }} keV
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>Decuplet Baryons (spin-3/2)</h2>
+
+    <p>All decuplet baryons share the \(+6\pi^4\) term as a universal marker.</p>
+
+    <table class="formula-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>S</th>
+                <th>Q</th>
+                <th>Formula</th>
+                <th>Calc (MeV)</th>
+                <th>Exp (MeV)</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in decuplet %}
+            <tr>
+                <td class="particle-cell">\( {{ p.latex_symbol }} \)</td>
+                <td>{{ p.strangeness }}</td>
+                <td>{{ "%+d"|format(p.charge) }}</td>
+                <td class="formula-cell">\( {{ p.formula_latex() }} \)</td>
+                <td>{{ "%.3f"|format(p.mass_mev()) }}</td>
+                <td>{{ "%.3f"|format(p.mass_exp) }}</td>
+                <td class="error-cell {% if p.error_ev()|abs < 100 %}error-excellent{% elif p.error_kev()|abs < 2 %}error-good{% else %}error-ok{% endif %}">
+                    {% if p.error_ev()|abs < 1000 %}
+                        {{ "%.1f"|format(p.error_ev()) }} eV
+                    {% else %}
+                        {{ "%.2f"|format(p.error_kev()) }} keV
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>Formula Structure</h2>
+
+    <h3>General Form</h3>
+    <div class="formula-highlight">
+        \[ m = c_5 \pi^5 + c_4 \pi^4 + c_3 \pi^3 + c_2 \pi^2 + \text{correction} \]
+    </div>
+
+    <h3>Coefficient Rules</h3>
+    <table class="rules-table">
+        <tr>
+            <th>\(c_5\)</th>
+            <td>= 6 + |S|</td>
+            <td>Strangeness determines the leading power</td>
+        </tr>
+        <tr>
+            <th>\(c_4\)</th>
+            <td>= 6 (decuplet) or 0/1 (octet)</td>
+            <td>Spin-3/2 marker</td>
+        </tr>
+        <tr>
+            <th>\(c_3, c_2\)</th>
+            <td>Small integers</td>
+            <td>Fine structure within each level</td>
+        </tr>
+    </table>
+
+    <h3>Correction Types</h3>
+
+    <div class="correction-types">
+        <div class="correction-type">
+            <h4>Type 1: Pure Lorentz</h4>
+            <p>\( \frac{k}{5} e^{-\pi} \)</p>
+            <p class="type-example">Proton: \(\frac{4}{5}e^{-\pi}\)</p>
+        </div>
+
+        <div class="correction-type">
+            <h4>Type 2: Omega-like</h4>
+            <p>\( \frac{k}{5}(e^{-\pi} - \pi + c) \)</p>
+            <p class="type-example">Omega: \(\frac{6}{5}(e^{-\pi} - \pi)\)</p>
+        </div>
+
+        <div class="correction-type">
+            <h4>Type 3: Angular</h4>
+            <p>\( \frac{a}{\pi} \) or \( a\pi + b \)</p>
+            <p class="type-example">Neutron: \(\frac{8}{\pi}\)</p>
+        </div>
+
+        <div class="correction-type">
+            <h4>Type 4: q-Calculus</h4>
+            <p>\( \frac{1}{[2]_\pi} = \frac{1}{\pi + 1} \)</p>
+            <p class="type-example">&Xi;&minus;: includes \(\frac{1}{[2]_\pi}\)</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Constants</h2>
+
+    <table class="constants-table">
+        <tr>
+            <th>\(\pi\)</th>
+            <td>3.14159265...</td>
+            <td>Circle constant</td>
+        </tr>
+        <tr>
+            <th>\(e^{-\pi}\)</th>
+            <td>0.04321392...</td>
+            <td>Lorentz correction factor</td>
+        </tr>
+        <tr>
+            <th>\([2]_\pi = \pi + 1\)</th>
+            <td>4.14159265...</td>
+            <td>Second q-integer at base &pi;</td>
+        </tr>
+        <tr>
+            <th>\(\lfloor 2\pi \rfloor = 6\)</th>
+            <td>Nucleon coefficient</td>
+            <td>2&times;3 magnetic moment family</td>
+        </tr>
+        <tr>
+            <th>\(\lceil 2\pi \rceil = 7\)</th>
+            <td>Strange baryon coefficient</td>
+            <td>Transition marker</td>
+        </tr>
+        <tr>
+            <th>\(m_e\)</th>
+            <td>0.51099895 MeV</td>
+            <td>Electron mass (unit)</td>
+        </tr>
+    </table>
+</section>
+
+<section class="section">
+    <h2>Accuracy Summary</h2>
+
+    <div class="accuracy-stats">
+        <div class="stat-card stat-excellent">
+            <div class="stat-value">3 eV</div>
+            <div class="stat-label">Best (Proton)</div>
+        </div>
+        <div class="stat-card stat-excellent">
+            <div class="stat-value">52 eV</div>
+            <div class="stat-label">&Sigma;*&deg;</div>
+        </div>
+        <div class="stat-card stat-good">
+            <div class="stat-value">&lt; 2 keV</div>
+            <div class="stat-label">Most particles</div>
+        </div>
+        <div class="stat-card stat-ok">
+            <div class="stat-value">9.75 keV</div>
+            <div class="stat-label">Worst (Neutron)</div>
+        </div>
+    </div>
+</section>
+{% endblock %}

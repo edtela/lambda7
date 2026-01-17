@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}The Baryon Cycle - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>The Baryon Cycle</h1>
+    <p class="hero-subtitle">A rotational structure in &pi;-algebra</p>
+</section>
+
+<section class="section">
+    <h2>Overview</h2>
+
+    <p>
+        The baryon mass formulas reveal a cyclic structure that follows the decay path from
+        Omega (sss) to nucleons (uud/udd). This cycle exhibits symmetries in:
+    </p>
+
+    <ol>
+        <li>The polynomial structure (powers of &pi;)</li>
+        <li>Charge progression</li>
+        <li>Magnetic moment family transitions</li>
+        <li>Lorentz correction cross-references</li>
+    </ol>
+
+    <p>
+        The cycle can be traversed forward (decay direction: heavy &rarr; light) or
+        backward (strangeness accumulation: light &rarr; heavy).
+    </p>
+</section>
+
+<section class="section">
+    <h2>The Four Levels</h2>
+
+    {% for level in cycle.levels %}
+    <div class="cycle-card">
+        <div class="cycle-card-header">
+            <h3>Level \( {{ level.pi5 }} \): S = {{ level.strangeness }}</h3>
+            <span class="angle-badge">\( {{ level.angle_latex }} \) = {{ level.angle }}</span>
+        </div>
+
+        <div class="cycle-card-body">
+            <div class="cycle-terms">
+                <div class="term-group">
+                    <span class="term-label">Decuplet:</span>
+                    <span class="term-formula">\( {{ level.decuplet_term }} \)</span>
+                </div>
+                {% if level.octet_term %}
+                <div class="term-group">
+                    <span class="term-label">Octet:</span>
+                    <span class="term-formula">\( {{ level.octet_term }} \)</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="cycle-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Charges:</span>
+                    <span class="meta-value">{{ level.charge_display }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">&mu; family:</span>
+                    <span class="meta-value">{{ level.mu_family }}</span>
+                </div>
+            </div>
+
+            <div class="cycle-mu">
+                \[ {{ level.mu_formula }} \]
+            </div>
+
+            <p class="cycle-description">{{ level.description }}</p>
+
+            <div class="cycle-particles">
+                {% for pkey in level.particles %}
+                {% set p = particles[pkey] %}
+                <div class="particle-chip">
+                    <span class="particle-symbol">\( {{ p.latex_symbol }} \)</span>
+                    <span class="particle-error">
+                        {% if p.error_ev()|abs < 1000 %}
+                            {{ "%.0f"|format(p.error_ev()|abs) }} eV
+                        {% else %}
+                            {{ "%.2f"|format(p.error_kev()|abs) }} keV
+                        {% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+<section class="section">
+    <h2>Key Symmetries</h2>
+
+    <div class="symmetry-grid">
+        <div class="symmetry-card">
+            <h3>The Splitting Pattern</h3>
+            <p>At each level, the coefficient from the previous level splits:</p>
+            <div class="symmetry-formula">
+                \[ {{ cycle.symmetries.splitting }} \]
+            </div>
+            <p>The \(-2\pi^3\) from Omega becomes \(-\pi^3\) in &Xi;* and \(+\pi^3\) in &Xi;.</p>
+        </div>
+
+        <div class="symmetry-card">
+            <h3>The "6" Migration</h3>
+            <p>The coefficient 6 migrates from decuplet to octet at S = -1:</p>
+            <div class="symmetry-formula">
+                \[ {{ cycle.symmetries.migration }} \]
+            </div>
+            <p>Sigma is the only octet family with \(6\pi^3\) in its mass formula.</p>
+        </div>
+
+        <div class="symmetry-card">
+            <h3>The Cross-Reference</h3>
+            <p>Proton and Omega borrow from each other's magnetic moment families:</p>
+            <div class="symmetry-formula">
+                \[ {{ cycle.symmetries.cross_reference }} \]
+            </div>
+            <p>The endpoints of the cycle are dually connected.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Charge Progression</h2>
+
+    <table class="charge-table">
+        <thead>
+            <tr>
+                <th>Level</th>
+                <th>Q = -1</th>
+                <th>Q = 0</th>
+                <th>Q = +1</th>
+                <th>Q = +2</th>
+                <th>New</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\(9\pi^5\)</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-absent">&mdash;</td>
+                <td class="charge-absent">&mdash;</td>
+                <td class="charge-absent">&mdash;</td>
+                <td>start</td>
+            </tr>
+            <tr>
+                <td>\(8\pi^5\)</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-new">&check;</td>
+                <td class="charge-absent">&mdash;</td>
+                <td class="charge-absent">&mdash;</td>
+                <td>Q = 0</td>
+            </tr>
+            <tr>
+                <td>\(7\pi^5\)</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-new">&check;</td>
+                <td class="charge-absent">&mdash;</td>
+                <td>Q = +1</td>
+            </tr>
+            <tr>
+                <td>\(6\pi^5\)</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-present">&check;</td>
+                <td class="charge-new">&check;</td>
+                <td>Q = +2</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Each step down in strangeness adds a new positive charge state.
+        The \(\Delta^{++}\) with Q = +2 only appears at the S = 0 level.
+    </p>
+</section>
+
+<section class="section">
+    <h2>Magnetic Moment Families</h2>
+
+    <div class="family-diagram">
+        <div class="family-block family-20">
+            <div class="family-header">4&times;5 = 20 Family</div>
+            <div class="family-levels">
+                <span>\(9\pi^5\) (&Omega;)</span>
+                <span>\(8\pi^5\) (&Xi;)</span>
+            </div>
+            <div class="family-example">\(\mu_\Omega = \frac{20}{\pi^2}\)</div>
+        </div>
+
+        <div class="family-transition">
+            <div class="transition-label">Transition at \(7\pi^5\)</div>
+            <div class="transition-detail">\(\Lambda\) bridges with \(\frac{6}{\pi^2}\)</div>
+        </div>
+
+        <div class="family-block family-6">
+            <div class="family-header">2&times;3 = 6 Family</div>
+            <div class="family-levels">
+                <span>\(6\pi^5\) (N, &Delta;)</span>
+            </div>
+            <div class="family-example">\(\mu_n = \frac{6}{\pi}\)</div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Physical Interpretation</h2>
+
+    <h3>The Decay Path</h3>
+    <p>The cycle follows the weak decay chain:</p>
+    <div class="decay-chain">
+        \[ \Omega^- \to \Xi^0/\Xi^- \to \Lambda/\Sigma \to N + \text{pions/kaons} \]
+    </div>
+    <p>Each step loses one strange quark, descends one \(\pi^5\) level, and splits structure between decuplet and octet.</p>
+
+    <h3>Angular Structure</h3>
+    <p>The mass coefficient \(c_5\) maps to an angle:</p>
+    <div class="angle-formula">
+        \[ \theta = \frac{c_5 \pi}{5} \]
+    </div>
+    <p>
+        The proton (c₅ = 6) has angle 216&deg;. Adding strange quarks increases the angle
+        toward 360&deg;. A "complete" baryon would have \(c_5 = 10\), representing a full rotation.
+    </p>
+
+    <h3>Why the Cross-Reference?</h3>
+    <p>
+        The proton and omega are the <strong>dual endpoints</strong> of the light baryon cycle.
+        The proton has minimum strangeness (S=0); the omega has maximum strangeness (S=-3).
+        Remarkably, both are relatively stable: the proton is absolutely stable, and the omega
+        lives ~10⁻¹⁰ seconds (weak decay only, since no lighter S=-3 state exists).
+        Their Lorentz corrections reference each other because the cycle is not linear but
+        <strong>circular</strong> &mdash; what leaves at one end returns at the other.
+    </p>
+</section>
+{% endblock %}
