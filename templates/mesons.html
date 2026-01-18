@@ -11,13 +11,14 @@
 <section class="section">
     <h2>The Pion</h2>
 
+    {% set pion = mesons['pi_pm'] %}
     <p>
         The charged pion &mdash; the lightest meson &mdash; follows the same &pi;-polynomial structure
         as baryons, with a Lorentz correction using \(e^{-\pi}\):
     </p>
 
     <div class="formula-highlight">
-        \[ m_{\pi^\pm} = \pi^5 - \pi^3 - \pi + 1 + 6e^{-\pi} \]
+        \[ m_{{ '{' }}{{ pion.latex_symbol }}{{ '}' }} = {{ pion.formula_latex() }} \]
     </div>
 
     <div class="calculation-box">
@@ -56,24 +57,24 @@
             <tr class="calc-sum">
                 <td class="calc-term">Sum</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value">273.1311</td>
+                <td class="calc-value">{{ "%.4f"|format(pion.mass_me()) }}</td>
                 <td class="calc-unit">\( m_e \)</td>
             </tr>
             <tr class="calc-final">
                 <td class="calc-term">Mass</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value"><strong>139.570</strong></td>
+                <td class="calc-value"><strong>{{ "%.3f"|format(pion.mass_mev()) }}</strong></td>
                 <td class="calc-unit"><strong>MeV</strong></td>
             </tr>
             <tr class="calc-exp">
                 <td class="calc-term">Experimental</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value">139.570</td>
+                <td class="calc-value">{{ "%.3f"|format(pion.mass_exp) }}</td>
                 <td class="calc-unit">MeV</td>
             </tr>
         </table>
         <p class="calc-error">
-            <strong>Error: 0.3 keV</strong> &nbsp;|&nbsp; 0.002 ppm
+            <strong>Error: {{ "%.1f"|format(pion.error_kev()|abs) }} keV</strong>
         </p>
     </div>
 
@@ -95,7 +96,7 @@
         <div class="comparison-item">
             <h4>Pion&plusmn;</h4>
             <div class="formula-small">
-                \[ \pi^5 - \pi^3 - \pi + 1 + 6e^{-\pi} \]
+                \[ {{ pion.formula_latex() }} \]
             </div>
             <p>Lorentz coefficient = 6</p>
         </div>
@@ -105,38 +106,39 @@
 <section class="section">
     <h2>The Neutral Pion</h2>
 
+    {% set pion0 = mesons['pi_0'] %}
     <p>
         The neutral pion has a slightly different structure, with all dimensions represented:
     </p>
 
     <div class="formula-highlight">
-        \[ m_{\pi^0} = \pi^5 - \pi^3 - \pi^2 - 1 \]
+        \[ m_{{ '{' }}{{ pion0.latex_symbol }}{{ '}' }} = {{ pion0.formula_latex() }} \]
     </div>
 
     <div class="calculation-box">
         <h4>Calculation</h4>
         <table class="calculation-table">
             <tr>
-                <td class="calc-term">\( \pi^5 - \pi^3 - \pi^2 - 1 \)</td>
+                <td class="calc-term">\( {{ pion0.formula_latex() }} \)</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value">264.1518</td>
+                <td class="calc-value">{{ "%.4f"|format(pion0.mass_me()) }}</td>
                 <td class="calc-unit">\( m_e \)</td>
             </tr>
             <tr class="calc-final">
                 <td class="calc-term">Mass</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value"><strong>134.98</strong></td>
+                <td class="calc-value"><strong>{{ "%.2f"|format(pion0.mass_mev()) }}</strong></td>
                 <td class="calc-unit"><strong>MeV</strong></td>
             </tr>
             <tr class="calc-exp">
                 <td class="calc-term">Experimental</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value">134.977</td>
+                <td class="calc-value">{{ "%.3f"|format(pion0.mass_exp) }}</td>
                 <td class="calc-unit">MeV</td>
             </tr>
         </table>
         <p class="calc-error">
-            <strong>Error: 3 keV</strong>
+            <strong>Error: {{ "%.0f"|format(pion0.error_kev()|abs) }} keV</strong>
         </p>
     </div>
 
@@ -147,7 +149,7 @@
     </p>
 
     <div class="formula-highlight">
-        \[ \pi^0 \sim \pi^5 - \pi^3 - \pi^2 - 1 \]
+        \[ \pi^0 \sim {{ pion0.formula_latex() }} \]
     </div>
 
     <p>
@@ -159,12 +161,13 @@
 <section class="section">
     <h2>The Muon</h2>
 
+    {% set muon = leptons['muon'] %}
     <p>
         The muon &mdash; the "heavy electron" &mdash; follows the same Lorentz correction pattern:
     </p>
 
     <div class="formula-highlight">
-        \[ m_\mu = \pi^5 - \pi^4 - 1 - 20e^{-\pi} \]
+        \[ m_{{ '{' }}{{ muon.latex_symbol }}{{ '}' }} = {{ muon.formula_latex() }} \]
     </div>
 
     <div class="calculation-box">
@@ -197,24 +200,24 @@
             <tr class="calc-sum">
                 <td class="calc-term">Sum</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value">206.746</td>
+                <td class="calc-value">{{ "%.3f"|format(muon.mass_me()) }}</td>
                 <td class="calc-unit">\( m_e \)</td>
             </tr>
             <tr class="calc-final">
                 <td class="calc-term">Mass</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value"><strong>105.647</strong></td>
+                <td class="calc-value"><strong>{{ "%.3f"|format(muon.mass_mev()) }}</strong></td>
                 <td class="calc-unit"><strong>MeV</strong></td>
             </tr>
             <tr class="calc-exp">
                 <td class="calc-term">Experimental</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-value">105.658</td>
+                <td class="calc-value">{{ "%.3f"|format(muon.mass_exp) }}</td>
                 <td class="calc-unit">MeV</td>
             </tr>
         </table>
         <p class="calc-error">
-            <strong>Error: 11 keV</strong> &nbsp;|&nbsp; 0.01%
+            <strong>Error: {{ "%.0f"|format(muon.error_kev()|abs) }} keV</strong> &nbsp;|&nbsp; {{ "%.2f"|format(muon.error_percent()) }}%
         </p>
     </div>
 
@@ -269,17 +272,17 @@
         <div class="comparison-item">
             <h4>Pion&plusmn;</h4>
             <div class="formula-small">
-                \[ \pi^5 - \pi^3 - \pi + 1 + 6e^{-\pi} \]
+                \[ {{ mesons['pi_pm'].formula_latex() }} \]
             </div>
-            <p>139.57 MeV</p>
+            <p>{{ "%.2f"|format(mesons['pi_pm'].mass_mev()) }} MeV</p>
         </div>
 
         <div class="comparison-item">
             <h4>Muon</h4>
             <div class="formula-small">
-                \[ \pi^5 - \pi^4 - 1 - 20e^{-\pi} \]
+                \[ {{ leptons['muon'].formula_latex() }} \]
             </div>
-            <p>105.65 MeV</p>
+            <p>{{ "%.2f"|format(leptons['muon'].mass_mev()) }} MeV</p>
         </div>
     </div>
 
@@ -312,42 +315,17 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in light_mesons %}
             <tr>
-                <td>\( \pi^\pm \)</td>
-                <td>\( u\bar{d} \)</td>
-                <td>0</td>
-                <td>\( \pi^5 - \pi^3 - \pi + 1 + 6e^{-\pi} \)</td>
-                <td>139.57</td>
-                <td>139.57</td>
-                <td>0.3 keV</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>\( {{ m.quark_content }} \)</td>
+                <td>{{ m.spin }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%.2f"|format(m.mass_mev()) }}</td>
+                <td>{{ "%.2f"|format(m.mass_exp) }}</td>
+                <td>{{ "%.0f"|format(m.error_kev()|abs) }} keV</td>
             </tr>
-            <tr>
-                <td>\( \pi^0 \)</td>
-                <td>\( u\bar{u}, d\bar{d} \)</td>
-                <td>0</td>
-                <td>\( \pi^5 - \pi^3 - \pi^2 - 1 \)</td>
-                <td>134.98</td>
-                <td>134.98</td>
-                <td>3 keV</td>
-            </tr>
-            <tr>
-                <td>\( \rho \)</td>
-                <td>\( u\bar{d} \)</td>
-                <td>1</td>
-                <td>\( 5\pi^5 - \pi^2 - \frac{6}{5}\pi + \frac{2}{5} \)</td>
-                <td>775.11</td>
-                <td>775.11</td>
-                <td>0 keV</td>
-            </tr>
-            <tr>
-                <td>\( \omega \)</td>
-                <td>\( u\bar{u}, d\bar{d} \)</td>
-                <td>1</td>
-                <td>\( 5\pi^5 + \frac{3}{5}\pi - \frac{2}{5} \)</td>
-                <td>782.64</td>
-                <td>782.66</td>
-                <td>20 keV</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
@@ -365,51 +343,17 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in strange_mesons %}
             <tr>
-                <td>\( K^\pm \)</td>
-                <td>\( u\bar{s} \)</td>
-                <td>0</td>
-                <td>\( 3\pi^5 + \pi^3 + 2\pi^2 - \frac{4}{5}\pi \)</td>
-                <td>493.77</td>
-                <td>493.68</td>
-                <td>100 keV</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>\( {{ m.quark_content }} \)</td>
+                <td>{{ m.spin }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%.2f"|format(m.mass_mev()) }}</td>
+                <td>{{ "%.2f"|format(m.mass_exp) }}</td>
+                <td>{{ "%.0f"|format(m.error_kev()|abs) }} keV</td>
             </tr>
-            <tr>
-                <td>\( K^0 \)</td>
-                <td>\( d\bar{s} \)</td>
-                <td>0</td>
-                <td>\( 3\pi^5 + 2\pi^3 - 2\pi \)</td>
-                <td>497.60</td>
-                <td>497.61</td>
-                <td>10 keV</td>
-            </tr>
-            <tr>
-                <td>\( \eta \)</td>
-                <td>\( u\bar{u}, d\bar{d}, s\bar{s} \)</td>
-                <td>0</td>
-                <td>\( 3\pi^5 + \pi^4 + 2\pi^3 - 2\pi + 1 \)</td>
-                <td>547.89</td>
-                <td>547.86</td>
-                <td>30 keV</td>
-            </tr>
-            <tr>
-                <td>\( \eta' \)</td>
-                <td>\( u\bar{u}, d\bar{d}, s\bar{s} \)</td>
-                <td>0</td>
-                <td>\( 6\pi^5 + \pi^3 + 2\pi + 1 \)</td>
-                <td>957.82</td>
-                <td>957.78</td>
-                <td>40 keV</td>
-            </tr>
-            <tr>
-                <td>\( \phi \)</td>
-                <td>\( s\bar{s} \)</td>
-                <td>1</td>
-                <td>\( 6\pi^5 + 2\pi^4 - \pi^3 - \frac{7}{5}\pi - \frac{2}{5} \)</td>
-                <td>1019.51</td>
-                <td>1019.46</td>
-                <td>50 keV</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
@@ -427,42 +371,17 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in charm_mesons %}
             <tr>
-                <td>\( D^\pm \)</td>
-                <td>\( c\bar{d} \)</td>
-                <td>0</td>
-                <td>\( 12\pi^5 - 2\pi^2 + 2\pi \)</td>
-                <td>1869.63</td>
-                <td>1869.66</td>
-                <td>30 keV</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>\( {{ m.quark_content }} \)</td>
+                <td>{{ m.spin }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%.2f"|format(m.mass_mev()) }}</td>
+                <td>{{ "%.2f"|format(m.mass_exp) }}</td>
+                <td>{{ "%.0f"|format(m.error_kev()|abs) }} keV</td>
             </tr>
-            <tr>
-                <td>\( D^0 \)</td>
-                <td>\( c\bar{u} \)</td>
-                <td>0</td>
-                <td>\( 12\pi^5 - 2\pi^2 - \pi \)</td>
-                <td>1864.82</td>
-                <td>1864.84</td>
-                <td>20 keV</td>
-            </tr>
-            <tr>
-                <td>\( D_s \)</td>
-                <td>\( c\bar{s} \)</td>
-                <td>0</td>
-                <td>\( 13\pi^5 - \pi^4 - \pi^3 + \frac{4}{5}\pi - \frac{2}{5} \)</td>
-                <td>1968.34</td>
-                <td>1968.35</td>
-                <td>10 keV</td>
-            </tr>
-            <tr>
-                <td>\( J/\psi \)</td>
-                <td>\( c\bar{c} \)</td>
-                <td>1</td>
-                <td>\( 20\pi^5 - 2\pi^3 + \frac{4}{5}\pi - \frac{2}{5} \)</td>
-                <td>3096.91</td>
-                <td>3096.90</td>
-                <td>10 keV</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
@@ -480,42 +399,17 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in bottom_mesons %}
             <tr>
-                <td>\( B^\pm \)</td>
-                <td>\( u\bar{b} \)</td>
-                <td>0</td>
-                <td>\( 34\pi^5 - 2\pi^3 - 3\pi - \frac{9}{5} \)</td>
-                <td>5279.35</td>
-                <td>5279.34</td>
-                <td>10 keV</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>\( {{ m.quark_content }} \)</td>
+                <td>{{ m.spin }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%.2f"|format(m.mass_mev()) }}</td>
+                <td>{{ "%.2f"|format(m.mass_exp) }}</td>
+                <td>{{ "%.0f"|format(m.error_kev()|abs) }} keV</td>
             </tr>
-            <tr>
-                <td>\( B^0 \)</td>
-                <td>\( d\bar{b} \)</td>
-                <td>0</td>
-                <td>\( 34\pi^5 - 2\pi^3 - 3\pi - \frac{6}{5} \)</td>
-                <td>5279.66</td>
-                <td>5279.65</td>
-                <td>10 keV</td>
-            </tr>
-            <tr>
-                <td>\( B_s \)</td>
-                <td>\( s\bar{b} \)</td>
-                <td>0</td>
-                <td>\( 34\pi^5 + \pi^4 + \frac{4}{5}\pi - \frac{9}{5} \)</td>
-                <td>5366.92</td>
-                <td>5366.92</td>
-                <td>0 keV</td>
-            </tr>
-            <tr>
-                <td>\( \Upsilon(1S) \)</td>
-                <td>\( b\bar{b} \)</td>
-                <td>1</td>
-                <td>\( 61\pi^5 - \pi^4 - 2\pi^3 + \frac{6}{5}\pi + \frac{9}{5} \)</td>
-                <td>9460.30</td>
-                <td>9460.30</td>
-                <td>0 keV</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </section>
@@ -534,51 +428,13 @@
             </tr>
         </thead>
         <tbody>
+            {% for p in c5_pattern %}
             <tr>
-                <td>\( \pi \) (pion)</td>
-                <td>1</td>
-                <td>Lightest meson</td>
+                <td>\( {{ p.mesons }} \)</td>
+                <td>{{ p.c5 }}</td>
+                <td>{{ p.pattern }}</td>
             </tr>
-            <tr>
-                <td>\( K, \eta \)</td>
-                <td>3</td>
-                <td>One strange quark</td>
-            </tr>
-            <tr>
-                <td>\( \rho, \omega \)</td>
-                <td>5</td>
-                <td>Vector mesons (J=1)</td>
-            </tr>
-            <tr>
-                <td>\( \eta', \phi \)</td>
-                <td>6</td>
-                <td>Heavier strange</td>
-            </tr>
-            <tr>
-                <td>\( D \)</td>
-                <td>12 = 2&times;6</td>
-                <td>Charm + light</td>
-            </tr>
-            <tr>
-                <td>\( D_s \)</td>
-                <td>13 = 12+1</td>
-                <td>Charm + strange</td>
-            </tr>
-            <tr>
-                <td>\( J/\psi \)</td>
-                <td>20 = 4&times;5</td>
-                <td>Charm-anticharm</td>
-            </tr>
-            <tr>
-                <td>\( B \)</td>
-                <td>34 = 6&sup2;-2</td>
-                <td>Bottom + light</td>
-            </tr>
-            <tr>
-                <td>\( \Upsilon \)</td>
-                <td>61 = 64-3</td>
-                <td>Bottom-antibottom</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </section>
@@ -599,25 +455,25 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>\( \pi^\pm \)</td>
-                    <td>\( \pi^5 - \pi^3 - \pi + 1 + 6e^{-\pi} \)</td>
-                    <td>139.570 MeV</td>
-                    <td>139.570 MeV</td>
-                    <td>0.3 keV</td>
+                    <td>\( {{ mesons['pi_pm'].latex_symbol }} \)</td>
+                    <td>\( {{ mesons['pi_pm'].formula_latex() }} \)</td>
+                    <td>{{ "%.3f"|format(mesons['pi_pm'].mass_mev()) }} MeV</td>
+                    <td>{{ "%.3f"|format(mesons['pi_pm'].mass_exp) }} MeV</td>
+                    <td>{{ "%.1f"|format(mesons['pi_pm'].error_kev()|abs) }} keV</td>
                 </tr>
                 <tr>
-                    <td>\( \pi^0 \)</td>
-                    <td>\( \pi^5 - \pi^3 - \pi^2 - 1 \)</td>
-                    <td>134.98 MeV</td>
-                    <td>134.977 MeV</td>
-                    <td>3 keV</td>
+                    <td>\( {{ mesons['pi_0'].latex_symbol }} \)</td>
+                    <td>\( {{ mesons['pi_0'].formula_latex() }} \)</td>
+                    <td>{{ "%.2f"|format(mesons['pi_0'].mass_mev()) }} MeV</td>
+                    <td>{{ "%.3f"|format(mesons['pi_0'].mass_exp) }} MeV</td>
+                    <td>{{ "%.0f"|format(mesons['pi_0'].error_kev()|abs) }} keV</td>
                 </tr>
                 <tr>
-                    <td>\( \mu \)</td>
-                    <td>\( \pi^5 - \pi^4 - 1 - 20e^{-\pi} \)</td>
-                    <td>105.647 MeV</td>
-                    <td>105.658 MeV</td>
-                    <td>11 keV</td>
+                    <td>\( {{ leptons['muon'].latex_symbol }} \)</td>
+                    <td>\( {{ leptons['muon'].formula_latex() }} \)</td>
+                    <td>{{ "%.3f"|format(leptons['muon'].mass_mev()) }} MeV</td>
+                    <td>{{ "%.3f"|format(leptons['muon'].mass_exp) }} MeV</td>
+                    <td>{{ "%.0f"|format(leptons['muon'].error_kev()|abs) }} keV</td>
                 </tr>
             </tbody>
         </table>

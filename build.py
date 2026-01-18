@@ -24,6 +24,16 @@ from baryons import (
     DOUBLE_CHARM_PARTICLES, get_double_charm,
     BOTTOM_PARTICLES, BOTTOM_CYCLE, get_bottom
 )
+from mesons import (
+    MESONS, LEPTONS, C5_PATTERN,
+    get_light_mesons, get_strange_mesons, get_charm_mesons, get_bottom_mesons,
+    get_all_mesons
+)
+from magnetic import (
+    MAGNETIC_MOMENTS, Q_VOCABULARY, MASS_VS_MU,
+    get_positive_charge, get_neutral, get_negative_charge,
+    get_six_chain, get_twenty_family, get_all_moments
+)
 
 # Paths
 ROOT = Path(__file__).parent
@@ -70,6 +80,25 @@ def build():
         'bottom_particles': BOTTOM_PARTICLES,
         'bottom': get_bottom(),
         'bottom_cycle': BOTTOM_CYCLE,
+        # Meson data
+        'mesons': MESONS,
+        'leptons': LEPTONS,
+        'light_mesons': get_light_mesons(),
+        'strange_mesons': get_strange_mesons(),
+        'charm_mesons': get_charm_mesons(),
+        'bottom_mesons': get_bottom_mesons(),
+        'all_mesons': get_all_mesons(),
+        'c5_pattern': C5_PATTERN,
+        # Magnetic moment data
+        'magnetic_moments': MAGNETIC_MOMENTS,
+        'positive_charge_moments': get_positive_charge(),
+        'neutral_moments': get_neutral(),
+        'negative_charge_moments': get_negative_charge(),
+        'six_chain': get_six_chain(),
+        'twenty_family': get_twenty_family(),
+        'all_moments': get_all_moments(),
+        'q_vocabulary': Q_VOCABULARY,
+        'mass_vs_mu': MASS_VS_MU,
     }
 
     # Pages to build

@@ -11,23 +11,24 @@
 <section class="section">
     <h2>The Proton Magnetic Moment</h2>
 
+    {% set proton = magnetic_moments['p'] %}
     <p>
         The proton magnetic moment, in nuclear magnetons, follows a simple &pi;-formula:
     </p>
 
     <div class="formula-highlight">
-        \[ \mu_p = \frac{8\pi}{9} \]
+        \[ \mu_p = {{ proton.formula_latex() }} \]
     </div>
 
     <div class="calculation-box">
         <h4>Calculation</h4>
         <table class="calculation-table">
             <tr>
-                <td class="calc-term">\( 8\pi/9 \)</td>
+                <td class="calc-term">\( {{ proton.formula_latex() }} \)</td>
                 <td class="calc-equals">=</td>
                 <td class="calc-value">\( 8 \times 3.14159.../9 \)</td>
                 <td class="calc-equals">=</td>
-                <td class="calc-result"><strong>2.7925</strong></td>
+                <td class="calc-result"><strong>{{ "%.4f"|format(proton.mu_calc()) }}</strong></td>
                 <td class="calc-unit"><strong>&mu;<sub>N</sub></strong></td>
             </tr>
             <tr class="calc-exp">
@@ -35,12 +36,12 @@
                 <td class="calc-equals"></td>
                 <td class="calc-value"></td>
                 <td class="calc-equals">=</td>
-                <td class="calc-result">2.7928</td>
+                <td class="calc-result">{{ "%.4f"|format(proton.mu_exp) }}</td>
                 <td class="calc-unit">&mu;<sub>N</sub></td>
             </tr>
         </table>
         <p class="calc-error">
-            <strong>Error: 0.01%</strong>
+            <strong>Error: {{ "%.2f"|format(proton.error_percent()) }}%</strong>
         </p>
     </div>
 
@@ -70,22 +71,16 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in positive_charge_moments %}
             <tr>
-                <td>\( p \)</td>
-                <td>8</td>
-                <td>\( 8\pi/9 \)</td>
-                <td>+2.7925</td>
-                <td>+2.7928</td>
-                <td>0.01%</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>{{ m.numerator|abs }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%+.4f"|format(m.mu_calc()) }}</td>
+                <td>{{ "%+.4f"|format(m.mu_exp) }}</td>
+                <td>{{ "%.2f"|format(m.error_percent()) }}%</td>
             </tr>
-            <tr>
-                <td>\( \Sigma^+ \)</td>
-                <td>7</td>
-                <td>\( 7\pi/9 \)</td>
-                <td>+2.4435</td>
-                <td>+2.458</td>
-                <td>0.59%</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
@@ -103,33 +98,17 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in neutral_moments %}
             <tr>
-                <td>\( n \)</td>
-                <td>6</td>
-                <td>1</td>
-                <td>\( -6/\pi \)</td>
-                <td>-1.9099</td>
-                <td>-1.9130</td>
-                <td>0.16%</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>{{ m.numerator|abs }}</td>
+                <td>{{ m.pi_power }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%.4f"|format(m.mu_calc()) }}</td>
+                <td>{{ "%.4f"|format(m.mu_exp) }}</td>
+                <td>{{ "%.2f"|format(m.error_percent()) }}%</td>
             </tr>
-            <tr>
-                <td>\( \Lambda \)</td>
-                <td>6</td>
-                <td>2</td>
-                <td>\( -6/\pi^2 \)</td>
-                <td>-0.6079</td>
-                <td>-0.6135</td>
-                <td>0.91%</td>
-            </tr>
-            <tr>
-                <td>\( \Xi^0 \)</td>
-                <td>4</td>
-                <td>1</td>
-                <td>\( -4/\pi \)</td>
-                <td>-1.2732</td>
-                <td>-1.250</td>
-                <td>1.86%</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
@@ -147,33 +126,17 @@
             </tr>
         </thead>
         <tbody>
+            {% for m in negative_charge_moments %}
             <tr>
-                <td>\( \Sigma^- \)</td>
-                <td>36</td>
-                <td>3</td>
-                <td>\( -36/\pi^3 \)</td>
-                <td>-1.1611</td>
-                <td>-1.160</td>
-                <td>0.09%</td>
+                <td>\( {{ m.latex_symbol }} \)</td>
+                <td>{{ m.numerator|abs }}</td>
+                <td>{{ m.pi_power }}</td>
+                <td>\( {{ m.formula_latex() }} \)</td>
+                <td>{{ "%.4f"|format(m.mu_calc()) }}</td>
+                <td>{{ "%.4f"|format(m.mu_exp) }}</td>
+                <td>{{ "%.2f"|format(m.error_percent()) }}%</td>
             </tr>
-            <tr>
-                <td>\( \Xi^- \)</td>
-                <td>20</td>
-                <td>3</td>
-                <td>\( -20/\pi^3 \)</td>
-                <td>-0.6451</td>
-                <td>-0.6507</td>
-                <td>0.86%</td>
-            </tr>
-            <tr>
-                <td>\( \Omega^- \)</td>
-                <td>20</td>
-                <td>2</td>
-                <td>\( -20/\pi^2 \)</td>
-                <td>-2.0264</td>
-                <td>-2.02</td>
-                <td>0.32%</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </section>
@@ -194,41 +157,13 @@
             </tr>
         </thead>
         <tbody>
+            {% for q in q_vocabulary %}
             <tr>
-                <td>4</td>
-                <td>\( \lfloor [2]_\pi \rfloor = \lfloor \pi + 1 \rfloor \)</td>
-                <td>\( \Xi^0 \)</td>
+                <td>{{ q.N }}</td>
+                <td>\( {{ q.expression }} \)</td>
+                <td>\( {{ q.appears_in }} \)</td>
             </tr>
-            <tr>
-                <td>6</td>
-                <td>\( \lfloor 2\pi \rfloor \)</td>
-                <td>\( n, \Lambda \)</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>\( \lceil 2\pi \rceil \)</td>
-                <td>\( \Sigma^+ \)</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>\( \lfloor 2\pi \rfloor + 2 \)</td>
-                <td>\( p \)</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>\( 3^2 = \lfloor \pi^2 \rfloor \)</td>
-                <td>denominator for Q &gt; 0</td>
-            </tr>
-            <tr>
-                <td>20</td>
-                <td>\( 2 \times \lceil \pi^2 \rceil = 4 \times 5 \)</td>
-                <td>\( \Xi^-, \Omega^- \)</td>
-            </tr>
-            <tr>
-                <td>36</td>
-                <td>\( 6^2 = \lfloor 2\pi \rfloor^2 \)</td>
-                <td>\( \Sigma^- \)</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </section>
@@ -241,23 +176,16 @@
     </p>
 
     <div class="cycle-preview">
+        {% for m in six_chain %}
         <div class="cycle-level">
-            <span class="level-label">\( 6/\pi \)</span>
-            <span class="level-particle">\( n \)</span>
-            <span class="level-info">S = 0, base level</span>
+            <span class="level-label">\( {{ m.formula_latex() }} \)</span>
+            <span class="level-particle">\( {{ m.latex_symbol }} \)</span>
+            <span class="level-info">S = {{ m.strangeness }}{% if m.strangeness == 0 %}, base level{% elif m.strangeness == -1 and m.charge == 0 %}, one strange{% elif m.strangeness == -1 and m.charge == -1 %}, symmetric{% endif %}</span>
         </div>
-        <div class="cycle-arrow">&darr; &divide;&pi;</div>
-        <div class="cycle-level">
-            <span class="level-label">\( 6/\pi^2 \)</span>
-            <span class="level-particle">\( \Lambda \)</span>
-            <span class="level-info">S = -1, one strange</span>
-        </div>
-        <div class="cycle-arrow">&darr; &times;6/&pi;</div>
-        <div class="cycle-level">
-            <span class="level-label">\( 36/\pi^3 \)</span>
-            <span class="level-particle">\( \Sigma^- \)</span>
-            <span class="level-info">S = -1, symmetric</span>
-        </div>
+        {% if not loop.last %}
+        <div class="cycle-arrow">&darr;</div>
+        {% endif %}
+        {% endfor %}
     </div>
 
     <p>
@@ -274,21 +202,15 @@
     </p>
 
     <div class="comparison-grid">
+        {% for m in twenty_family %}
         <div class="comparison-item">
-            <h4>&Xi;<sup>-</sup></h4>
+            <h4>{{ m.symbol }}</h4>
             <div class="formula-small">
-                \[ \mu = -\frac{20}{\pi^3} \]
+                \[ \mu = {{ m.formula_latex() }} \]
             </div>
-            <p>S = -2, deeper level</p>
+            <p>S = {{ m.strangeness }}{% if m.strangeness == -2 %}, deeper level{% elif m.strangeness == -3 %}, but shallower!{% endif %}</p>
         </div>
-
-        <div class="comparison-item">
-            <h4>&Omega;<sup>-</sup></h4>
-            <div class="formula-small">
-                \[ \mu = -\frac{20}{\pi^2} \]
-            </div>
-            <p>S = -3, but shallower!</p>
-        </div>
+        {% endfor %}
     </div>
 
     <p>
@@ -310,42 +232,14 @@
             </tr>
         </thead>
         <tbody>
+            {% for r in mass_vs_mu %}
             <tr>
-                <td>\( p \)</td>
-                <td>6</td>
-                <td>8</td>
-                <td>\( \mu = m + 2 \)</td>
+                <td>\( {{ r.latex }} \)</td>
+                <td>{{ r.mass_c5 }}</td>
+                <td>{{ r.mu_num }}</td>
+                <td>\( {{ r.relation }} \)</td>
             </tr>
-            <tr>
-                <td>\( n \)</td>
-                <td>6</td>
-                <td>6</td>
-                <td>\( \mu = m \)</td>
-            </tr>
-            <tr>
-                <td>\( \Lambda \)</td>
-                <td>7</td>
-                <td>6</td>
-                <td>\( \mu = m - 1 \) (inherits from n)</td>
-            </tr>
-            <tr>
-                <td>\( \Sigma^+ \)</td>
-                <td>7</td>
-                <td>7</td>
-                <td>\( \mu = m \)</td>
-            </tr>
-            <tr>
-                <td>\( \Sigma^- \)</td>
-                <td>7</td>
-                <td>36</td>
-                <td>\( \mu = 6^2 \)</td>
-            </tr>
-            <tr>
-                <td>\( \Omega^- \)</td>
-                <td>9</td>
-                <td>20</td>
-                <td>\( \mu = 2 \times \lceil \pi^2 \rceil \)</td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </section>
@@ -372,36 +266,15 @@
                 </tr>
             </thead>
             <tbody>
+                {% for key in ['p', 'n', 'Lambda', 'Sigma-', 'Omega'] %}
+                {% set m = magnetic_moments[key] %}
                 <tr>
-                    <td>\( p \)</td>
-                    <td>\( 8\pi/9 \)</td>
-                    <td>+2.7925</td>
-                    <td>0.01%</td>
+                    <td>\( {{ m.latex_symbol }} \)</td>
+                    <td>\( {{ m.formula_latex() }} \)</td>
+                    <td>{{ "%+.4f"|format(m.mu_calc()) }}</td>
+                    <td>{{ "%.2f"|format(m.error_percent()) }}%</td>
                 </tr>
-                <tr>
-                    <td>\( n \)</td>
-                    <td>\( -6/\pi \)</td>
-                    <td>-1.9099</td>
-                    <td>0.16%</td>
-                </tr>
-                <tr>
-                    <td>\( \Lambda \)</td>
-                    <td>\( -6/\pi^2 \)</td>
-                    <td>-0.6079</td>
-                    <td>0.91%</td>
-                </tr>
-                <tr>
-                    <td>\( \Sigma^- \)</td>
-                    <td>\( -36/\pi^3 \)</td>
-                    <td>-1.1611</td>
-                    <td>0.09%</td>
-                </tr>
-                <tr>
-                    <td>\( \Omega^- \)</td>
-                    <td>\( -20/\pi^2 \)</td>
-                    <td>-2.0264</td>
-                    <td>0.32%</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
