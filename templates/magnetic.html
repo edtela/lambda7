@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block title %}Magnetic Moments - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Magnetic Moments</h1>
+    <p class="hero-subtitle">Baryon magnetic moments from &pi;-fractions</p>
+</section>
+
+<section class="section">
+    <h2>The Proton Magnetic Moment</h2>
+
+    <p>
+        The proton magnetic moment, in nuclear magnetons, follows a simple &pi;-formula:
+    </p>
+
+    <div class="formula-highlight">
+        \[ \mu_p = \frac{8\pi}{9} \]
+    </div>
+
+    <div class="calculation-box">
+        <h4>Calculation</h4>
+        <table class="calculation-table">
+            <tr>
+                <td class="calc-term">\( 8\pi/9 \)</td>
+                <td class="calc-equals">=</td>
+                <td class="calc-value">\( 8 \times 3.14159.../9 \)</td>
+                <td class="calc-equals">=</td>
+                <td class="calc-result"><strong>2.7925</strong></td>
+                <td class="calc-unit"><strong>&mu;<sub>N</sub></strong></td>
+            </tr>
+            <tr class="calc-exp">
+                <td class="calc-term">Experimental</td>
+                <td class="calc-equals"></td>
+                <td class="calc-value"></td>
+                <td class="calc-equals">=</td>
+                <td class="calc-result">2.7928</td>
+                <td class="calc-unit">&mu;<sub>N</sub></td>
+            </tr>
+        </table>
+        <p class="calc-error">
+            <strong>Error: 0.01%</strong>
+        </p>
+    </div>
+
+    <p>
+        The numerator <strong>8 = floor(2&pi;) + 2 = 6 + 2</strong> connects to the proton mass coefficient.
+        The denominator <strong>9 = 3&sup2;</strong> may represent the color factor.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The Three Families</h2>
+
+    <p>
+        Magnetic moments split into three families based on charge:
+    </p>
+
+    <h3>Positive Charge: &mu; = N&pi;/9</h3>
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>N</th>
+                <th>Formula</th>
+                <th>Calc</th>
+                <th>Exp</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( p \)</td>
+                <td>8</td>
+                <td>\( 8\pi/9 \)</td>
+                <td>+2.7925</td>
+                <td>+2.7928</td>
+                <td>0.01%</td>
+            </tr>
+            <tr>
+                <td>\( \Sigma^+ \)</td>
+                <td>7</td>
+                <td>\( 7\pi/9 \)</td>
+                <td>+2.4435</td>
+                <td>+2.458</td>
+                <td>0.59%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Neutral: &mu; = N/&pi;<sup>k</sup></h3>
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>N</th>
+                <th>k</th>
+                <th>Formula</th>
+                <th>Calc</th>
+                <th>Exp</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( n \)</td>
+                <td>6</td>
+                <td>1</td>
+                <td>\( -6/\pi \)</td>
+                <td>-1.9099</td>
+                <td>-1.9130</td>
+                <td>0.16%</td>
+            </tr>
+            <tr>
+                <td>\( \Lambda \)</td>
+                <td>6</td>
+                <td>2</td>
+                <td>\( -6/\pi^2 \)</td>
+                <td>-0.6079</td>
+                <td>-0.6135</td>
+                <td>0.91%</td>
+            </tr>
+            <tr>
+                <td>\( \Xi^0 \)</td>
+                <td>4</td>
+                <td>1</td>
+                <td>\( -4/\pi \)</td>
+                <td>-1.2732</td>
+                <td>-1.250</td>
+                <td>1.86%</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Negative Charge: &mu; = N/&pi;<sup>k</sup></h3>
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>N</th>
+                <th>k</th>
+                <th>Formula</th>
+                <th>Calc</th>
+                <th>Exp</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( \Sigma^- \)</td>
+                <td>36</td>
+                <td>3</td>
+                <td>\( -36/\pi^3 \)</td>
+                <td>-1.1611</td>
+                <td>-1.160</td>
+                <td>0.09%</td>
+            </tr>
+            <tr>
+                <td>\( \Xi^- \)</td>
+                <td>20</td>
+                <td>3</td>
+                <td>\( -20/\pi^3 \)</td>
+                <td>-0.6451</td>
+                <td>-0.6507</td>
+                <td>0.86%</td>
+            </tr>
+            <tr>
+                <td>\( \Omega^- \)</td>
+                <td>20</td>
+                <td>2</td>
+                <td>\( -20/\pi^2 \)</td>
+                <td>-2.0264</td>
+                <td>-2.02</td>
+                <td>0.32%</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The q-Calculus Vocabulary</h2>
+
+    <p>
+        The numerators use the same q-integers as mass formulas:
+    </p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>N</th>
+                <th>q-Expression</th>
+                <th>Appears in</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>4</td>
+                <td>\( \lfloor [2]_\pi \rfloor = \lfloor \pi + 1 \rfloor \)</td>
+                <td>\( \Xi^0 \)</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>\( \lfloor 2\pi \rfloor \)</td>
+                <td>\( n, \Lambda \)</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>\( \lceil 2\pi \rceil \)</td>
+                <td>\( \Sigma^+ \)</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>\( \lfloor 2\pi \rfloor + 2 \)</td>
+                <td>\( p \)</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>\( 3^2 = \lfloor \pi^2 \rfloor \)</td>
+                <td>denominator for Q &gt; 0</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>\( 2 \times \lceil \pi^2 \rceil = 4 \times 5 \)</td>
+                <td>\( \Xi^-, \Omega^- \)</td>
+            </tr>
+            <tr>
+                <td>36</td>
+                <td>\( 6^2 = \lfloor 2\pi \rfloor^2 \)</td>
+                <td>\( \Sigma^- \)</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The 6-Chain</h2>
+
+    <p>
+        The nucleon coefficient 6 propagates through the neutral/negative baryons:
+    </p>
+
+    <div class="cycle-preview">
+        <div class="cycle-level">
+            <span class="level-label">\( 6/\pi \)</span>
+            <span class="level-particle">\( n \)</span>
+            <span class="level-info">S = 0, base level</span>
+        </div>
+        <div class="cycle-arrow">&darr; &divide;&pi;</div>
+        <div class="cycle-level">
+            <span class="level-label">\( 6/\pi^2 \)</span>
+            <span class="level-particle">\( \Lambda \)</span>
+            <span class="level-info">S = -1, one strange</span>
+        </div>
+        <div class="cycle-arrow">&darr; &times;6/&pi;</div>
+        <div class="cycle-level">
+            <span class="level-label">\( 36/\pi^3 \)</span>
+            <span class="level-particle">\( \Sigma^- \)</span>
+            <span class="level-info">S = -1, symmetric</span>
+        </div>
+    </div>
+
+    <p>
+        The transition from &Lambda; to &Sigma;<sup>-</sup> <strong>squares the numerator</strong> (6 &rarr; 36)
+        while going one power deeper in &pi;.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The 20 Family</h2>
+
+    <p>
+        The coefficient <strong>20 = 4 &times; 5</strong> appears in both &Xi;<sup>-</sup> and &Omega;<sup>-</sup>:
+    </p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <h4>&Xi;<sup>-</sup></h4>
+            <div class="formula-small">
+                \[ \mu = -\frac{20}{\pi^3} \]
+            </div>
+            <p>S = -2, deeper level</p>
+        </div>
+
+        <div class="comparison-item">
+            <h4>&Omega;<sup>-</sup></h4>
+            <div class="formula-small">
+                \[ \mu = -\frac{20}{\pi^2} \]
+            </div>
+            <p>S = -3, but shallower!</p>
+        </div>
+    </div>
+
+    <p>
+        The &Omega;<sup>-</sup> (all strange) uses &pi;<sup>-2</sup> rather than &pi;<sup>-3</sup>,
+        suggesting a saturation effect at maximum strangeness.
+    </p>
+</section>
+
+<section class="section">
+    <h2>Mass vs Magnetic Moment Coefficients</h2>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>Mass \(c_5\)</th>
+                <th>&mu; Numerator</th>
+                <th>Relationship</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\( p \)</td>
+                <td>6</td>
+                <td>8</td>
+                <td>\( \mu = m + 2 \)</td>
+            </tr>
+            <tr>
+                <td>\( n \)</td>
+                <td>6</td>
+                <td>6</td>
+                <td>\( \mu = m \)</td>
+            </tr>
+            <tr>
+                <td>\( \Lambda \)</td>
+                <td>7</td>
+                <td>6</td>
+                <td>\( \mu = m - 1 \) (inherits from n)</td>
+            </tr>
+            <tr>
+                <td>\( \Sigma^+ \)</td>
+                <td>7</td>
+                <td>7</td>
+                <td>\( \mu = m \)</td>
+            </tr>
+            <tr>
+                <td>\( \Sigma^- \)</td>
+                <td>7</td>
+                <td>36</td>
+                <td>\( \mu = 6^2 \)</td>
+            </tr>
+            <tr>
+                <td>\( \Omega^- \)</td>
+                <td>9</td>
+                <td>20</td>
+                <td>\( \mu = 2 \times \lceil \pi^2 \rceil \)</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>Summary</h2>
+
+    <div class="summary-box">
+        <p><strong>The Rules:</strong></p>
+        <ul>
+            <li><strong>Q &gt; 0:</strong> &mu; = N&pi;/9 (denominator 9 = 3&sup2;, color factor)</li>
+            <li><strong>Q &le; 0:</strong> &mu; = N/&pi;<sup>k</sup> (k increases with strangeness)</li>
+            <li><strong>Numerators:</strong> Use same q-integers as mass (6, 7, 8, 20, 36)</li>
+        </ul>
+
+        <p><strong>Key Formulas:</strong></p>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Particle</th>
+                    <th>Formula</th>
+                    <th>Value (&mu;<sub>N</sub>)</th>
+                    <th>Error</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>\( p \)</td>
+                    <td>\( 8\pi/9 \)</td>
+                    <td>+2.7925</td>
+                    <td>0.01%</td>
+                </tr>
+                <tr>
+                    <td>\( n \)</td>
+                    <td>\( -6/\pi \)</td>
+                    <td>-1.9099</td>
+                    <td>0.16%</td>
+                </tr>
+                <tr>
+                    <td>\( \Lambda \)</td>
+                    <td>\( -6/\pi^2 \)</td>
+                    <td>-0.6079</td>
+                    <td>0.91%</td>
+                </tr>
+                <tr>
+                    <td>\( \Sigma^- \)</td>
+                    <td>\( -36/\pi^3 \)</td>
+                    <td>-1.1611</td>
+                    <td>0.09%</td>
+                </tr>
+                <tr>
+                    <td>\( \Omega^- \)</td>
+                    <td>\( -20/\pi^2 \)</td>
+                    <td>-2.0264</td>
+                    <td>0.32%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="section">
+    <p><a href="framework.html">&larr; Back to Framework</a></p>
+</section>
+{% endblock %}

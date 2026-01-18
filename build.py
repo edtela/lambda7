@@ -79,6 +79,7 @@ def build():
         ('charm_cycle.html', 'charm_cycle.html'),
         ('bottom_cycle.html', 'bottom_cycle.html'),
         ('mesons.html', 'mesons.html'),
+        ('magnetic.html', 'magnetic.html'),
         ('formulas.html', 'formulas.html'),
         # Framework pages
         ('framework.html', 'framework.html'),
