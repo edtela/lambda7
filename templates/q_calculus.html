@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}q-Calculus with q = &pi; - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>q-Calculus with q = &pi;</h1>
+    <p class="hero-subtitle">Quantum calculus and the dimension-spanning coefficients</p>
+</section>
+
+<section class="section">
+    <h2>The &pi;-Integer</h2>
+
+    <p>
+        The fundamental object in q-calculus is the <strong>q-integer</strong>.
+        With \(q = \pi\):
+    </p>
+
+    <div class="formula-highlight">
+        \[ [n]_\pi = \frac{\pi^n - 1}{\pi - 1} = 1 + \pi + \pi^2 + \cdots + \pi^{n-1} \]
+    </div>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>\(n\)</th>
+                <th>\([n]_\pi\)</th>
+                <th>Value</th>
+                <th>Physical Meaning</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>\(1\)</td>
+                <td>1.000</td>
+                <td>u, d quarks (1 dimension)</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>\(1 + \pi\)</td>
+                <td>4.142</td>
+                <td>s quark (2 dimensions)</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>\(1 + \pi + \pi^2\)</td>
+                <td><strong>14.011</strong></td>
+                <td>c quark (3 dimensions)</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>\(1 + \pi + \pi^2 + \pi^3\)</td>
+                <td>45.018</td>
+                <td>b quark (4 dimensions)</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>\(1 + \pi + \cdots + \pi^4\)</td>
+                <td>142.43</td>
+                <td>(5 dimensions)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="identity-box">
+        <h4>The Charm Discovery</h4>
+        <p>
+            The charm baryon coefficient <strong>14</strong> equals \([3]_\pi = 14.01\) to <strong>0.08% accuracy</strong>!
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>The Grand Unified Formula</h2>
+
+    <p>All particle coefficients can be expressed as:</p>
+
+    <div class="formula-highlight">
+        \[ \text{coefficient} = \text{quantize}\big( [n]_\pi + k(\pi-1) \big) \]
+    </div>
+
+    <p>where:</p>
+    <ul>
+        <li>\([n]_\pi = (\pi^n - 1)/(\pi - 1)\) is the &pi;-integer</li>
+        <li>\(k \in \mathbb{Z}\) is an integer shift</li>
+        <li>quantize \(\in \{\lfloor \cdot \rfloor, \lceil \cdot \rceil\}\)</li>
+    </ul>
+
+    <h4>Master Table of Coefficients</h4>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Coef</th>
+                <th>Formula</th>
+                <th>Value</th>
+                <th>Particle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>\(\lfloor [1]_\pi \rfloor\)</td>
+                <td>1.00</td>
+                <td>Pion</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>\(\lfloor [1]_\pi + (\pi-1) \rfloor\)</td>
+                <td>3.14</td>
+                <td>Kaon</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>\(\lfloor [2]_\pi \rfloor\)</td>
+                <td>4.14</td>
+                <td>Magnetic moments</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>\(\lceil [2]_\pi \rceil\)</td>
+                <td>4.14</td>
+                <td>Bottom baryons</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>\(\lfloor [2]_\pi + (\pi-1) \rfloor = \lfloor 2\pi \rfloor\)</td>
+                <td>6.28</td>
+                <td>Proton</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>\(\lceil [2]_\pi + (\pi-1) \rceil = \lceil 2\pi \rceil\)</td>
+                <td>6.28</td>
+                <td>Strange baryons</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>\(\lceil \pi^2 \rceil\)</td>
+                <td>9.87</td>
+                <td>Omega</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>\(\lfloor [3]_\pi \rfloor\)</td>
+                <td>14.01</td>
+                <td>Charm</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>\(2[3]_\pi - \lceil [2]_\pi \rceil\)</td>
+                <td>23.02</td>
+                <td>Double charm</td>
+            </tr>
+            <tr>
+                <td>45</td>
+                <td>\(\lfloor [4]_\pi \rfloor\)</td>
+                <td>45.02</td>
+                <td>Bottom</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The Fundamental Identity</h2>
+
+    <div class="formula-highlight">
+        \[ [2]_\pi + (\pi - 1) = 2\pi \quad \text{exactly!} \]
+    </div>
+
+    <p>Proof:</p>
+    <div class="derivation">
+        \[ [2]_\pi = \frac{\pi^2 - 1}{\pi - 1} = \frac{(\pi-1)(\pi+1)}{\pi-1} = \pi + 1 \]
+        \[ [2]_\pi + (\pi-1) = (\pi + 1) + (\pi - 1) = 2\pi \; \checkmark \]
+    </div>
+
+    <p>
+        This identity explains why both the proton (6) and strange baryons (7)
+        derive from the <em>same expression</em> with different quantizations:
+    </p>
+
+    <ul>
+        <li><strong>Proton:</strong> \(\lfloor 2\pi \rfloor = 6\)</li>
+        <li><strong>Strange:</strong> \(\lceil 2\pi \rceil = 7\)</li>
+    </ul>
+</section>
+
+<section class="section">
+    <h2>The Two Ladders</h2>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <h4>Ladder 1: \([n]_\pi\)</h4>
+            <table class="mini-table">
+                <tr><td>\([1]_\pi\)</td><td>= 1</td></tr>
+                <tr><td>\([2]_\pi\)</td><td>= 4.14</td></tr>
+                <tr><td>\([3]_\pi\)</td><td>= 14.01</td></tr>
+                <tr><td>\([4]_\pi\)</td><td>= 45.02</td></tr>
+            </table>
+        </div>
+
+        <div class="comparison-item">
+            <h4>Ladder 2: \(k(\pi-1)\)</h4>
+            <table class="mini-table">
+                <tr><td>\(1(\pi-1)\)</td><td>= 2.14</td></tr>
+                <tr><td>\(2(\pi-1)\)</td><td>= 4.28</td></tr>
+                <tr><td>\(3(\pi-1)\)</td><td>= 6.42</td></tr>
+                <tr><td>\(4(\pi-1)\)</td><td>= 8.57</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <p>
+        Particle coefficients arise from combinations of these two ladders,
+        followed by floor or ceiling quantization.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The q-Derivative</h2>
+
+    <p>The q-derivative is defined as:</p>
+
+    <div class="formula-highlight">
+        \[ D_q[f(x)] = \frac{f(qx) - f(x)}{(q-1)x} \]
+    </div>
+
+    <p>For monomials:</p>
+
+    <div class="formula-highlight">
+        \[ D_q[x^n] = [n]_q \cdot x^{n-1} \]
+    </div>
+
+    <p>With \(q = \pi\):</p>
+    <div class="derivation">
+        \[ D_\pi[x^3] = [3]_\pi \cdot x^2 = 14.01 \cdot x^2 \]
+    </div>
+
+    <p>
+        <strong>The charm coefficient emerges directly from &pi;-differentiation!</strong>
+    </p>
+</section>
+
+<section class="section">
+    <h2>The &Lambda;<sub>c</sub> Formula</h2>
+
+    <p>The charmed Lambda mass can be written in q-notation:</p>
+
+    <div class="formula-highlight">
+        \[ \Lambda_c = \pi^5 \times [3]_\pi = \pi^5 \times (1 + \pi + \pi^2) = \pi^5 + \pi^6 + \pi^7 \]
+    </div>
+
+    <p>
+        The charmed Lambda mass is literally \(m_e \times \pi^5 \times [3]_\pi\).
+    </p>
+
+    <h4>Physical Interpretation</h4>
+    <p>
+        Each quark type "spans" a different number of dimensions:
+    </p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Quark</th>
+                <th>Dimensions</th>
+                <th>Coefficient</th>
+                <th>Geometric Series</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>u, d</td>
+                <td>1</td>
+                <td>1</td>
+                <td>\(1\)</td>
+            </tr>
+            <tr>
+                <td>s</td>
+                <td>2</td>
+                <td>4.14</td>
+                <td>\(1 + \pi\)</td>
+            </tr>
+            <tr>
+                <td>c</td>
+                <td>3</td>
+                <td>14.01</td>
+                <td>\(1 + \pi + \pi^2\)</td>
+            </tr>
+            <tr>
+                <td>b</td>
+                <td>4</td>
+                <td>45.02</td>
+                <td>\(1 + \pi + \pi^2 + \pi^3\)</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The \(e^\pi = 23\) Connection</h2>
+
+    <div class="identity-box">
+        <h4>A Stunning Result</h4>
+        \[ e^\pi = 23.14 \approx 23 = \text{double charm coefficient!} \]
+    </div>
+
+    <p>
+        The double charm baryon \(\Xi_{cc}^{++}\) has coefficient 23, which equals \(e^\pi\) to 0.6%!
+    </p>
+
+    <p>This can also be derived from q-integers:</p>
+    <div class="derivation">
+        \[ 2[3]_\pi - \lceil [2]_\pi \rceil = 2 \times 14.01 - 5 = 23.02 \]
+    </div>
+
+    <p>
+        The "missing 5" when doubling charm is exactly \(\lceil [2]_\pi \rceil\) &mdash;
+        the same coefficient that appears in bottom baryons!
+    </p>
+</section>
+
+<section class="section">
+    <h2>The (\(\pi - 1\)) as Fundamental Unit</h2>
+
+    <p>
+        The quantity \(\pi - 1 = 2.1416\) is the "fractional unit" of &pi;-algebra:
+    </p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>\(k\)</th>
+                <th>\(k(\pi-1)\)</th>
+                <th>floor</th>
+                <th>ceiling</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>2.14</td><td>2</td><td>3</td></tr>
+            <tr><td>2</td><td>4.28</td><td>4</td><td>5</td></tr>
+            <tr><td>3</td><td>6.42</td><td>6</td><td>7</td></tr>
+            <tr><td>4</td><td>8.57</td><td>8</td><td>9</td></tr>
+            <tr><td>5</td><td>10.71</td><td>10</td><td>11</td></tr>
+            <tr><td>7</td><td>14.99</td><td>14</td><td>15</td></tr>
+        </tbody>
+    </table>
+
+    <p>Note: \(7(\pi-1) \approx 15\) gives the charm coefficient 14 via floor!</p>
+</section>
+
+<section class="section">
+    <h2>Open Questions</h2>
+
+    <ol>
+        <li><strong>Why \(q = \pi\)?</strong> Is there a deeper reason the quantum parameter equals &pi;?</li>
+        <li><strong>The floor/ceiling puzzle:</strong> How does discretization arise from continuous q-integers?</li>
+        <li><strong>The pion anomaly:</strong> The pion has coefficient 1 = \([1]_\pi\), but its full structure doesn't obviously fit the q-framework.</li>
+        <li><strong>Negative powers:</strong> The \(1/\pi^n\) corrections don't have an obvious q-calculus interpretation.</li>
+    </ol>
+</section>
+
+<section class="section">
+    <p><a href="framework.html">&larr; Back to Framework Overview</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Mathematical Framework - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Mathematical Framework</h1>
+    <p class="hero-subtitle">The structures underlying &pi;-algebra</p>
+</section>
+
+<section class="section">
+    <h2>Three Interlocking Frameworks</h2>
+
+    <p>
+        The &pi;-algebra emerges from three independent mathematical structures that
+        converge on the same particle coefficients:
+    </p>
+
+    <div class="framework-grid">
+        <div class="framework-card">
+            <h3><a href="lorentz.html">The Lorentz Correction</a></h3>
+            <div class="formula-highlight">
+                \[ e^{-\pi} = 0.0432... \]
+            </div>
+            <p>
+                The discrete-continuous duality creates corrections proportional to \(e^{-\pi}\).
+                This "antimatter shadow" appears in the proton formula with coefficient 4/5.
+            </p>
+            <ul>
+                <li>Arises from summing vs integrating dimensional series</li>
+                <li>Connected to Lorentz boosts at rapidity \(\eta = \pi\)</li>
+                <li>The 4/5 comes from floor/ceiling of \([2]_\pi\)</li>
+            </ul>
+        </div>
+
+        <div class="framework-card">
+            <h3><a href="q_calculus.html">q-Calculus with q = &pi;</a></h3>
+            <div class="formula-highlight">
+                \[ [n]_\pi = \frac{\pi^n - 1}{\pi - 1} = 1 + \pi + \pi^2 + \cdots + \pi^{n-1} \]
+            </div>
+            <p>
+                The &pi;-integers give the dimension-spanning coefficients for heavy quarks.
+                The charm coefficient 14 equals \([3]_\pi\) to 0.08% accuracy.
+            </p>
+            <ul>
+                <li>\([1]_\pi = 1\) (u,d quarks)</li>
+                <li>\([2]_\pi = \pi + 1 \approx 4.14\) (strange)</li>
+                <li>\([3]_\pi = \pi^2 + \pi + 1 \approx 14.01\) (charm)</li>
+                <li>\([4]_\pi \approx 45.02\) (bottom)</li>
+            </ul>
+        </div>
+
+        <div class="framework-card">
+            <h3><a href="seven.html">The Seven Connection</a></h3>
+            <div class="formula-highlight">
+                \[ 7 = \lceil 2\pi \rceil = \lfloor \pi! \rfloor = \lfloor \pi^2 + \pi - 6 \rfloor \]
+            </div>
+            <p>
+                The strange baryon coefficient 7 emerges from three independent calculations:
+                the ceiling of 2&pi;, the &pi;-factorial, and a quadratic in &pi;.
+            </p>
+            <ul>
+                <li>Proton: \(\lfloor 2\pi \rfloor = 6\)</li>
+                <li>Strange: \(\lceil 2\pi \rceil = 7\)</li>
+                <li>Omega: \(\lceil \pi^2 \rceil = 10\)</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>The Unified Picture</h2>
+
+    <p>These frameworks connect through key identities:</p>
+
+    <div class="identity-box">
+        <h4>The Fundamental Identity</h4>
+        \[ [2]_\pi + (\pi - 1) = 2\pi \]
+        <p class="identity-note">
+            This explains why both proton (6) and strange baryons (7) derive from the same expression
+            with different quantizations.
+        </p>
+    </div>
+
+    <div class="identity-box">
+        <h4>The Charm Identity</h4>
+        \[ [3]_\pi = \pi^2 + \pi + 1 = 14.01 \approx 2 \times 7 \]
+        <p class="identity-note">
+            The charm coefficient equals twice the strange coefficient &mdash; charm is "two units of strangeness."
+        </p>
+    </div>
+
+    <div class="identity-box">
+        <h4>The Double Charm Identity</h4>
+        \[ e^\pi = 23.14 \approx 23 = 2 \times [3]_\pi - \lceil [2]_\pi \rceil \]
+        <p class="identity-note">
+            The double-charm coefficient comes from \(e^\pi\), connecting to the Lorentz framework.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>The Derivative Framework</h2>
+
+    <p>
+        Treating &pi; as a variable, differentiation generates particle coefficients directly:
+    </p>
+
+    <div class="formula-highlight">
+        \[ \frac{d}{d\pi}(\pi^6) = 6\pi^5 = \text{proton} \]
+    </div>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Derivative</th>
+                <th>Result</th>
+                <th>Scale</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\(\pi^6\)</td>
+                <td>\(\frac{d}{d\pi}(\pi^6)\)</td>
+                <td>\(6\pi^5\)</td>
+                <td>Proton (938 MeV)</td>
+            </tr>
+            <tr>
+                <td>\(\pi^7\)</td>
+                <td>\(\frac{d}{d\pi}(\pi^7)\)</td>
+                <td>\(7\pi^6\)</td>
+                <td>Charmonium (3.4 GeV)</td>
+            </tr>
+            <tr>
+                <td>\(\pi^8\)</td>
+                <td>\(\frac{d}{d\pi}(\pi^8)\)</td>
+                <td>\(8\pi^7\)</td>
+                <td>Bottomonium (10.8 GeV)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        The constituent quark mass emerges from the second derivative of the hadron scale:
+    </p>
+
+    <div class="formula-highlight">
+        \[ \frac{d^2}{d\pi^2}(\pi^5) = 20\pi^3 \times m_e = 316 \text{ MeV} \]
+    </div>
+
+    <p>
+        This matches the QCD constituent quark mass (300-350 MeV), and the coefficient 20
+        appears in strange baryon magnetic moments!
+    </p>
+</section>
+
+<section class="section">
+    <h2>Angular Structure</h2>
+
+    <p>
+        Mass coefficients map to angles via \(\theta = c_5 \times \pi/5\):
+    </p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>\(c_5\)</th>
+                <th>\(\theta\)</th>
+                <th>Degrees</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Proton</td>
+                <td>6</td>
+                <td>\(6\pi/5\)</td>
+                <td>216&deg;</td>
+            </tr>
+            <tr>
+                <td>&Lambda;, &Sigma;</td>
+                <td>7</td>
+                <td>\(7\pi/5\)</td>
+                <td>252&deg;</td>
+            </tr>
+            <tr>
+                <td>&Xi;</td>
+                <td>8</td>
+                <td>\(8\pi/5\)</td>
+                <td>288&deg;</td>
+            </tr>
+            <tr>
+                <td>&Omega;</td>
+                <td>9</td>
+                <td>\(9\pi/5\)</td>
+                <td>324&deg;</td>
+            </tr>
+            <tr>
+                <td>Complete</td>
+                <td>10</td>
+                <td>\(2\pi\)</td>
+                <td>360&deg;</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Each strange quark adds \(\pi/5 = 36°\) of rotation. The sum \(6+7+8+9+10 = 40\)
+        gives total angle \(8\pi\) &mdash; Einstein's singularity constant.
+    </p>
+</section>
+
+<section class="section">
+    <h2>Explore the Frameworks</h2>
+
+    <ul class="framework-links">
+        <li><a href="lorentz.html">The Lorentz Correction: \(e^{-\pi}\) &rarr;</a></li>
+        <li><a href="q_calculus.html">q-Calculus with q = &pi; &rarr;</a></li>
+        <li><a href="seven.html">The Seven Connection: \(\lceil 2\pi \rceil\) &rarr;</a></li>
+        <li><a href="mesons.html">Mesons & Leptons: Pion and Muon &rarr;</a></li>
+    </ul>
+</section>
+{% endblock %}

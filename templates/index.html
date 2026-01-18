@@ -73,7 +73,7 @@
 <section class="section">
     <h2>Key Results</h2>
 
-    <p>All 18 ground-state baryons have formulas with sub-5 keV accuracy:</p>
+    <p>Particle masses as &pi;-polynomials with Lorentz corrections:</p>
 
     <table class="results-table">
         <thead>
@@ -84,21 +84,28 @@
             </tr>
         </thead>
         <tbody>
-            {% for p in octet[:4] %}
             <tr>
-                <td>\( {{ p.latex_symbol }} \)</td>
-                <td>\( {{ p.formula_latex() }} \)</td>
-                <td>
-                    {% if p.error_ev()|abs < 1000 %}
-                        {{ "%.1f"|format(p.error_ev()) }} eV
-                    {% else %}
-                        {{ "%.2f"|format(p.error_kev()) }} keV
-                    {% endif %}
-                </td>
+                <td>\( p \)</td>
+                <td>\( 6\pi^5 + \frac{4}{5}e^{-\pi} \)</td>
+                <td>3 eV</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td>\( n \)</td>
+                <td>\( 6\pi^5 + \frac{8}{\pi} \)</td>
+                <td>0.4 keV</td>
+            </tr>
+            <tr>
+                <td>\( \pi^\pm \)</td>
+                <td>\( \pi^5 - \pi^3 - \pi + 1 + 6e^{-\pi} \)</td>
+                <td>0.3 keV</td>
+            </tr>
+            <tr>
+                <td>\( \mu \)</td>
+                <td>\( \pi^5 - \pi^4 - 1 - 20e^{-\pi} \)</td>
+                <td>11 keV</td>
+            </tr>
             <tr class="more-link">
-                <td colspan="3"><a href="formulas.html">See all formulas &rarr;</a></td>
+                <td colspan="3"><a href="mesons.html">Mesons & Leptons</a> &nbsp;|&nbsp; <a href="formulas.html">All Baryons</a></td>
             </tr>
         </tbody>
     </table>
@@ -219,5 +226,21 @@
             <div class="cross-uses">uses \(\frac{6}{5}\) from 2&times;3 family</div>
         </div>
     </div>
+</section>
+
+<section class="section">
+    <h2>The Mathematical Framework</h2>
+
+    <p>
+        Three interlocking mathematical structures underlie the &pi;-algebra:
+    </p>
+
+    <ul>
+        <li><strong>The Lorentz Correction:</strong> The \(e^{-\pi}\) term arises from discrete-continuous duality</li>
+        <li><strong>q-Calculus:</strong> The &pi;-integers \([n]_\pi\) give quark dimension-spanning coefficients</li>
+        <li><strong>The Seven Connection:</strong> 7 = \(\lceil 2\pi \rceil = \lfloor \pi! \rfloor\) bridges floor and ceiling</li>
+    </ul>
+
+    <p><a href="framework.html">Explore the mathematical framework &rarr;</a></p>
 </section>
 {% endblock %}

@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}The Lorentz Correction - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>The Lorentz Correction</h1>
+    <p class="hero-subtitle">The \(e^{-\pi}\) term and discrete-continuous duality</p>
+</section>
+
+<section class="section">
+    <h2>The Proton Formula</h2>
+
+    <p>The proton mass requires a small correction beyond the polynomial structure:</p>
+
+    <div class="formula-highlight">
+        \[ m_p = 6\pi^5 + \frac{4}{5}e^{-\pi} \]
+    </div>
+
+    <div class="calculation-box">
+        <h4>Numerical Verification</h4>
+        <table class="calculation-table">
+            <tr>
+                <td class="calc-term">\(6\pi^5\)</td>
+                <td class="calc-equals">=</td>
+                <td class="calc-result">1836.1181</td>
+                <td class="calc-unit">\(m_e\)</td>
+            </tr>
+            <tr>
+                <td class="calc-term">\(\frac{4}{5}e^{-\pi}\)</td>
+                <td class="calc-equals">=</td>
+                <td class="calc-result">0.0346</td>
+                <td class="calc-unit">\(m_e\)</td>
+            </tr>
+            <tr class="calc-sum">
+                <td class="calc-term">Total</td>
+                <td class="calc-equals">=</td>
+                <td class="calc-result"><strong>1836.1527</strong></td>
+                <td class="calc-unit">\(m_e\)</td>
+            </tr>
+            <tr class="calc-exp">
+                <td class="calc-term">Experimental</td>
+                <td class="calc-equals">=</td>
+                <td class="calc-result">1836.1527</td>
+                <td class="calc-unit">\(m_e\)</td>
+            </tr>
+        </table>
+        <p class="calc-error"><strong>Error: 3 eV</strong> &nbsp;|&nbsp; 0.003 ppm</p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Origin: Discrete-Continuous Duality</h2>
+
+    <p>
+        The correction arises from two different ways of summing a dimensional series
+        \(f_n = (8\pi/n!) r^n\):
+    </p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <h4>Discrete Sum (Quantum)</h4>
+            <div class="formula-small">
+                \[ \sum_{n=0}^{\infty} \frac{8\pi}{n!} \pi^n = 8\pi \cdot e^{\pi} = 581.59 \]
+            </div>
+            <p>Particles exist at integer dimensions \(n = 0, 1, 2, ...\)</p>
+        </div>
+
+        <div class="comparison-item">
+            <h4>Continuous Integral (Classical)</h4>
+            <div class="formula-small">
+                \[ \int_{-\pi}^{\pi} 8\pi \cdot e^r \, dr = 16\pi \sinh(\pi) = 580.50 \]
+            </div>
+            <p>Smooth distribution over all \(r \in [-\pi, \pi]\)</p>
+        </div>
+    </div>
+
+    <div class="identity-box">
+        <h4>The Difference</h4>
+        \[ 8\pi e^{\pi} - 16\pi \sinh(\pi) = 8\pi e^{-\pi} \]
+        <p class="identity-note">
+            The "antimatter shadow" contribution is exactly \(8\pi e^{-\pi}\).
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Why \(e^{-\pi}\)?</h2>
+
+    <p>The key identity:</p>
+
+    <div class="formula-highlight">
+        \[ e^{\pi} - 2\sinh(\pi) = e^{-\pi} \]
+    </div>
+
+    <p>Proof:</p>
+    <div class="derivation">
+        \[ 2\sinh(\pi) = e^{\pi} - e^{-\pi} \]
+        \[ e^{\pi} - 2\sinh(\pi) = e^{\pi} - (e^{\pi} - e^{-\pi}) = e^{-\pi} \]
+    </div>
+
+    <p>Physical interpretation:</p>
+    <ul>
+        <li>The discrete sum "sees" both \(e^{\pi}\) (matter) and \(e^{-\pi}\) (antimatter)</li>
+        <li>The continuous integral captures only \(2\sinh(\pi)\) (the net matter content)</li>
+        <li>The correction \(e^{-\pi}\) is what's "left behind" in the discrete-to-continuous transition</li>
+    </ul>
+</section>
+
+<section class="section">
+    <h2>Connection to Lorentz Boosts</h2>
+
+    <p>In special relativity, Lorentz boosts are parameterized by rapidity \(\eta\):</p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Quantity</th>
+                <th>Formula</th>
+                <th>At \(\eta = \pi\)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Velocity</td>
+                <td>\(v/c = \tanh(\eta)\)</td>
+                <td>0.9963 (99.6% of light)</td>
+            </tr>
+            <tr>
+                <td>Lorentz factor</td>
+                <td>\(\gamma = \cosh(\eta)\)</td>
+                <td>11.59</td>
+            </tr>
+            <tr>
+                <td>Momentum factor</td>
+                <td>\(\gamma v/c = \sinh(\eta)\)</td>
+                <td>11.55</td>
+            </tr>
+            <tr>
+                <td>Matter amplification</td>
+                <td>\(e^{\eta}\)</td>
+                <td>23.14</td>
+            </tr>
+            <tr>
+                <td>Antimatter remnant</td>
+                <td>\(e^{-\eta}\)</td>
+                <td>0.0432</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        The singularity interior (\(r < 0\)) contains matter/antimatter superposition.
+        A Lorentz boost with rapidity \(\eta = \pi\) transforms to the exterior (\(r > 0\)).
+        The \(e^{-\pi}\) correction is the "leakage" from the antimatter side.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The 4/5 Coefficient</h2>
+
+    <p>The coefficient 4/5 comes from the q-calculus structure:</p>
+
+    <div class="formula-highlight">
+        \[ [2]_\pi = \frac{\pi^2 - 1}{\pi - 1} = \pi + 1 = 4.1416 \]
+    </div>
+
+    <div class="identity-box">
+        <h4>Floor/Ceiling Quantization</h4>
+        \[ \frac{\lfloor [2]_\pi \rfloor}{\lceil [2]_\pi \rceil} = \frac{4}{5} = 0.8 \]
+    </div>
+
+    <p>
+        This is the same floor/ceiling quantization that distinguishes:
+    </p>
+    <ul>
+        <li>Proton coefficient: \(\lfloor 2\pi \rfloor = 6\)</li>
+        <li>Strange baryon coefficient: \(\lceil 2\pi \rceil = 7\)</li>
+    </ul>
+</section>
+
+<section class="section">
+    <h2>The Complete Proton Formula</h2>
+
+    <div class="summary-box">
+        <div class="formula-highlight">
+            \[ \frac{m_p}{m_e} = 6\pi^5 + \frac{4}{5}e^{-\pi} \]
+        </div>
+
+        <table class="component-table">
+            <tr>
+                <td><strong>\(6\pi^5\)</strong></td>
+                <td>
+                    <ul>
+                        <li>\(= D_\pi[\pi^6]\) (derivative structure)</li>
+                        <li>Surface of 6D time-sphere</li>
+                        <li>Mass from dimensional projection</li>
+                        <li>= 1836.118 \(m_e\)</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>\(\frac{4}{5}e^{-\pi}\)</strong></td>
+                <td>
+                    <ul>
+                        <li>Discrete-continuous correction</li>
+                        <li>Lorentz boost remnant (\(\eta = \pi\))</li>
+                        <li>\(\frac{\lfloor [2]_\pi \rfloor}{\lceil [2]_\pi \rceil} \times\) antimatter shadow</li>
+                        <li>= 0.03457 \(m_e\)</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Corrections Across Baryons</h2>
+
+    <p>
+        The \(e^{-\pi}\) term appears in multiple baryon formulas with different coefficients:
+    </p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle</th>
+                <th>Base</th>
+                <th>Correction</th>
+                <th>\(e^{-\pi}\) coef</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\(p\)</td>
+                <td>\(6\pi^5\)</td>
+                <td>\(+\frac{4}{5}e^{-\pi}\)</td>
+                <td>0.8</td>
+            </tr>
+            <tr>
+                <td>\(\Lambda\)</td>
+                <td>\(7\pi^5 + \pi^3 + \pi^2\)</td>
+                <td>\(-\frac{1}{2}e^{-\pi}\)</td>
+                <td>-0.5</td>
+            </tr>
+            <tr>
+                <td>\(\Delta\)</td>
+                <td>\(6\pi^5 + 6\pi^4 - \pi^2\)</td>
+                <td>\(+\frac{4}{5}e^{-\pi}\)</td>
+                <td>0.8</td>
+            </tr>
+            <tr>
+                <td>\(\Omega^-\)</td>
+                <td>\(9\pi^5 + 6\pi^4 - 2\pi^3\)</td>
+                <td>\(+\frac{6}{5}e^{-\pi}\)</td>
+                <td>1.2</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        The proton uses 4/5 (from the 4&times;5 = 20 magnetic moment family).
+        The omega uses 6/5 (from the 2&times;3 = 6 family).
+        They cross-reference each other's families!
+    </p>
+</section>
+
+<section class="section">
+    <h2>Implications</h2>
+
+    <h4>1. Unification of Frameworks</h4>
+    <p>The correction connects three independent mathematical structures:</p>
+    <ul>
+        <li><strong>Dimensional series:</strong> \(f_n = (8\pi/n!) r^n \to\) sum \(= 8\pi e^r\)</li>
+        <li><strong>Q-calculus:</strong> \([n]_\pi\) and floor/ceiling quantization</li>
+        <li><strong>Lorentz boosts:</strong> rapidity \(\eta = \pi\), hyperbolic functions</li>
+    </ul>
+
+    <h4>2. Matter/Antimatter Asymmetry</h4>
+    <p>
+        The ratio \(e^{\pi} / e^{-\pi} = e^{2\pi} \approx 535\) represents a fundamental asymmetry.
+        This could relate to cosmological matter/antimatter imbalance.
+    </p>
+
+    <h4>3. Quantum Discreteness</h4>
+    <p>
+        The correction arises because particles exist at discrete dimensions (\(n = 0,1,2,...\)).
+        The \(e^{-\pi}\) term is the "quantum tax" for discreteness.
+    </p>
+</section>
+
+<section class="section">
+    <p><a href="framework.html">&larr; Back to Framework Overview</a></p>
+</section>
+{% endblock %}

@@ -78,7 +78,13 @@ def build():
         ('baryon_cycle.html', 'baryon_cycle.html'),
         ('charm_cycle.html', 'charm_cycle.html'),
         ('bottom_cycle.html', 'bottom_cycle.html'),
+        ('mesons.html', 'mesons.html'),
         ('formulas.html', 'formulas.html'),
+        # Framework pages
+        ('framework.html', 'framework.html'),
+        ('lorentz.html', 'lorentz.html'),
+        ('q_calculus.html', 'q_calculus.html'),
+        ('seven.html', 'seven.html'),
     ]
 
     for template_name, output_name in pages:

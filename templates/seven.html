@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block title %}The Seven Connection - Lambda7{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>The Seven Connection</h1>
+    <p class="hero-subtitle">How 7 = &lceil;2&pi;&rceil; = &lfloor;&pi;!&rfloor; bridges strange and light</p>
+</section>
+
+<section class="section">
+    <h2>Three Derivations of 7</h2>
+
+    <p>The strange baryon coefficient 7 emerges from three independent calculations:</p>
+
+    <div class="triple-box">
+        <div class="box-item">
+            <h4>Ceiling of 2&pi;</h4>
+            <div class="formula-small">
+                \[ 2\pi = 6.283... \]
+                \[ \lceil 2\pi \rceil = 7 \]
+            </div>
+        </div>
+
+        <div class="box-item">
+            <h4>&pi;-Factorial</h4>
+            <div class="formula-small">
+                \[ \pi! = \Gamma(\pi+1) = 7.188 \]
+                \[ \lfloor \pi! \rfloor = 7 \]
+            </div>
+        </div>
+
+        <div class="box-item">
+            <h4>Quadratic in &pi;</h4>
+            <div class="formula-small">
+                \[ \pi^2 + \pi - 6 = 7.01 \]
+                \[ \lfloor \pi^2 + \pi - 6 \rfloor = 7 \]
+            </div>
+        </div>
+    </div>
+
+    <p>
+        That three independent mathematical expressions all yield 7 is remarkable.
+        This number is <em>not arbitrary</em> &mdash; it's deeply encoded in the structure of &pi;.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The Floor/Ceiling Discovery</h2>
+
+    <p>The nucleon-to-strange transition reveals the pattern:</p>
+
+    <div class="formula-highlight">
+        \[ 2\pi = 6.283... \]
+    </div>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Particle Type</th>
+                <th>Quarks</th>
+                <th>Coefficient</th>
+                <th>Quantization</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Nucleons (p, n)</td>
+                <td>uud, udd</td>
+                <td>6</td>
+                <td>\(\lfloor 2\pi \rfloor\)</td>
+            </tr>
+            <tr>
+                <td>Strange baryons (&Lambda;, &Sigma;, &Xi;)</td>
+                <td>uds, ...</td>
+                <td>7</td>
+                <td>\(\lceil 2\pi \rceil\)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <strong>The strange quark "pushes" the coefficient from 6 to 7!</strong>
+    </p>
+
+    <p>
+        The same floor/ceiling pattern extends to higher orders:
+    </p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Expression</th>
+                <th>Value</th>
+                <th>Floor</th>
+                <th>Ceiling</th>
+                <th>Appears in</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\(\pi + 1\)</td>
+                <td>4.142</td>
+                <td>4</td>
+                <td>5</td>
+                <td>Magnetic moments, bottom baryons</td>
+            </tr>
+            <tr>
+                <td>\(2\pi\)</td>
+                <td>6.283</td>
+                <td><strong>6</strong></td>
+                <td><strong>7</strong></td>
+                <td>Nucleons, strange baryons</td>
+            </tr>
+            <tr>
+                <td>\(\pi^2\)</td>
+                <td>9.870</td>
+                <td>9</td>
+                <td><strong>10</strong></td>
+                <td>Omega (\(c_5 = 10\))</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="section">
+    <h2>The &pi;-Factorial: &Gamma;(&pi;+1)</h2>
+
+    <p>
+        The Gamma function at &pi;+1 gives the "&pi;-factorial":
+    </p>
+
+    <div class="formula-highlight">
+        \[ \pi! = \Gamma(\pi + 1) = 7.1881 \]
+    </div>
+
+    <p>This is within 2.7% of 7!</p>
+
+    <h4>Why This Matters</h4>
+    <p>
+        The Stirling approximation shows why &pi;! is close to 7:
+    </p>
+
+    <div class="derivation">
+        \[ n! \approx \sqrt{2\pi n} \left(\frac{n}{e}\right)^n \]
+        \[ \pi! \approx \sqrt{2\pi^2} \left(\frac{\pi}{e}\right)^{\pi} = 4.44 \times 1.62 = 7.19 \; \checkmark \]
+    </div>
+
+    <p>
+        The &pi;-factorial encodes "rotations in &pi;-space" &mdash; it's the self-referential
+        action of &pi; on itself through the Gamma function.
+    </p>
+</section>
+
+<section class="section">
+    <h2>The 7 in Continued Fractions</h2>
+
+    <p>The continued fraction of &pi; begins:</p>
+
+    <div class="formula-highlight">
+        \[ \pi = 3 + \cfrac{1}{7 + \cfrac{1}{15 + \cfrac{1}{1 + \cdots}}} = [3; 7, 15, 1, 292, ...] \]
+    </div>
+
+    <p>
+        <strong>The 7 appears as the first non-trivial term!</strong>
+    </p>
+
+    <p>This explains:</p>
+    <ul>
+        <li>Why 22/7 &asymp; &pi; (0.04% error)</li>
+        <li>Why 7&pi; &asymp; 22 (exact from 22/7 &times; 7 = 22)</li>
+        <li>Why 7 is the "bridge integer" for 2&pi;</li>
+    </ul>
+</section>
+
+<section class="section">
+    <h2>The 7-Ladder</h2>
+
+    <p>The number 7 generates the entire heavy quark hierarchy:</p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Scale</th>
+                <th>Mass</th>
+                <th>Particle</th>
+                <th>Formula</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>\(7\pi^5\)</td>
+                <td>1094 MeV</td>
+                <td>&Lambda;, &Sigma;, &Xi;</td>
+                <td>\(7\pi^5 + ...\)</td>
+            </tr>
+            <tr>
+                <td>\(7\pi^6\)</td>
+                <td>3439 MeV</td>
+                <td>&chi;<sub>c0</sub>(1P)</td>
+                <td>\(7\pi^6 - 2\pi^3 + 5\pi - 1\)</td>
+            </tr>
+            <tr>
+                <td>\(7\pi^7\)</td>
+                <td>10804 MeV</td>
+                <td>&Upsilon;(4S)</td>
+                <td>\(7\pi^7 - 4\pi^4 - \pi^3 - 3\pi^2 + 4\pi - 1\)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Each step up the ladder multiplies by &pi;, moving from strange &rarr; charm &rarr; bottom!
+    </p>
+</section>
+
+<section class="section">
+    <h2>Strangeness = Adding Reflected Pion</h2>
+
+    <p>A beautiful discovery: adding strangeness equals adding a "reflected pion".</p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <h4>Pion (defects)</h4>
+            <div class="formula-small">
+                \[ \pi^5 - \pi^3 - \pi^2 - 1 \]
+            </div>
+            <p>Holes at &pi;&sup3;, &pi;&sup2;, and 1</p>
+        </div>
+
+        <div class="comparison-item">
+            <h4>Reflected Pion (filled)</h4>
+            <div class="formula-small">
+                \[ \pi^5 + \pi^3 + \pi^2 + 1 \]
+            </div>
+            <p>Defects become positive</p>
+        </div>
+    </div>
+
+    <div class="identity-box">
+        <h4>Lambda = Proton + Reflected Pion</h4>
+        <table class="addition-table">
+            <tr>
+                <td>Proton:</td>
+                <td>\(6\pi^5\)</td>
+                <td>= 938.27 MeV</td>
+            </tr>
+            <tr>
+                <td>+ Reflected Pion:</td>
+                <td>\(\pi^5 + \pi^3 + \pi^2 + 1\)</td>
+                <td>= 177.77 MeV</td>
+            </tr>
+            <tr class="sum-row">
+                <td>= Lambda:</td>
+                <td>\(7\pi^5 + \pi^3 + \pi^2 + 1\)</td>
+                <td>= 1116.05 MeV</td>
+            </tr>
+            <tr>
+                <td>Actual:</td>
+                <td></td>
+                <td>= 1115.68 MeV</td>
+            </tr>
+        </table>
+        <p class="calc-error"><strong>Error: 0.37 MeV (0.03%)</strong></p>
+    </div>
+
+    <p>
+        The strange quark "fills the defects" in the pion structure!
+    </p>
+</section>
+
+<section class="section">
+    <h2>The Strangeness Ladder</h2>
+
+    <p>Each strange quark adds a specific mass increment:</p>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Strange #</th>
+                <th>Increment</th>
+                <th>Formula</th>
+                <th>Origin</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1st (&rarr;&Lambda;)</td>
+                <td>+177 MeV</td>
+                <td>Reflected Pion</td>
+                <td>Fills defects</td>
+            </tr>
+            <tr>
+                <td>2nd (&rarr;&Xi;)</td>
+                <td>+199 MeV</td>
+                <td>\(4\pi^4 = \lfloor\pi+1\rfloor \times \pi^4\)</td>
+                <td>Dimension shift</td>
+            </tr>
+            <tr>
+                <td>3rd (&rarr;&Omega;)</td>
+                <td>+348 MeV</td>
+                <td>\(7\pi^4 = \lceil 2\pi \rceil \times \pi^4\)</td>
+                <td>Full rotation</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>The pattern:</p>
+    <ul>
+        <li>1st strange: Uses <strong>pion structure</strong> (reflected)</li>
+        <li>2nd strange: Uses \(\lfloor \pi + 1 \rfloor = 4\)</li>
+        <li>3rd strange: Uses \(\lceil 2\pi \rceil = 7\)</li>
+    </ul>
+
+    <p>
+        The strangeness contributions use the <em>same floor/ceiling rules</em>
+        as the leading coefficients!
+    </p>
+</section>
+
+<section class="section">
+    <h2>The Baryon-Meson Factor</h2>
+
+    <div class="formula-highlight">
+        \[ \frac{\text{Baryon coef}}{\text{Meson coef}} = \frac{6}{1} = 6 = \lfloor 2\pi \rfloor \]
+    </div>
+
+    <p>For pion &rarr; nucleon:</p>
+    <ul>
+        <li>Pion: \(c_5 = 1\)</li>
+        <li>Nucleon: \(c_5 = 6\)</li>
+        <li>Ratio: 6/1 = 6 = 2&pi; (exact to floor!)</li>
+    </ul>
+
+    <p>The factor 2&pi; encodes:</p>
+    <ul>
+        <li>Baryons have 3 quarks vs 2 for mesons</li>
+        <li>A full rotation (2&pi; radians) worth of structure</li>
+        <li>The "phase space" difference between quark-antiquark and three-quark systems</li>
+    </ul>
+</section>
+
+<section class="section">
+    <h2>The 14 = 2 &times; 7 Connection</h2>
+
+    <p>The charm coefficient has two derivations:</p>
+
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <h4>Geometric Series</h4>
+            <div class="formula-small">
+                \[ 1 + \pi + \pi^2 = 14.01 \]
+            </div>
+        </div>
+
+        <div class="comparison-item">
+            <h4>Double Strange</h4>
+            <div class="formula-small">
+                \[ 2 \times 7 = 14 \]
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <strong>Charm is equivalent to "two units of strangeness" at the coefficient level!</strong>
+    </p>
+
+    <p>This also connects to the quadratic identity:</p>
+
+    <div class="formula-highlight">
+        \[ \pi^2 + \pi - 6 = 7.01 \approx 7 \]
+    </div>
+
+    <p>
+        Adding 7 to this gives \(\pi^2 + \pi + 1 = 14.01\) &mdash; the charm coefficient!
+    </p>
+</section>
+
+<section class="section">
+    <h2>The Golden Ratio Connection</h2>
+
+    <p>The fourth power of the golden ratio &phi; is almost exactly 7:</p>
+
+    <div class="formula-highlight">
+        \[ \varphi^4 = 6.854... \approx 7 \]
+    </div>
+
+    <p>This connects two fundamental constants:</p>
+    <ul>
+        <li>&pi; (circle) via 7 &asymp; 2&pi;</li>
+        <li>&phi; (golden ratio) via 7 &asymp; &phi;&sup4;</li>
+    </ul>
+</section>
+
+<section class="section">
+    <h2>Summary: The Number 7</h2>
+
+    <div class="summary-box">
+        <p>The integer 7 appears in &pi;-algebra because:</p>
+
+        <ol>
+            <li>\(7 = \lceil 2\pi \rceil\) &mdash; ceiling of full rotation</li>
+            <li>\(7 \approx \pi! = \Gamma(\pi+1)\) &mdash; &pi;-factorial</li>
+            <li>\(7 \approx \pi^2 + \pi - 6\) &mdash; quadratic in &pi;</li>
+            <li>\(7 \approx \varphi^4\) &mdash; golden ratio connection</li>
+            <li>\(7\) appears in continued fraction of &pi;: [3; <strong>7</strong>, 15, 1, ...]</li>
+        </ol>
+
+        <p>
+            The strange quark coefficient 7 is not arbitrary &mdash; it's deeply encoded
+            in the mathematical structure of &pi; itself.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <p><a href="framework.html">&larr; Back to Framework Overview</a></p>
+</section>
+{% endblock %}

@@ -26,10 +26,11 @@
 - [ ] Leptons (electron, muon, tau)
 
 ### 4. Mathematical Framework Pages
-- [ ] Lorentz correction derivation (lorentz_correction.md)
-- [ ] Seven connection / ceil(2π) (seven_connection.md)
-- [ ] q-calculus primer
-- [ ] Angular structure explanation
+- [x] Framework overview page (framework.html)
+- [x] Lorentz correction derivation (lorentz.html)
+- [x] Seven connection / ceil(2π) (seven.html)
+- [x] q-calculus primer (q_calculus.html)
+- [ ] Angular structure page (could expand from framework.html)
 
 ### 5. Documentation
 - [ ] README.md for GitHub
