@@ -986,7 +986,22 @@
         }
 
         const PI = Math.PI;
+        const PI2 = PI * PI;
+        const PI3 = PI * PI * PI;
         const M_E = 0.51099895;
+
+        // Magnetic moments from data/magnetic.py
+        const magMoments = {
+            'p': { formula: '8π/9', value: 2.792527, exp: 2.7928473508, unit: 'μN', sign: '' },
+            'S+': { formula: '7π/9', value: 2.443461, exp: 2.458, unit: 'μN', sign: '' },
+            'n': { formula: '6/π', value: 1.909859, exp: 1.9130427, unit: 'μN', sign: '-' },
+            'L0': { formula: '6/π²', value: 0.607927, exp: 0.613, unit: 'μN', sign: '-' },
+            'X0': { formula: '4/π', value: 1.273240, exp: 1.25, unit: 'μN', sign: '-' },
+            'S-': { formula: '36/π³', value: 1.161055, exp: 1.16, unit: 'μN', sign: '-' },
+            'X-': { formula: '20/π³', value: 0.645031, exp: 0.6507, unit: 'μN', sign: '-' },
+            'Om': { formula: '20/π²', value: 2.026424, exp: 2.02, unit: 'μN', sign: '-' }
+        };
+
         const UNCERTAINTIES = {
             'p': 0.00000029e-3, 'n': 0.00000054e-3,
             'L0': 0.006, 'S+': 0.03, 'S0': 0.03, 'S-': 0.04,
@@ -1054,6 +1069,21 @@
                 const sigmaText = sigma < 100 ? sigma.toFixed(2) + 'σ' : '>100σ';
                 const errorSign = errorMev >= 0 ? '+' : '';
 
+                // Build magnetic moment section if data exists
+                let magHtml = '';
+                const mm = magMoments[d.id];
+                if (mm) {
+                    const magError = ((mm.value - mm.exp) / mm.exp * 100).toFixed(2);
+                    magHtml = `
+                        <hr style="border-color: #333; margin: 12px 0;">
+                        <div style="color: #f39c12; font-size: 0.9em; margin-bottom: 5px;">MAGNETIC MOMENT</div>
+                        <div><span class="label">μ formula:</span> <span style="color: #f39c12;">${mm.formula}</span></div>
+                        <div><span class="label">Calculated:</span> ${mm.sign}${mm.value.toFixed(3)} ${mm.unit}</div>
+                        <div><span class="label">Experimental:</span> ${mm.sign}${mm.exp} ${mm.unit}</div>
+                        <div><span class="label">Error:</span> ${magError}%</div>
+                    `;
+                }
+
                 document.getElementById('info').innerHTML = `
                     <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${d.label.split('\n')[0]}</div>
                     <div style="font-size:1.3em; margin-bottom:12px"><span class="formula">${fullFormula}</span></div>
@@ -1066,7 +1096,8 @@
                     <div><span class="label">Uncertainty:</span> <span class="value">±${unc < 0.001 ? (unc*1e6).toFixed(2) + ' eV' : unc < 1 ? (unc*1000).toFixed(1) + ' keV' : unc.toFixed(2) + ' MeV'}</span></div>
                     <hr style="border-color:#333; margin:12px 0">
                     <div><span class="label">Error:</span> <span style="color:${sigmaColor}">${errorSign}${Math.abs(errorKev) < 1 ? (errorMev*1e6).toFixed(1) + ' eV' : errorKev.toFixed(2) + ' keV'}</span></div>
-                    <div><span class="label">Deviation:</span> <span style="color:${sigmaColor}; font-weight:bold">${sigmaText}</span></div>`;
+                    <div><span class="label">Deviation:</span> <span style="color:${sigmaColor}; font-weight:bold">${sigmaText}</span></div>
+                    ${magHtml}`;
 
                 updateDecays(d.id);
             }

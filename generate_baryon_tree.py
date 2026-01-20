@@ -17,9 +17,44 @@ from data.baryons import (
     PARTICLES, CHARM_PARTICLES, BOTTOM_PARTICLES, DOUBLE_CHARM_PARTICLES,
     PI, PI2, PI3, PI4, PI5, PI6, M_E
 )
+from data.magnetic import MAGNETIC_MOMENTS
 
 # Map old keys to particle dicts for easy access
 ALL_PARTICLES = {**PARTICLES, **CHARM_PARTICLES, **BOTTOM_PARTICLES, **DOUBLE_CHARM_PARTICLES}
+
+# Map magnetic moment keys to tree node IDs
+MAG_KEY_TO_NODE_ID = {
+    'p': 'p', 'n': 'n', 'Lambda': 'L0',
+    'Sigma+': 'S+', 'Sigma-': 'S-',
+    'Xi0': 'X0', 'Xi-': 'X-', 'Omega': 'Om'
+}
+
+
+def generate_magnetic_moments_js():
+    """Generate JavaScript object for magnetic moments from master data."""
+    lines = []
+    for key, mm in MAGNETIC_MOMENTS.items():
+        node_id = MAG_KEY_TO_NODE_ID.get(key)
+        if not node_id:
+            continue
+
+        # Format the formula for display
+        if mm.pi_power < 0:
+            # Form: Nπ/D
+            formula = f"{abs(mm.numerator)}π/{mm.denominator}"
+        elif mm.pi_power == 1:
+            formula = f"{abs(mm.numerator)}/π"
+        elif mm.pi_power == 2:
+            formula = f"{abs(mm.numerator)}/π²"
+        elif mm.pi_power == 3:
+            formula = f"{abs(mm.numerator)}/π³"
+        else:
+            formula = f"{abs(mm.numerator)}/π^{mm.pi_power}"
+
+        sign = "'-'" if mm.mu_exp < 0 else "''"
+        lines.append(f"            '{node_id}': {{ formula: '{formula}', value: {abs(mm.mu_calc()):.6f}, exp: {abs(mm.mu_exp)}, unit: 'μN', sign: {sign} }}")
+
+    return ',\n'.join(lines)
 
 # Experimental uncertainties in MeV (from PDG)
 UNCERTAINTIES = {
@@ -1230,7 +1265,15 @@ def generate_html():
         }}
 
         const PI = Math.PI;
+        const PI2 = PI * PI;
+        const PI3 = PI * PI * PI;
         const M_E = 0.51099895;
+
+        // Magnetic moments from data/magnetic.py
+        const magMoments = {{
+{generate_magnetic_moments_js()}
+        }};
+
         const UNCERTAINTIES = {{
             'p': 0.00000029e-3, 'n': 0.00000054e-3,
             'L0': 0.006, 'S+': 0.03, 'S0': 0.03, 'S-': 0.04,
@@ -1298,6 +1341,21 @@ def generate_html():
                 const sigmaText = sigma < 100 ? sigma.toFixed(2) + 'σ' : '>100σ';
                 const errorSign = errorMev >= 0 ? '+' : '';
 
+                // Build magnetic moment section if data exists
+                let magHtml = '';
+                const mm = magMoments[d.id];
+                if (mm) {{
+                    const magError = ((mm.value - mm.exp) / mm.exp * 100).toFixed(2);
+                    magHtml = `
+                        <hr style="border-color: #333; margin: 12px 0;">
+                        <div style="color: #f39c12; font-size: 0.9em; margin-bottom: 5px;">MAGNETIC MOMENT</div>
+                        <div><span class="label">μ formula:</span> <span style="color: #f39c12;">${{mm.formula}}</span></div>
+                        <div><span class="label">Calculated:</span> ${{mm.sign}}${{mm.value.toFixed(3)}} ${{mm.unit}}</div>
+                        <div><span class="label">Experimental:</span> ${{mm.sign}}${{mm.exp}} ${{mm.unit}}</div>
+                        <div><span class="label">Error:</span> ${{magError}}%</div>
+                    `;
+                }}
+
                 document.getElementById('info').innerHTML = `
                     <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label.split('\\n')[0]}}</div>
                     <div style="font-size:1.3em; margin-bottom:12px"><span class="formula">${{fullFormula}}</span></div>
@@ -1310,7 +1368,8 @@ def generate_html():
                     <div><span class="label">Uncertainty:</span> <span class="value">±${{unc < 0.001 ? (unc*1e6).toFixed(2) + ' eV' : unc < 1 ? (unc*1000).toFixed(1) + ' keV' : unc.toFixed(2) + ' MeV'}}</span></div>
                     <hr style="border-color:#333; margin:12px 0">
                     <div><span class="label">Error:</span> <span style="color:${{sigmaColor}}">${{errorSign}}${{Math.abs(errorKev) < 1 ? (errorMev*1e6).toFixed(1) + ' eV' : errorKev.toFixed(2) + ' keV'}}</span></div>
-                    <div><span class="label">Deviation:</span> <span style="color:${{sigmaColor}}; font-weight:bold">${{sigmaText}}</span></div>`;
+                    <div><span class="label">Deviation:</span> <span style="color:${{sigmaColor}}; font-weight:bold">${{sigmaText}}</span></div>
+                    ${{magHtml}}`;
 
                 updateDecays(d.id);
             }}
