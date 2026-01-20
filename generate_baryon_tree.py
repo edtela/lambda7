@@ -63,7 +63,7 @@ UNCERTAINTIES = {
 def latex_to_display(latex):
     """Convert simple LaTeX correction to Unicode display format.
 
-    Returns None for complex formulas (with \\left, \\right, multiple terms).
+    Returns None for complex formulas (with \\left, \\right).
     """
     if not latex:
         return None
@@ -71,10 +71,12 @@ def latex_to_display(latex):
     # Complex formulas - return None
     if '\\left' in latex or '\\right' in latex:
         return None
-    if ' + ' in latex or ' - ' in latex:  # Multiple terms
-        return None
 
     s = latex.strip()
+
+    # Handle -π - 1/π pattern (Xi0)
+    if s == r'-\pi - \frac{1}{\pi}':
+        return '-π - 1/π'
 
     # Plain numbers: -4, +1, -2
     if re.match(r'^[+-]?\d+$', s):
@@ -1255,6 +1257,15 @@ def generate_html():
                     return (num / 5.0) * expPart;
                 }}
                 return (parseFloat(coeff) || 1) * expPart;
+            }}
+            // Handle -π - 1/π pattern (Xi0)
+            if (s === '-π - 1/π') return -PI - 1/PI;
+            // Handle k/nπ patterns (like 1/5π)
+            const fracPiMatch = s.match(/^([+-]?\d*)\/(\d+)π$/);
+            if (fracPiMatch) {{
+                const num = parseFloat(fracPiMatch[1] || '1');
+                const denom = parseFloat(fracPiMatch[2]);
+                return num / (denom * PI);
             }}
             if (s.includes('/π')) return parseFloat(s.replace('/π', '')) / PI;
             if (s.includes('/5')) return parseFloat(s.replace('/5', '')) / 5.0;

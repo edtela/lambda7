@@ -286,10 +286,10 @@
         {
                 "id": "X0",
                 "label": "\u039e\u2070",
-                "sublabel": "",
+                "sublabel": "-\u03c0 - 1/\u03c0",
                 "type": "particle",
                 "formula": "8\u03c0\u2075 + \u03c0\u2074 + \u03c0\u00b3",
-                "correction": null,
+                "correction": "-\u03c0 - 1/\u03c0",
                 "mass_me": 2576.5728459965535,
                 "actual_mev": 1314.86,
                 "residual_me": -3.4560127819254376,
@@ -300,10 +300,10 @@
         {
                 "id": "X-",
                 "label": "\u039e\u207b",
-                "sublabel": "\u03c0\u00b2",
+                "sublabel": "\u03c0\u00b2 + 1/5\u03c0",
                 "type": "particle",
                 "formula": "8\u03c0\u2075 + \u03c0\u2074 + \u03c0\u00b3 + \u03c0\u00b2",
-                "correction": null,
+                "correction": "+1/5\u03c0",
                 "mass_me": 2586.442450397643,
                 "actual_mev": 1321.71,
                 "residual_me": 0.07949842436573817,
@@ -1013,6 +1013,15 @@
                     return (num / 5.0) * expPart;
                 }
                 return (parseFloat(coeff) || 1) * expPart;
+            }
+            // Handle -π - 1/π pattern (Xi0)
+            if (s === '-π - 1/π') return -PI - 1/PI;
+            // Handle k/nπ patterns (like 1/5π)
+            const fracPiMatch = s.match(/^([+-]?\d*)\/(\d+)π$/);
+            if (fracPiMatch) {
+                const num = parseFloat(fracPiMatch[1] || '1');
+                const denom = parseFloat(fracPiMatch[2]);
+                return num / (denom * PI);
             }
             if (s.includes('/π')) return parseFloat(s.replace('/π', '')) / PI;
             if (s.includes('/5')) return parseFloat(s.replace('/5', '')) / 5.0;

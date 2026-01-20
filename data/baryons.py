@@ -157,10 +157,10 @@ def sigma_minus_corr():
     return -23 / 5  # -4.6 m_e
 
 def xi_zero_corr():
-    return -(3/5) * (PI + 8/3 - E_NEG_PI)
+    return -PI - 1/PI  # = -(π² + 1)/π
 
 def xi_minus_corr():
-    return (2/5) * (9 * PI - 4) + 1 / Q2_PI
+    return 1 / (5 * PI)
 
 def delta_corr():
     return (1/5) * (PI - 2 + 4 * E_NEG_PI)
@@ -332,16 +332,16 @@ PARTICLES = {
         mass_exp=1314.86,
         c5=8, c4=1, c3=1,
         correction_func=xi_zero_corr,
-        correction_latex=r'-\frac{3}{5}\left(\pi + \frac{8}{3} - e^{-\pi}\right)',
+        correction_latex=r'-\pi - \frac{1}{\pi}',
         spin='1/2', charge=0, strangeness=-2, multiplet='octet'
     ),
 
     'Xi-': Particle(
         name='Xi-', symbol='\u039e\u207b', latex_symbol=r'\Xi^-',
         mass_exp=1321.71,
-        c5=8, c4=1, c3=1, c2=1,  # Added c2=1
+        c5=8, c4=1, c3=1, c2=1,
         correction_func=xi_minus_corr,
-        correction_latex=r'\frac{2}{5}(9\pi - 4) + \frac{1}{[2]_\pi}',
+        correction_latex=r'\frac{1}{5\pi}',
         spin='1/2', charge=-1, strangeness=-2, multiplet='octet'
     ),
 
