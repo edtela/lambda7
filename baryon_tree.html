@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baryon π-Algebra Tree</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
-    <script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
-    <script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+    <script src="https://unpkg.com/elkjs@0.8.2/lib/elk.bundled.js"></script>
+    <script src="https://unpkg.com/cytoscape-elk@2.2.0/dist/cytoscape-elk.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; }
@@ -1166,7 +1166,16 @@
             const elements = [];
             data.nodes.forEach(n => {
                 const lbl = (n.type === 'virtual') ? n.label : (n.sublabel ? n.label + '\n' + n.sublabel : n.label);
-                elements.push({ data: { ...n, id: n.id, label: lbl } });
+                // Assign partition: 0=octet(left), 1=virtual(center), 2=decuplet(right)
+                let partition = 1; // default: center
+                if (n.type === 'particle') partition = 0;  // octet left
+                if (n.type === 'spin32') partition = 2;    // decuplet right
+                elements.push({
+                    data: { ...n, id: n.id, label: lbl },
+                    layoutOptions: {
+                        'elk.partitioning.partition': partition
+                    }
+                });
             });
             data.edges.forEach((e, i) => elements.push({ data: { id: 'e'+i, source: e.source, target: e.target } }));
             return elements;
@@ -1201,7 +1210,18 @@
                     { selector: 'edge', style: { 'width': 2, 'line-color': '#555', 'target-arrow-color': '#555', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier' } },
                     { selector: 'node:selected', style: { 'border-color': '#00d9ff', 'border-width': 5 } }
                 ],
-                layout: { name: 'dagre', rankDir: 'TB', nodeSep: 60, rankSep: 90, padding: 30 }
+                layout: {
+                    name: 'elk',
+                    elk: {
+                        algorithm: 'layered',
+                        'elk.direction': 'DOWN',
+                        'elk.spacing.nodeNode': 60,
+                        'elk.layered.spacing.nodeNodeBetweenLayers': 100,
+                        'elk.partitioning.activate': true,
+                        'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP'
+                    },
+                    padding: 30
+                }
             });
             cy.on('tap', 'node', e => showInfo(e.target.data()));
             cy.on('tap', e => { if(e.target === cy) document.getElementById('info').innerHTML = '<p style="color:#666">Click a node</p>'; });
