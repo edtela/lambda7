@@ -18,20 +18,13 @@ Key patterns:
     - Υ: c5 = 61 = 64-3 (bottom-antibottom)
 """
 
-import math
 from dataclasses import dataclass
 from typing import Optional, Callable
 
-# Constants
-PI = math.pi
-M_E = 0.51099895  # Electron mass in MeV
-E_NEG_PI = math.exp(-PI)  # e^(-pi) = 0.04321...
-
-# Powers of pi
-PI2 = PI ** 2
-PI3 = PI ** 3
-PI4 = PI ** 4
-PI5 = PI ** 5
+try:
+    from .common import PI, M_E, E_NEG_PI, PI2, PI3, PI4, PI5
+except ImportError:
+    from common import PI, M_E, E_NEG_PI, PI2, PI3, PI4, PI5
 
 
 @dataclass

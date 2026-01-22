@@ -19,24 +19,31 @@ from data.baryons import (
 )
 from data.magnetic import MAGNETIC_MOMENTS
 
-# Map old keys to particle dicts for easy access
+# Combine all particle dicts for easy access
 ALL_PARTICLES = {**PARTICLES, **CHARM_PARTICLES, **BOTTOM_PARTICLES, **DOUBLE_CHARM_PARTICLES}
 
-# Map magnetic moment keys to tree node IDs
-MAG_KEY_TO_NODE_ID = {
-    'p': 'p', 'n': 'n', 'Lambda': 'L0',
-    'Sigma+': 'S+', 'Sigma-': 'S-',
-    'Xi0': 'X0', 'Xi-': 'X-', 'Omega': 'Om'
+# Build node_id to key mapping from the particle data
+NODE_ID_TO_KEY = {p.node_id: key for key, p in ALL_PARTICLES.items()}
+
+# Map magnetic moment keys to particle keys (magnetic.py uses different naming)
+MAG_KEY_TO_PARTICLE = {
+    'p': 'proton', 'n': 'neutron', 'Lambda': 'Lambda',
+    'Sigma+': 'Sigma_plus', 'Sigma-': 'Sigma_minus',
+    'Xi0': 'Xi_zero', 'Xi-': 'Xi_minus', 'Omega': 'Omega'
 }
 
 
 def generate_magnetic_moments_js():
     """Generate JavaScript object for magnetic moments from master data."""
     lines = []
-    for key, mm in MAGNETIC_MOMENTS.items():
-        node_id = MAG_KEY_TO_NODE_ID.get(key)
-        if not node_id:
+    for mag_key, mm in MAGNETIC_MOMENTS.items():
+        # Get particle key from magnetic moment key
+        particle_key = MAG_KEY_TO_PARTICLE.get(mag_key)
+        if not particle_key or particle_key not in ALL_PARTICLES:
             continue
+
+        # Get node_id from particle
+        node_id = ALL_PARTICLES[particle_key].node_id
 
         # Format the formula for display
         if mm.pi_power < 0:
@@ -58,41 +65,41 @@ def generate_magnetic_moments_js():
 
 # Experimental uncertainties in MeV (from PDG)
 UNCERTAINTIES = {
-    'p': 0.00000029e-3,  # proton: ultra-precise
-    'n': 0.00000054e-3,  # neutron: ultra-precise
+    'proton': 0.00000029e-3,  # proton: ultra-precise
+    'neutron': 0.00000054e-3,  # neutron: ultra-precise
     'Lambda': 0.006,
-    'Sigma+': 0.03,
-    'Sigma0': 0.03,
-    'Sigma-': 0.04,
-    'Sigma*+': 0.9,
-    'Sigma*0': 0.9,
-    'Sigma*-': 0.9,
-    'Xi0': 0.08,
-    'Xi-': 0.06,
-    'Xi*0': 0.8,
-    'Xi*-': 0.9,
+    'Sigma_plus': 0.03,
+    'Sigma_zero': 0.03,
+    'Sigma_minus': 0.04,
+    'Sigma_star_plus': 0.9,
+    'Sigma_star_zero': 0.9,
+    'Sigma_star_minus': 0.9,
+    'Xi_zero': 0.08,
+    'Xi_minus': 0.06,
+    'Xi_star_zero': 0.8,
+    'Xi_star_minus': 0.9,
     'Omega': 0.21,
-    'Lc+': 0.14,
-    'Sc++': 0.14,
-    'Sc+': 0.4,
-    'Sc0': 0.14,
-    'Sc*++': 0.4,
-    'Sc*+': 0.5,
-    'Sc*0': 0.4,
-    'Xc+': 0.31,
-    'Xc0': 0.28,
-    'Xc*+': 0.5,
-    'Xc*0': 0.5,
-    'Oc0': 0.21,
-    'Oc*0': 0.5,
-    'Xcc++': 0.4,
-    'Lb0': 0.06,
-    'Sb+': 0.5,
-    'Sb-': 0.5,
-    'Xb0': 0.4,
-    'Xb-': 0.4,
-    'Ob-': 0.22,
-    'D': 2.0,  # Delta resonance width
+    'Delta': 2.0,  # Delta resonance width
+    'Lambda_c': 0.14,
+    'Sigma_c_pp': 0.14,
+    'Sigma_c_plus': 0.4,
+    'Sigma_c_zero': 0.14,
+    'Sigma_c_star_pp': 0.4,
+    'Sigma_c_star_plus': 0.5,
+    'Sigma_c_star_zero': 0.4,
+    'Xi_c_plus': 0.31,
+    'Xi_c_zero': 0.28,
+    'Xi_c_star_plus': 0.5,
+    'Xi_c_star_zero': 0.5,
+    'Omega_c': 0.21,
+    'Omega_c_star': 0.5,
+    'Xi_cc_pp': 0.4,
+    'Lambda_b': 0.06,
+    'Sigma_b_plus': 0.5,
+    'Sigma_b_minus': 0.5,
+    'Xi_b_zero': 0.4,
+    'Xi_b_minus': 0.4,
+    'Omega_b': 0.22,
 }
 
 def latex_to_display(latex):
@@ -103,11 +110,16 @@ def latex_to_display(latex):
     if not latex:
         return None
 
+    s = latex.strip()
+
+    # Handle specific complex patterns before rejecting all \left/\right
+    # Handle -(6/5)(π - e^{-π}) pattern (Omega)
+    if s == r'-\frac{6}{5}\left(\pi - e^{-\pi}\right)':
+        return '-(6/5)(π - e⁻ᵖⁱ)'
+
     # Complex formulas - return None
     if '\\left' in latex or '\\right' in latex:
         return None
-
-    s = latex.strip()
 
     # Handle -π - 1/π pattern (Xi0)
     if s == r'-\pi - \frac{1}{\pi}':
@@ -158,6 +170,23 @@ def get_correction_value(key):
 def get_residual_me(p):
     """Get residual (exp - poly) in m_e units."""
     return p.mass_exp / M_E - p.mass_base()
+
+
+def compute_mass_data(p, unc_key):
+    """Pre-calculate mass, error, and sigma for a particle."""
+    calc_mev = p.mass_mev()
+    exp_mev = p.mass_exp
+    error_mev = calc_mev - exp_mev
+    error_kev = error_mev * 1000
+    unc = UNCERTAINTIES.get(unc_key, 1.0)
+    sigma = abs(error_mev) / unc if unc > 0 else 0
+    return {
+        'calc_mev': calc_mev,
+        'error_kev': error_kev,
+        'sigma': sigma,
+        'uncertainty': unc
+    }
+
 
 def format_coeff(c, power_str, is_first=False):
     """Format a coefficient, omitting 1 coefficients, with spaces around operators."""
@@ -239,16 +268,8 @@ def format_diff(p, parent_c5=0, parent_c4=0, parent_c3=0, parent_c2=0):
 
 
 def format_correction(corr, has_poly=True):
-    """Format correction with proper spacing."""
-    if not corr:
-        return ""
-    # Add space before + or - only if there's a polynomial part
-    if corr.startswith('+'):
-        return (" + " if has_poly else "") + corr[1:]
-    elif corr.startswith('-'):
-        return (" - " if has_poly else "-") + corr[1:]
-    else:
-        return (" + " if has_poly else "") + corr
+    """Format correction with proper spacing. Disabled - corrections not shown in tree nodes."""
+    return ""
 
 
 def generate_light_baryon_data():
@@ -267,12 +288,12 @@ def generate_light_baryon_data():
     })
 
     # === PROTON (6π⁵) - parent: root6 (6π⁵) ===
-    p = ALL_PARTICLES['p']
-    corr_p = get_correction_display('p')
+    p = ALL_PARTICLES['proton']
+    corr_p = get_correction_display('proton')
     poly_p = format_diff(p, parent_c5=6)
     diff_p = poly_p + format_correction(corr_p, has_poly=bool(poly_p))
     nodes.append({
-        'id': 'p',
+        'id': p.node_id,
         'label': 'p',
         'sublabel': diff_p if diff_p else '',
         'type': 'particle',
@@ -285,15 +306,15 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root6', 'target': 'p'})
+    edges.append({'source': 'root6', 'target': p.node_id})
 
     # === NEUTRON (6π⁵ + 8/π) - parent: root6 (6π⁵) ===
-    n = ALL_PARTICLES['n']
-    corr_n = get_correction_display('n')
+    n = ALL_PARTICLES['neutron']
+    corr_n = get_correction_display('neutron')
     poly_n = format_diff(n, parent_c5=6)
     diff_n = poly_n + format_correction(corr_n, has_poly=bool(poly_n))
     nodes.append({
-        'id': 'n',
+        'id': n.node_id,
         'label': 'n',
         'sublabel': diff_n if diff_n else '',
         'type': 'particle',
@@ -306,28 +327,27 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root6', 'target': 'n'})
+    edges.append({'source': 'root6', 'target': n.node_id})
 
     # === DELTA (6π⁵ + 6π⁴ - π²) - parent: root6 (6π⁵) ===
-    class DeltaData:
-        c6, c5, c4, c3, c2 = 0, 6, 6, 0, -1
-    delta = DeltaData()
+    delta = ALL_PARTICLES['Delta']
+    corr_d = get_correction_display('Delta')
     diff_d = format_diff(delta, parent_c5=6)
     nodes.append({
-        'id': 'D',
+        'id': delta.node_id,
         'label': 'Δ',
         'sublabel': diff_d,
         'type': 'spin32',
-        'formula': '6π⁵ + 6π⁴ - π²',
-        'correction': None,
-        'mass_me': 6*PI5 + 6*PI4 - PI2,
-        'actual_mev': 1232.0,
-        'residual_me': 1232.0/M_E - (6*PI5 + 6*PI4 - PI2),
+        'formula': format_full_formula(delta),
+        'correction': corr_d,
+        'mass_me': delta.mass_base(),
+        'actual_mev': delta.mass_exp,
+        'residual_me': get_residual_me(delta),
         'charge': '++,+,0,-',
         'spin': '3/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root6', 'target': 'D'})
+    edges.append({'source': 'root6', 'target': delta.node_id})
 
     # === 7π⁵ LEVEL (S=-1) ===
     nodes.append({
@@ -346,7 +366,7 @@ def generate_light_baryon_data():
     poly_lam = format_diff(lam, parent_c5=7)
     diff_lam = poly_lam + format_correction(corr_lam, has_poly=bool(poly_lam))
     nodes.append({
-        'id': 'L0',
+        'id': lam.node_id,
         'label': 'Λ',
         'sublabel': diff_lam,
         'type': 'particle',
@@ -359,7 +379,7 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'v7', 'target': 'L0'})
+    edges.append({'source': 'v7', 'target': lam.node_id})
 
     # === Sigma octet: share 6π³ ===
     nodes.append({
@@ -373,12 +393,12 @@ def generate_light_baryon_data():
     edges.append({'source': 'v7', 'target': 'vS6pi3'})
 
     # Σ+: 7π⁵ + 6π³ (c2=0) - parent: vS6pi3 (c5=7, c3=6)
-    sp = ALL_PARTICLES['Sigma+']
-    corr_sp = get_correction_display('Sigma+')
+    sp = ALL_PARTICLES['Sigma_plus']
+    corr_sp = get_correction_display('Sigma_plus')
     poly_sp = format_diff(sp, parent_c5=7, parent_c3=6)
     diff_sp = poly_sp + format_correction(corr_sp, has_poly=bool(poly_sp))
     nodes.append({
-        'id': 'S+',
+        'id': sp.node_id,
         'label': 'Σ⁺',
         'sublabel': diff_sp,
         'type': 'particle',
@@ -391,15 +411,15 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vS6pi3', 'target': 'S+'})
+    edges.append({'source': 'vS6pi3', 'target': sp.node_id})
 
     # Σ0: 7π⁵ + 6π³ + π² - parent: vS6pi3 (c5=7, c3=6)
-    s0 = ALL_PARTICLES['Sigma0']
-    corr_s0 = get_correction_display('Sigma0')
+    s0 = ALL_PARTICLES['Sigma_zero']
+    corr_s0 = get_correction_display('Sigma_zero')
     poly_s0 = format_diff(s0, parent_c5=7, parent_c3=6)
     diff_s0 = poly_s0 + format_correction(corr_s0, has_poly=bool(poly_s0))
     nodes.append({
-        'id': 'S0',
+        'id': s0.node_id,
         'label': 'Σ⁰',
         'sublabel': diff_s0,
         'type': 'particle',
@@ -412,15 +432,15 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vS6pi3', 'target': 'S0'})
+    edges.append({'source': 'vS6pi3', 'target': s0.node_id})
 
     # Σ-: 7π⁵ + 6π³ + 2π² - parent: vS6pi3 (c5=7, c3=6)
-    sm = ALL_PARTICLES['Sigma-']
-    corr_sm = get_correction_display('Sigma-')
+    sm = ALL_PARTICLES['Sigma_minus']
+    corr_sm = get_correction_display('Sigma_minus')
     poly_sm = format_diff(sm, parent_c5=7, parent_c3=6)
     diff_sm = poly_sm + format_correction(corr_sm, has_poly=bool(poly_sm))
     nodes.append({
-        'id': 'S-',
+        'id': sm.node_id,
         'label': 'Σ⁻',
         'sublabel': diff_sm,
         'type': 'particle',
@@ -433,7 +453,7 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vS6pi3', 'target': 'S-'})
+    edges.append({'source': 'vS6pi3', 'target': sm.node_id})
 
     # === Sigma* decuplet: share 6π⁴ ===
     nodes.append({
@@ -447,12 +467,12 @@ def generate_light_baryon_data():
     edges.append({'source': 'v7', 'target': 'vSs6pi4'})
 
     # Σ*+: 7π⁵ + 6π⁴ - 2π² - parent: vSs6pi4 (c5=7, c4=6)
-    ssp = ALL_PARTICLES['Sigma*+']
-    corr_ssp = get_correction_display('Sigma*+')
+    ssp = ALL_PARTICLES['Sigma_star_plus']
+    corr_ssp = get_correction_display('Sigma_star_plus')
     poly_ssp = format_diff(ssp, parent_c5=7, parent_c4=6)
     diff_ssp = poly_ssp + format_correction(corr_ssp, has_poly=bool(poly_ssp))
     nodes.append({
-        'id': 'Ss+',
+        'id': ssp.node_id,
         'label': 'Σ*⁺',
         'sublabel': diff_ssp,
         'type': 'spin32',
@@ -465,15 +485,15 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vSs6pi4', 'target': 'Ss+'})
+    edges.append({'source': 'vSs6pi4', 'target': ssp.node_id})
 
     # Σ*0: 7π⁵ + 6π⁴ - 2π² + 1 - parent: vSs6pi4 (c5=7, c4=6)
-    ss0 = ALL_PARTICLES['Sigma*0']
-    corr_ss0 = get_correction_display('Sigma*0')
+    ss0 = ALL_PARTICLES['Sigma_star_zero']
+    corr_ss0 = get_correction_display('Sigma_star_zero')
     poly_ss0 = format_diff(ss0, parent_c5=7, parent_c4=6)
     diff_ss0 = poly_ss0 + format_correction(corr_ss0, has_poly=bool(poly_ss0))
     nodes.append({
-        'id': 'Ss0',
+        'id': ss0.node_id,
         'label': 'Σ*⁰',
         'sublabel': diff_ss0,
         'type': 'spin32',
@@ -486,15 +506,15 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vSs6pi4', 'target': 'Ss0'})
+    edges.append({'source': 'vSs6pi4', 'target': ss0.node_id})
 
     # Σ*-: 7π⁵ + 6π⁴ - π² - parent: vSs6pi4 (c5=7, c4=6)
-    ssm = ALL_PARTICLES['Sigma*-']
-    corr_ssm = get_correction_display('Sigma*-')
+    ssm = ALL_PARTICLES['Sigma_star_minus']
+    corr_ssm = get_correction_display('Sigma_star_minus')
     poly_ssm = format_diff(ssm, parent_c5=7, parent_c4=6)
     diff_ssm = poly_ssm + format_correction(corr_ssm, has_poly=bool(poly_ssm))
     nodes.append({
-        'id': 'Ss-',
+        'id': ssm.node_id,
         'label': 'Σ*⁻',
         'sublabel': diff_ssm,
         'type': 'spin32',
@@ -507,7 +527,7 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vSs6pi4', 'target': 'Ss-'})
+    edges.append({'source': 'vSs6pi4', 'target': ssm.node_id})
 
     # === 8π⁵ LEVEL (S=-2) ===
     nodes.append({
@@ -532,12 +552,12 @@ def generate_light_baryon_data():
     edges.append({'source': 'v8', 'target': 'vXpi4pi3'})
 
     # Ξ0: 8π⁵ + π⁴ + π³ - parent: vXpi4pi3 (c5=8, c4=1, c3=1)
-    x0 = ALL_PARTICLES['Xi0']
-    corr_x0 = get_correction_display('Xi0')
+    x0 = ALL_PARTICLES['Xi_zero']
+    corr_x0 = get_correction_display('Xi_zero')
     poly_x0 = format_diff(x0, parent_c5=8, parent_c4=1, parent_c3=1)
     diff_x0 = poly_x0 + format_correction(corr_x0, has_poly=bool(poly_x0))
     nodes.append({
-        'id': 'X0',
+        'id': x0.node_id,
         'label': 'Ξ⁰',
         'sublabel': diff_x0,
         'type': 'particle',
@@ -550,15 +570,15 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': -2
     })
-    edges.append({'source': 'vXpi4pi3', 'target': 'X0'})
+    edges.append({'source': 'vXpi4pi3', 'target': x0.node_id})
 
     # Ξ-: 8π⁵ + π⁴ + π³ + π² (Tier 1) - parent: vXpi4pi3 (c5=8, c4=1, c3=1)
-    xm = ALL_PARTICLES['Xi-']
-    corr_xm = get_correction_display('Xi-')
+    xm = ALL_PARTICLES['Xi_minus']
+    corr_xm = get_correction_display('Xi_minus')
     poly_xm = format_diff(xm, parent_c5=8, parent_c4=1, parent_c3=1)
     diff_xm = poly_xm + format_correction(corr_xm, has_poly=bool(poly_xm))
     nodes.append({
-        'id': 'X-',
+        'id': xm.node_id,
         'label': 'Ξ⁻',
         'sublabel': diff_xm,
         'type': 'particle',
@@ -571,7 +591,7 @@ def generate_light_baryon_data():
         'spin': '1/2',
         'strangeness': -2
     })
-    edges.append({'source': 'vXpi4pi3', 'target': 'X-'})
+    edges.append({'source': 'vXpi4pi3', 'target': xm.node_id})
 
     # === Xi* decuplet: share 6π⁴ - π³ ===
     nodes.append({
@@ -585,12 +605,12 @@ def generate_light_baryon_data():
     edges.append({'source': 'v8', 'target': 'vXs6pi4'})
 
     # Ξ*0: 8π⁵ + 6π⁴ - π³ - parent: vXs6pi4 (c5=8, c4=6, c3=-1)
-    xs0 = ALL_PARTICLES['Xi*0']
-    corr_xs0 = get_correction_display('Xi*0')
+    xs0 = ALL_PARTICLES['Xi_star_zero']
+    corr_xs0 = get_correction_display('Xi_star_zero')
     poly_xs0 = format_diff(xs0, parent_c5=8, parent_c4=6, parent_c3=-1)
     diff_xs0 = poly_xs0 + format_correction(corr_xs0, has_poly=bool(poly_xs0))
     nodes.append({
-        'id': 'Xs0',
+        'id': xs0.node_id,
         'label': 'Ξ*⁰',
         'sublabel': diff_xs0,
         'type': 'spin32',
@@ -603,15 +623,15 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': -2
     })
-    edges.append({'source': 'vXs6pi4', 'target': 'Xs0'})
+    edges.append({'source': 'vXs6pi4', 'target': xs0.node_id})
 
     # Ξ*-: 8π⁵ + 6π⁴ - π³ - parent: vXs6pi4 (c5=8, c4=6, c3=-1)
-    xsm = ALL_PARTICLES['Xi*-']
-    corr_xsm = get_correction_display('Xi*-')
+    xsm = ALL_PARTICLES['Xi_star_minus']
+    corr_xsm = get_correction_display('Xi_star_minus')
     poly_xsm = format_diff(xsm, parent_c5=8, parent_c4=6, parent_c3=-1)
     diff_xsm = poly_xsm + format_correction(corr_xsm, has_poly=bool(poly_xsm))
     nodes.append({
-        'id': 'Xs-',
+        'id': xsm.node_id,
         'label': 'Ξ*⁻',
         'sublabel': diff_xsm,
         'type': 'spin32',
@@ -624,7 +644,7 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': -2
     })
-    edges.append({'source': 'vXs6pi4', 'target': 'Xs-'})
+    edges.append({'source': 'vXs6pi4', 'target': xsm.node_id})
 
     # === 9π⁵ LEVEL (S=-3) ===
     nodes.append({
@@ -643,7 +663,7 @@ def generate_light_baryon_data():
     poly_om = format_diff(om, parent_c5=9)
     diff_om = poly_om + format_correction(corr_om, has_poly=bool(poly_om))
     nodes.append({
-        'id': 'Om',
+        'id': om.node_id,
         'label': 'Ω⁻',
         'sublabel': diff_om,
         'type': 'spin32',
@@ -656,7 +676,7 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': -3
     })
-    edges.append({'source': 'v9', 'target': 'Om'})
+    edges.append({'source': 'v9', 'target': om.node_id})
 
     return nodes, edges
 
@@ -677,12 +697,12 @@ def generate_charm_baryon_data():
     })
 
     # === LAMBDA_C (14π⁵ + 2π⁴) - parent: root14 (c5=14) ===
-    lc = ALL_PARTICLES['Lc+']
-    corr_lc = get_correction_display('Lc+')
+    lc = ALL_PARTICLES['Lambda_c']
+    corr_lc = get_correction_display('Lambda_c')
     poly_lc = format_diff(lc, parent_c5=14)
     diff_lc = poly_lc + format_correction(corr_lc, has_poly=bool(poly_lc))
     nodes.append({
-        'id': 'Lc',
+        'id': lc.node_id,
         'label': 'Λc⁺',
         'sublabel': diff_lc if diff_lc else '(base)',
         'type': 'particle',
@@ -695,7 +715,7 @@ def generate_charm_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root14', 'target': 'Lc'})
+    edges.append({'source': 'root14', 'target': lc.node_id})
 
     # === Sigma_c: share 5π⁴ + π³ ===
     nodes.append({
@@ -709,14 +729,14 @@ def generate_charm_baryon_data():
     edges.append({'source': 'root14', 'target': 'vSc'})
 
     # Sigma_c particles - parent: vSc (c5=14, c4=5, c3=1)
-    for key, sym in [('Sc++', '⁺⁺'), ('Sc+', '⁺'), ('Sc0', '⁰')]:
+    for key in ['Sigma_c_pp', 'Sigma_c_plus', 'Sigma_c_zero']:
         s = ALL_PARTICLES[key]
         corr = get_correction_display(key)
         poly = format_diff(s, parent_c5=14, parent_c4=5, parent_c3=1)
         diff = poly + format_correction(corr, has_poly=bool(poly))
         nodes.append({
-            'id': f'Sc{sym}',
-            'label': f'Σc{sym}',
+            'id': s.node_id,
+            'label': s.symbol,
             'sublabel': diff,
             'type': 'particle',
             'formula': format_full_formula(s),
@@ -724,11 +744,11 @@ def generate_charm_baryon_data():
             'mass_me': s.mass_base(),
             'actual_mev': s.mass_exp,
             'residual_me': get_residual_me(s),
-            'charge': sym,
+            'charge': str(s.charge),
             'spin': '1/2',
             'strangeness': 0
         })
-        edges.append({'source': 'vSc', 'target': f'Sc{sym}'})
+        edges.append({'source': 'vSc', 'target': s.node_id})
 
     # === Sigma_c*: share 6π⁴ + 2π³ ===
     nodes.append({
@@ -742,14 +762,14 @@ def generate_charm_baryon_data():
     edges.append({'source': 'root14', 'target': 'vScs'})
 
     # Sigma_c* particles - parent: vScs (c5=14, c4=6, c3=2)
-    for key, sym in [('Sc*++', '⁺⁺'), ('Sc*+', '⁺'), ('Sc*0', '⁰')]:
+    for key in ['Sigma_c_star_pp', 'Sigma_c_star_plus', 'Sigma_c_star_zero']:
         s = ALL_PARTICLES[key]
         corr = get_correction_display(key)
         poly = format_diff(s, parent_c5=14, parent_c4=6, parent_c3=2)
         diff = poly + format_correction(corr, has_poly=bool(poly))
         nodes.append({
-            'id': f'Scs{sym}',
-            'label': f'Σc*{sym}',
+            'id': s.node_id,
+            'label': s.symbol,
             'sublabel': diff,
             'type': 'spin32',
             'formula': format_full_formula(s),
@@ -757,11 +777,11 @@ def generate_charm_baryon_data():
             'mass_me': s.mass_base(),
             'actual_mev': s.mass_exp,
             'residual_me': get_residual_me(s),
-            'charge': sym,
+            'charge': str(s.charge),
             'spin': '3/2',
             'strangeness': 0
         })
-        edges.append({'source': 'vScs', 'target': f'Scs{sym}'})
+        edges.append({'source': 'vScs', 'target': s.node_id})
 
     # === 15π⁵ LEVEL (charm + strange) ===
     nodes.append({
@@ -786,12 +806,12 @@ def generate_charm_baryon_data():
     edges.append({'source': 'v15', 'target': 'vXc'})
 
     # Ξc⁺ - parent: vXc (c5=15, c4=2, c3=1)
-    xcp = ALL_PARTICLES['Xc+']
-    corr_xcp = get_correction_display('Xc+')
+    xcp = ALL_PARTICLES['Xi_c_plus']
+    corr_xcp = get_correction_display('Xi_c_plus')
     poly_xcp = format_diff(xcp, parent_c5=15, parent_c4=2, parent_c3=1)
     diff_xcp = poly_xcp + format_correction(corr_xcp, has_poly=bool(poly_xcp))
     nodes.append({
-        'id': 'Xc+',
+        'id': xcp.node_id,
         'label': 'Ξc⁺',
         'sublabel': diff_xcp,
         'type': 'particle',
@@ -804,15 +824,15 @@ def generate_charm_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vXc', 'target': 'Xc+'})
+    edges.append({'source': 'vXc', 'target': xcp.node_id})
 
     # Ξc⁰ - parent: vXc (c5=15, c4=2, c3=1)
-    xc0 = ALL_PARTICLES['Xc0']
-    corr_xc0 = get_correction_display('Xc0')
+    xc0 = ALL_PARTICLES['Xi_c_zero']
+    corr_xc0 = get_correction_display('Xi_c_zero')
     poly_xc0 = format_diff(xc0, parent_c5=15, parent_c4=2, parent_c3=1)
     diff_xc0 = poly_xc0 + format_correction(corr_xc0, has_poly=bool(poly_xc0))
     nodes.append({
-        'id': 'Xc0',
+        'id': xc0.node_id,
         'label': 'Ξc⁰',
         'sublabel': diff_xc0,
         'type': 'particle',
@@ -825,7 +845,7 @@ def generate_charm_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'vXc', 'target': 'Xc0'})
+    edges.append({'source': 'vXc', 'target': xc0.node_id})
 
     # Xi_c*: share 6π⁴
     nodes.append({
@@ -839,14 +859,14 @@ def generate_charm_baryon_data():
     edges.append({'source': 'v15', 'target': 'vXcs'})
 
     # Xi_c* particles - parent: vXcs (c5=15, c4=6)
-    for key, sym in [('Xc*+', '⁺'), ('Xc*0', '⁰')]:
+    for key in ['Xi_c_star_plus', 'Xi_c_star_zero']:
         x = ALL_PARTICLES[key]
         corr = get_correction_display(key)
         poly = format_diff(x, parent_c5=15, parent_c4=6)
         diff = poly + format_correction(corr, has_poly=bool(poly))
         nodes.append({
-            'id': f'Xcs{sym}',
-            'label': f'Ξc*{sym}',
+            'id': x.node_id,
+            'label': x.symbol,
             'sublabel': diff,
             'type': 'spin32',
             'formula': format_full_formula(x),
@@ -854,11 +874,11 @@ def generate_charm_baryon_data():
             'mass_me': x.mass_base(),
             'actual_mev': x.mass_exp,
             'residual_me': get_residual_me(x),
-            'charge': sym,
+            'charge': str(x.charge),
             'spin': '3/2',
             'strangeness': -1
         })
-        edges.append({'source': 'vXcs', 'target': f'Xcs{sym}'})
+        edges.append({'source': 'vXcs', 'target': x.node_id})
 
     # === 16π⁵ LEVEL (charm + 2 strange) ===
     nodes.append({
@@ -872,12 +892,12 @@ def generate_charm_baryon_data():
     edges.append({'source': 'v15', 'target': 'v16'})
 
     # Omega_c - parent: v16 (c5=16)
-    oc = ALL_PARTICLES['Oc0']
-    corr_oc = get_correction_display('Oc0')
+    oc = ALL_PARTICLES['Omega_c']
+    corr_oc = get_correction_display('Omega_c')
     poly_oc = format_diff(oc, parent_c5=16)
     diff_oc = poly_oc + format_correction(corr_oc, has_poly=bool(poly_oc))
     nodes.append({
-        'id': 'Oc0',
+        'id': oc.node_id,
         'label': 'Ωc⁰',
         'sublabel': diff_oc,
         'type': 'particle',
@@ -890,15 +910,15 @@ def generate_charm_baryon_data():
         'spin': '1/2',
         'strangeness': -2
     })
-    edges.append({'source': 'v16', 'target': 'Oc0'})
+    edges.append({'source': 'v16', 'target': oc.node_id})
 
     # Omega_c* - parent: v16 (c5=16)
-    ocs = ALL_PARTICLES['Oc*0']
-    corr_ocs = get_correction_display('Oc*0')
+    ocs = ALL_PARTICLES['Omega_c_star']
+    corr_ocs = get_correction_display('Omega_c_star')
     poly_ocs = format_diff(ocs, parent_c5=16)
     diff_ocs = poly_ocs + format_correction(corr_ocs, has_poly=bool(poly_ocs))
     nodes.append({
-        'id': 'Ocs0',
+        'id': ocs.node_id,
         'label': 'Ωc*⁰',
         'sublabel': diff_ocs,
         'type': 'spin32',
@@ -911,15 +931,15 @@ def generate_charm_baryon_data():
         'spin': '3/2',
         'strangeness': -2
     })
-    edges.append({'source': 'v16', 'target': 'Ocs0'})
+    edges.append({'source': 'v16', 'target': ocs.node_id})
 
     # === Double charm (separate branch) - parent: root14 (c5=14) ===
-    xcc = ALL_PARTICLES['Xcc++']
-    corr_xcc = get_correction_display('Xcc++')
+    xcc = ALL_PARTICLES['Xi_cc_pp']
+    corr_xcc = get_correction_display('Xi_cc_pp')
     poly_xcc = format_diff(xcc, parent_c5=14)
     diff_xcc = poly_xcc + format_correction(corr_xcc, has_poly=bool(poly_xcc))
     nodes.append({
-        'id': 'Xcc',
+        'id': xcc.node_id,
         'label': 'Ξcc⁺⁺',
         'sublabel': diff_xcc,
         'type': 'particle',
@@ -932,7 +952,7 @@ def generate_charm_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root14', 'target': 'Xcc'})
+    edges.append({'source': 'root14', 'target': xcc.node_id})
 
     return nodes, edges
 
@@ -953,12 +973,12 @@ def generate_bottom_baryon_data():
     })
 
     # === LAMBDA_B (36π⁵ - 2π²) - parent: root36 (c5=36) ===
-    lb = ALL_PARTICLES['Lb0']
-    corr_lb = get_correction_display('Lb0')
+    lb = ALL_PARTICLES['Lambda_b']
+    corr_lb = get_correction_display('Lambda_b')
     poly_lb = format_diff(lb, parent_c5=36)
     diff_lb = poly_lb + format_correction(corr_lb, has_poly=bool(poly_lb))
     nodes.append({
-        'id': 'Lb',
+        'id': lb.node_id,
         'label': 'Λb⁰',
         'sublabel': diff_lb if diff_lb else '(base)',
         'type': 'particle',
@@ -971,15 +991,15 @@ def generate_bottom_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root36', 'target': 'Lb'})
+    edges.append({'source': 'root36', 'target': lb.node_id})
 
     # Sigma_b+ (Tier 1) - parent: root36 (c5=36)
-    sbp = ALL_PARTICLES['Sb+']
-    corr_sbp = get_correction_display('Sb+')
+    sbp = ALL_PARTICLES['Sigma_b_plus']
+    corr_sbp = get_correction_display('Sigma_b_plus')
     poly_sbp = format_diff(sbp, parent_c5=36)
     diff_sbp = poly_sbp + format_correction(corr_sbp, has_poly=bool(poly_sbp))
     nodes.append({
-        'id': 'Sb+',
+        'id': sbp.node_id,
         'label': 'Σb⁺',
         'sublabel': diff_sbp,
         'type': 'particle',
@@ -992,15 +1012,15 @@ def generate_bottom_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root36', 'target': 'Sb+'})
+    edges.append({'source': 'root36', 'target': sbp.node_id})
 
     # Sigma_b- - parent: root36 (c5=36)
-    sbm = ALL_PARTICLES['Sb-']
-    corr_sbm = get_correction_display('Sb-')
+    sbm = ALL_PARTICLES['Sigma_b_minus']
+    corr_sbm = get_correction_display('Sigma_b_minus')
     poly_sbm = format_diff(sbm, parent_c5=36)
     diff_sbm = poly_sbm + format_correction(corr_sbm, has_poly=bool(poly_sbm))
     nodes.append({
-        'id': 'Sb-',
+        'id': sbm.node_id,
         'label': 'Σb⁻',
         'sublabel': diff_sbm,
         'type': 'particle',
@@ -1013,7 +1033,7 @@ def generate_bottom_baryon_data():
         'spin': '1/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root36', 'target': 'Sb-'})
+    edges.append({'source': 'root36', 'target': sbm.node_id})
 
     # === 37π⁵ LEVEL (bottom + strange) ===
     nodes.append({
@@ -1027,12 +1047,12 @@ def generate_bottom_baryon_data():
     edges.append({'source': 'root36', 'target': 'v37'})
 
     # Xi_b0 - parent: v37 (c5=37)
-    xb0 = ALL_PARTICLES['Xb0']
-    corr_xb0 = get_correction_display('Xb0')
+    xb0 = ALL_PARTICLES['Xi_b_zero']
+    corr_xb0 = get_correction_display('Xi_b_zero')
     poly_xb0 = format_diff(xb0, parent_c5=37)
     diff_xb0 = poly_xb0 + format_correction(corr_xb0, has_poly=bool(poly_xb0))
     nodes.append({
-        'id': 'Xb0',
+        'id': xb0.node_id,
         'label': 'Ξb⁰',
         'sublabel': diff_xb0,
         'type': 'particle',
@@ -1045,15 +1065,15 @@ def generate_bottom_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'v37', 'target': 'Xb0'})
+    edges.append({'source': 'v37', 'target': xb0.node_id})
 
     # Xi_b- - parent: v37 (c5=37)
-    xbm = ALL_PARTICLES['Xb-']
-    corr_xbm = get_correction_display('Xb-')
+    xbm = ALL_PARTICLES['Xi_b_minus']
+    corr_xbm = get_correction_display('Xi_b_minus')
     poly_xbm = format_diff(xbm, parent_c5=37)
     diff_xbm = poly_xbm + format_correction(corr_xbm, has_poly=bool(poly_xbm))
     nodes.append({
-        'id': 'Xb-',
+        'id': xbm.node_id,
         'label': 'Ξb⁻',
         'sublabel': diff_xbm,
         'type': 'particle',
@@ -1066,7 +1086,7 @@ def generate_bottom_baryon_data():
         'spin': '1/2',
         'strangeness': -1
     })
-    edges.append({'source': 'v37', 'target': 'Xb-'})
+    edges.append({'source': 'v37', 'target': xbm.node_id})
 
     # === 38π⁵ LEVEL (bottom + 2 strange) ===
     nodes.append({
@@ -1080,12 +1100,12 @@ def generate_bottom_baryon_data():
     edges.append({'source': 'v37', 'target': 'v38'})
 
     # Omega_b - parent: v38 (c5=38)
-    ob = ALL_PARTICLES['Ob-']
-    corr_ob = get_correction_display('Ob-')
+    ob = ALL_PARTICLES['Omega_b']
+    corr_ob = get_correction_display('Omega_b')
     poly_ob = format_diff(ob, parent_c5=38)
     diff_ob = poly_ob + format_correction(corr_ob, has_poly=bool(poly_ob))
     nodes.append({
-        'id': 'Ob',
+        'id': ob.node_id,
         'label': 'Ωb⁻',
         'sublabel': diff_ob,
         'type': 'particle',
@@ -1098,9 +1118,26 @@ def generate_bottom_baryon_data():
         'spin': '1/2',
         'strangeness': -2
     })
-    edges.append({'source': 'v38', 'target': 'Ob'})
+    edges.append({'source': 'v38', 'target': ob.node_id})
 
     return nodes, edges
+
+
+def enrich_nodes_with_mass_data(nodes):
+    """Add pre-calculated mass data to particle nodes."""
+    for node in nodes:
+        if node.get('type') == 'virtual':
+            continue
+        node_id = node.get('id')
+        # Find particle by node_id using the reverse mapping
+        particle_key = NODE_ID_TO_KEY.get(node_id)
+        if particle_key and particle_key in ALL_PARTICLES:
+            p = ALL_PARTICLES[particle_key]
+            data = compute_mass_data(p, particle_key)
+            node['calc_mev'] = data['calc_mev']
+            node['error_kev'] = data['error_kev']
+            node['sigma'] = data['sigma']
+            node['uncertainty'] = data['uncertainty']
 
 
 def generate_html():
@@ -1109,6 +1146,11 @@ def generate_html():
     light_nodes, light_edges = generate_light_baryon_data()
     charm_nodes, charm_edges = generate_charm_baryon_data()
     bottom_nodes, bottom_edges = generate_bottom_baryon_data()
+
+    # Enrich nodes with pre-calculated mass data
+    enrich_nodes_with_mass_data(light_nodes)
+    enrich_nodes_with_mass_data(charm_nodes)
+    enrich_nodes_with_mass_data(bottom_nodes)
 
     light_nodes_json = json.dumps(light_nodes, indent=8)
     light_edges_json = json.dumps(light_edges, indent=8)
@@ -1264,56 +1306,10 @@ def generate_html():
             cy.on('tap', e => {{ if(e.target === cy) document.getElementById('info').innerHTML = '<p style="color:#666">Click a node</p>'; }});
         }}
 
-        const PI = Math.PI;
-        const PI2 = PI * PI;
-        const PI3 = PI * PI * PI;
-        const M_E = 0.51099895;
-
         // Magnetic moments from data/magnetic.py
         const magMoments = {{
 {generate_magnetic_moments_js()}
         }};
-
-        const UNCERTAINTIES = {{
-            'p': 0.00000029e-3, 'n': 0.00000054e-3,
-            'L0': 0.006, 'S+': 0.03, 'S0': 0.03, 'S-': 0.04,
-            'Ss+': 0.9, 'Ss0': 0.9, 'Ss-': 0.9,
-            'X0': 0.08, 'X-': 0.06, 'Xs0': 0.8, 'Xs-': 0.9, 'Om': 0.21,
-            'Lc': 0.14, 'Sc⁺⁺': 0.14, 'Sc⁺': 0.4, 'Sc⁰': 0.14,
-            'Scs⁺⁺': 0.4, 'Scs⁺': 0.5, 'Scs⁰': 0.4,
-            'Xc+': 0.31, 'Xc0': 0.28, 'Xcs⁺': 0.5, 'Xcs⁰': 0.5,
-            'Oc0': 0.21, 'Ocs0': 0.5, 'Xcc': 0.4,
-            'Lb': 0.06, 'Sb+': 0.5, 'Sb-': 0.5, 'Xb0': 0.4, 'Xb-': 0.4, 'Ob': 0.22,
-            'D': 2.0
-        }};
-
-        function evalCorrection(corr) {{
-            if (!corr) return 0;
-            let s = corr.trim();
-            if (s.startsWith('+')) s = s.slice(1);
-            // Handle (k/5)e^(-π) format
-            if (s.includes('e⁻ᵖⁱ') || s.includes('e^(-π)')) {{
-                const expPart = Math.exp(-PI);
-                let coeff = s.replace('e⁻ᵖⁱ', '').replace('e^(-π)', '').trim();
-                if (coeff.startsWith('(') && coeff.includes('/5)')) {{
-                    const num = parseFloat(coeff.replace('(', '').replace('/5)', ''));
-                    return (num / 5.0) * expPart;
-                }}
-                return (parseFloat(coeff) || 1) * expPart;
-            }}
-            // Handle -π - 1/π pattern (Xi0)
-            if (s === '-π - 1/π') return -PI - 1/PI;
-            // Handle k/nπ patterns (like 1/5π)
-            const fracPiMatch = s.match(/^([+-]?\d*)\/(\d+)π$/);
-            if (fracPiMatch) {{
-                const num = parseFloat(fracPiMatch[1] || '1');
-                const denom = parseFloat(fracPiMatch[2]);
-                return num / (denom * PI);
-            }}
-            if (s.includes('/π')) return parseFloat(s.replace('/π', '')) / PI;
-            if (s.includes('/5')) return parseFloat(s.replace('/5', '')) / 5.0;
-            return parseFloat(s) || 0;
-        }}
 
         function getSigmaColor(sigma) {{
             if (sigma < 1) return '#2ecc71';      // green
@@ -1329,17 +1325,15 @@ def generate_html():
                     <div style="margin-top:8px">${{d.description || ''}}</div>`;
             }} else {{
                 const fullFormula = d.correction ? d.formula + ' ' + d.correction : d.formula;
-                const corrVal = evalCorrection(d.correction);
-                const calcMe = (d.mass_me || 0) + corrVal;
-                const calcMev = calcMe * M_E;
+                // Use pre-calculated values from Python
+                const calcMev = d.calc_mev || 0;
                 const expMev = d.actual_mev || 0;
-                const errorMev = calcMev - expMev;
-                const errorKev = errorMev * 1000;
-                const unc = UNCERTAINTIES[d.id] || 1.0;
-                const sigma = Math.abs(errorMev) / unc;
+                const errorKev = d.error_kev || 0;
+                const unc = d.uncertainty || 1.0;
+                const sigma = d.sigma || 0;
                 const sigmaColor = getSigmaColor(sigma);
                 const sigmaText = sigma < 100 ? sigma.toFixed(2) + 'σ' : '>100σ';
-                const errorSign = errorMev >= 0 ? '+' : '';
+                const errorSign = errorKev >= 0 ? '+' : '';
 
                 // Build magnetic moment section if data exists
                 let magHtml = '';
@@ -1367,7 +1361,7 @@ def generate_html():
                     <div><span class="label">Experimental:</span> <span class="value">${{expMev.toFixed(4)}} MeV</span></div>
                     <div><span class="label">Uncertainty:</span> <span class="value">±${{unc < 0.001 ? (unc*1e6).toFixed(2) + ' eV' : unc < 1 ? (unc*1000).toFixed(1) + ' keV' : unc.toFixed(2) + ' MeV'}}</span></div>
                     <hr style="border-color:#333; margin:12px 0">
-                    <div><span class="label">Error:</span> <span style="color:${{sigmaColor}}">${{errorSign}}${{Math.abs(errorKev) < 1 ? (errorMev*1e6).toFixed(1) + ' eV' : errorKev.toFixed(2) + ' keV'}}</span></div>
+                    <div><span class="label">Error:</span> <span style="color:${{sigmaColor}}">${{errorSign}}${{Math.abs(errorKev) < 1 ? (errorKev*1000).toFixed(1) + ' eV' : errorKev.toFixed(2) + ' keV'}}</span></div>
                     <div><span class="label">Deviation:</span> <span style="color:${{sigmaColor}}; font-weight:bold">${{sigmaText}}</span></div>
                     ${{magHtml}}`;
 
@@ -1385,7 +1379,7 @@ def generate_html():
             document.getElementById('decays').innerHTML = '<p style="color:#666">Select a particle to see decay modes</p>';
         }}
 
-        // Decay database
+        // Decay database (keys match node_id values)
         const decayData = {{
             'p': {{ stable: true, lifetime: '> 10³⁴ years' }},
             'n': {{
@@ -1410,66 +1404,66 @@ def generate_html():
                     {{ products: 'n + π⁰', percent: 35.8, type: 'weak' }}
                 ]
             }},
-            'S+': {{
+            'S_plus': {{
                 lifetime: '0.80×10⁻¹⁰ s',
                 modes: [
                     {{ products: 'p + π⁰', percent: 51.6, type: 'weak' }},
                     {{ products: 'n + π⁺', percent: 48.3, type: 'weak' }}
                 ]
             }},
-            'S0': {{
+            'S_zero': {{
                 lifetime: '7.4×10⁻²⁰ s',
                 note: 'EM decay! Only ground-state baryon.',
                 modes: [
                     {{ products: 'Λ + γ', percent: 100, type: 'em' }}
                 ]
             }},
-            'S-': {{
+            'S_minus': {{
                 lifetime: '1.48×10⁻¹⁰ s',
                 modes: [
                     {{ products: 'n + π⁻', percent: 99.8, type: 'weak' }}
                 ]
             }},
-            'Ss+': {{
+            'Ss_plus': {{
                 lifetime: '~1.7×10⁻²³ s',
                 modes: [
                     {{ products: 'Λ + π⁺', percent: 87, type: 'strong' }},
                     {{ products: 'Σ + π', percent: 12, type: 'strong' }}
                 ]
             }},
-            'Ss0': {{
+            'Ss_zero': {{
                 lifetime: '~1.7×10⁻²³ s',
                 modes: [
                     {{ products: 'Λ + π⁰', percent: 87, type: 'strong' }},
                     {{ products: 'Σ + π', percent: 12, type: 'strong' }}
                 ]
             }},
-            'Ss-': {{
+            'Ss_minus': {{
                 lifetime: '~1.7×10⁻²³ s',
                 modes: [
                     {{ products: 'Λ + π⁻', percent: 87, type: 'strong' }},
                     {{ products: 'Σ + π', percent: 12, type: 'strong' }}
                 ]
             }},
-            'X0': {{
+            'X_zero': {{
                 lifetime: '2.9×10⁻¹⁰ s',
                 modes: [
                     {{ products: 'Λ + π⁰', percent: 99.5, type: 'weak' }}
                 ]
             }},
-            'X-': {{
+            'X_minus': {{
                 lifetime: '1.6×10⁻¹⁰ s',
                 modes: [
                     {{ products: 'Λ + π⁻', percent: 99.9, type: 'weak' }}
                 ]
             }},
-            'Xs0': {{
+            'Xs_zero': {{
                 lifetime: '~7×10⁻²³ s',
                 modes: [
                     {{ products: 'Ξ + π', percent: 100, type: 'strong' }}
                 ]
             }},
-            'Xs-': {{
+            'Xs_minus': {{
                 lifetime: '~7×10⁻²³ s',
                 modes: [
                     {{ products: 'Ξ + π', percent: 100, type: 'strong' }}
