@@ -181,6 +181,12 @@ def latex_to_display(latex):
     if s == r'-\pi - \frac{1}{\pi}':
         return '-π - 1/π'
 
+    # Handle Ξ* patterns: -\frac{1}{5}(5\pi + 4) and \frac{1}{5}(4\pi - 1)
+    if s == r'-\frac{1}{5}(5\pi + 4)':
+        return '-(1/5)(5π + 4)'
+    if s == r'\frac{1}{5}(4\pi - 1)':
+        return '(1/5)(4π - 1)'
+
     # Plain numbers: -4, +1, -2
     if re.match(r'^[+-]?\d+$', s):
         return s if s.startswith(('+', '-')) else '+' + s
@@ -1316,7 +1322,8 @@ def generate_html():
                 <h2>Legend</h2>
                 <div class="legend-item"><div class="legend-color" style="background: #3498db;"></div>Spin-1/2</div>
                 <div class="legend-item"><div class="legend-color" style="background: #e74c3c;"></div>Spin-3/2</div>
-                <div class="legend-item"><div class="legend-color" style="background: #9b59b6; border-style: dashed;"></div>Virtual (shared coeff)</div>
+                <div class="legend-item"><div class="legend-color" style="background: #9b59b6; border-style: dashed;"></div>Strangeness level (+π⁵)</div>
+                <div class="legend-item"><div class="legend-color" style="background: #8e44ad; border-radius: 0;"></div>Coefficient base (resonances)</div>
             </div>
             <div class="legend">
                 <h2>Decay Types</h2>
@@ -1337,13 +1344,22 @@ def generate_html():
         function buildElements(data) {{
             const elements = [];
             data.nodes.forEach(n => {{
-                const lbl = (n.type === 'virtual') ? n.label : (n.sublabel ? n.label + '\\n' + n.sublabel : n.label);
+                let nodeType = n.type;
+                // Distinguish virtual node subtypes:
+                // - 'virtual': strangeness levels (root nodes, +π⁵ nodes) -> ellipse
+                // - 'virtual-coeff': coefficient bases (+6π⁴, +6π³, etc.) -> hexagon
+                if (n.type === 'virtual') {{
+                    const isStrangenessLevel = n.id.startsWith('root') || n.label === '+π⁵';
+                    nodeType = isStrangenessLevel ? 'virtual' : 'virtual-coeff';
+                }}
+                const lbl = (nodeType === 'virtual' || nodeType === 'virtual-coeff')
+                    ? n.label : (n.sublabel ? n.label + '\\n' + n.sublabel : n.label);
                 // Assign partition: 0=octet(left), 1=virtual(center), 2=decuplet(right)
                 let partition = 1; // default: center
                 if (n.type === 'particle') partition = 0;  // octet left
                 if (n.type === 'spin32') partition = 2;    // decuplet right
                 elements.push({{
-                    data: {{ ...n, id: n.id, label: lbl }},
+                    data: {{ ...n, id: n.id, label: lbl, type: nodeType }},
                     layoutOptions: {{
                         'elk.partitioning.partition': partition
                     }}
@@ -1378,6 +1394,12 @@ def generate_html():
                         'font-size': '16px', 'color': '#fff', 'text-wrap': 'wrap',
                         'shape': 'ellipse', 'width': 70, 'height': 70, 'background-color': '#9b59b6',
                         'border-width': 2, 'border-style': 'dashed', 'border-color': '#fff'
+                    }} }},
+                    {{ selector: 'node[type="virtual-coeff"]', style: {{
+                        'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
+                        'font-size': '14px', 'color': '#fff', 'text-wrap': 'wrap',
+                        'shape': 'hexagon', 'width': 80, 'height': 80, 'background-color': '#8e44ad',
+                        'border-width': 2, 'border-style': 'solid', 'border-color': '#fff'
                     }} }},
                     {{ selector: 'edge', style: {{ 'width': 2, 'line-color': '#555', 'target-arrow-color': '#555', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier' }} }},
                     {{ selector: 'node:selected', style: {{ 'border-color': '#00d9ff', 'border-width': 5 }} }}
@@ -1422,7 +1444,7 @@ def generate_html():
         }}
 
         function showInfo(d) {{
-            if (d.type === 'virtual') {{
+            if (d.type === 'virtual' || d.type === 'virtual-coeff') {{
                 // Get resonances for this virtual node
                 const resKeys = nodeResonances[d.id] || [];
                 let resHtml = '';
@@ -1436,16 +1458,20 @@ def generate_html():
                         if (res) {{
                             const errorSign = res.error_kev >= 0 ? '+' : '';
                             resHtml += `
-                                <div style="margin-bottom:12px; padding:8px; background:#252540; border-radius:4px;">
+                                <div style="margin-bottom:12px; padding:10px; background:#252540; border-radius:4px;">
                                     <div style="font-size:1.4em; color:#fff; margin-bottom:4px;">${{res.symbol}} <span style="font-size:0.5em; color:#888; margin-left:4px;">${{res.jp}}</span></div>
                                     <div style="font-size:1.0em; margin-bottom:4px; display:flex; justify-content:space-between;">
                                         <span class="formula">${{res.formula}}</span>
                                         <span style="color:#888">${{res.calc_mev.toFixed(2)}}</span>
                                     </div>
-                                    <div style="font-size:0.85em; color:#888;">
+                                    <div style="font-size:0.85em; color:#888; margin-bottom:6px;">
                                         <span>Exp: ${{res.exp_mev}} MeV</span>
                                         <span style="margin-left:12px; color:${{Math.abs(res.error_kev) < 50 ? '#2ecc71' : '#f39c12'}}">${{errorSign}}${{res.error_kev.toFixed(1)}} keV</span>
                                     </div>
+                                    <div style="font-size:0.85em; color:#888; margin-bottom:6px;">
+                                        <span>Width Γ = ${{res.width}} MeV</span>
+                                    </div>
+                                    <div style="font-size:0.8em; color:#f39c12; font-style:italic; line-height:1.4;">${{res.anomaly}}</div>
                                 </div>`;
                         }}
                     }}

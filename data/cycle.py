@@ -100,7 +100,7 @@ LIGHT_CYCLE = {
             'description': 'Xi octet base',
             'parent': 'v8',
             'particles': ['Xi_zero', 'Xi_minus'],
-            'resonances': [],
+            'resonances': ['N_1680'],  # 6π⁴ - tentative, inverted coeff
         },
 
         'vXs6pi4': {
@@ -112,7 +112,7 @@ LIGHT_CYCLE = {
             'description': 'Xi* decuplet base',
             'parent': 'v8',
             'particles': ['Xi_star_zero', 'Xi_star_minus'],
-            'resonances': ['Lambda_1520'],  # η'-type mirror
+            'resonances': ['Lambda_1520'],  # η'-type mirror (2π⁴)
         },
 
         # === S=-3 Level (9π⁵) ===
@@ -137,7 +137,7 @@ LIGHT_CYCLE = {
             'description': 'Omega decuplet apex',
             'parent': 'v9',
             'particles': ['Omega'],
-            'resonances': ['N_1680', 'Delta_1700'],  # 9π⁵+6π⁴ family
+            'resonances': ['Delta_1700'],  # 9π⁵+6π⁴ family
         },
     },
 
