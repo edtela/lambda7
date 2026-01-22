@@ -18,6 +18,8 @@ from data.baryons import (
     PI, PI2, PI3, PI4, PI5, PI6, M_E
 )
 from data.magnetic import MAGNETIC_MOMENTS
+from data.resonances import RESONANCES
+from data.cycle import LIGHT_CYCLE, CHARM_CYCLE, BOTTOM_CYCLE
 
 # Combine all particle dicts for easy access
 ALL_PARTICLES = {**PARTICLES, **CHARM_PARTICLES, **BOTTOM_PARTICLES, **DOUBLE_CHARM_PARTICLES}
@@ -62,6 +64,60 @@ def generate_magnetic_moments_js():
         lines.append(f"            '{node_id}': {{ formula: '{formula}', value: {abs(mm.mu_calc()):.6f}, exp: {abs(mm.mu_exp)}, unit: 'μN', sign: {sign} }}")
 
     return ',\n'.join(lines)
+
+
+def generate_resonances_js():
+    """Generate JavaScript object for resonances data."""
+    lines = []
+    for key, res in RESONANCES.items():
+        calc_mev = res.mass_mev()
+        error_kev = res.error_kev()
+        # Convert LaTeX formula to display format
+        formula = res.formula_latex
+        # Handle \frac patterns first (before \pi replacement)
+        formula = formula.replace(r'\frac{1}{2\pi}', '1/(2π)')
+        formula = formula.replace(r'\frac{1}{\pi}', '1/π')
+        formula = formula.replace(r'\frac{\pi^2}{2}', 'π²/2')
+        formula = formula.replace(r'\frac{\pi}{3}', 'π/3')
+        formula = formula.replace(r'\frac{1}{2}', '½')
+        # Handle remaining \frac{a}{b} patterns
+        formula = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'\1/\2', formula)
+        # Now replace \pi and superscripts
+        formula = formula.replace(r'\pi', 'π')
+        formula = formula.replace('^5', '⁵').replace('^4', '⁴').replace('^3', '³').replace('^2', '²')
+        formula = formula.replace('^6', '⁶').replace('^7', '⁷')
+
+        lines.append(f"""            '{key}': {{
+                symbol: '{res.symbol}',
+                jp: '{res.jp}',
+                formula: '{formula}',
+                calc_mev: {calc_mev:.3f},
+                exp_mev: {res.mass_exp},
+                error_kev: {error_kev:.1f},
+                width: {res.width},
+                anomaly: '{res.anomaly.replace("'", "\\'")}'
+            }}""")
+
+    return ',\n'.join(lines)
+
+
+def generate_node_resonances_js():
+    """Generate JavaScript mapping of virtual node IDs to resonance keys."""
+    # Build mapping from cycle data
+    mapping = {}
+    for cycle in [LIGHT_CYCLE, CHARM_CYCLE, BOTTOM_CYCLE]:
+        for node_id, node in cycle['nodes'].items():
+            resonances = node.get('resonances', [])
+            if resonances:
+                mapping[node_id] = resonances
+
+    lines = []
+    for node_id, res_keys in mapping.items():
+        keys_str = ', '.join(f"'{k}'" for k in res_keys)
+        lines.append(f"            '{node_id}': [{keys_str}]")
+
+    return ',\n'.join(lines)
+
 
 # Experimental uncertainties in MeV (from PDG)
 UNCERTAINTIES = {
@@ -1317,6 +1373,16 @@ def generate_html():
 {generate_magnetic_moments_js()}
         }};
 
+        // Resonances from data/resonances.py
+        const resonances = {{
+{generate_resonances_js()}
+        }};
+
+        // Virtual node to resonance mapping from data/cycle.py
+        const nodeResonances = {{
+{generate_node_resonances_js()}
+        }};
+
         function getSigmaColor(sigma) {{
             if (sigma < 1) return '#2ecc71';      // green
             if (sigma < 2) return '#3498db';      // blue
@@ -1326,9 +1392,39 @@ def generate_html():
 
         function showInfo(d) {{
             if (d.type === 'virtual') {{
+                // Get resonances for this virtual node
+                const resKeys = nodeResonances[d.id] || [];
+                let resHtml = '';
+
+                if (resKeys.length > 0) {{
+                    resHtml = `<hr style="border-color:#333; margin:12px 0">
+                        <div style="color:#e74c3c; font-size:0.9em; margin-bottom:8px;">RESONANCES</div>`;
+
+                    for (const key of resKeys) {{
+                        const res = resonances[key];
+                        if (res) {{
+                            const errorSign = res.error_kev >= 0 ? '+' : '';
+                            resHtml += `
+                                <div style="margin-bottom:12px; padding:8px; background:#252540; border-radius:4px;">
+                                    <div style="font-size:1.4em; color:#fff; margin-bottom:4px;">${{res.symbol}} <span style="font-size:0.5em; color:#888; margin-left:4px;">${{res.jp}}</span></div>
+                                    <div style="font-size:1.0em; margin-bottom:4px; display:flex; justify-content:space-between;">
+                                        <span class="formula">${{res.formula}}</span>
+                                        <span style="color:#888">${{res.calc_mev.toFixed(2)}}</span>
+                                    </div>
+                                    <div style="font-size:0.85em; color:#888;">
+                                        <span>Exp: ${{res.exp_mev}} MeV</span>
+                                        <span style="margin-left:12px; color:${{Math.abs(res.error_kev) < 50 ? '#2ecc71' : '#f39c12'}}">${{errorSign}}${{res.error_kev.toFixed(1)}} keV</span>
+                                    </div>
+                                </div>`;
+                        }}
+                    }}
+                }}
+
                 document.getElementById('info').innerHTML = `
-                    <div><span class="label">Level:</span> <span class="formula">${{d.formula}}</span></div>
-                    <div style="margin-top:8px">${{d.description || ''}}</div>`;
+                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label}}</div>
+                    <div style="font-size:1.3em; margin-bottom:8px;"><span class="formula">${{d.formula}}</span></div>
+                    <div style="color:#888; font-size:0.9em;">${{d.description || ''}}</div>
+                    ${{resHtml}}`;
             }} else {{
                 const fullFormula = d.correction ? d.formula + ' ' + d.correction : d.formula;
                 // Use pre-calculated values from Python

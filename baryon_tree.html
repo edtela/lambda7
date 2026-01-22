@@ -1207,6 +1207,99 @@
             'Om': { formula: '20/π²', value: 2.026424, exp: 2.02, unit: 'μN', sign: '-' }
         };
 
+        // Resonances from data/resonances.py
+        const resonances = {
+            'Lambda_1405': {
+                symbol: 'Λ(1405)',
+                jp: '1/2-',
+                formula: '9π⁵ - π - 1 - 1/π',
+                calc_mev: 1405.103,
+                exp_mev: 1405.1,
+                error_kev: 2.6,
+                width: 50.5,
+                anomaly: 'Too light by ~100-200 MeV; may be K̄N molecular state'
+            },
+            'Roper': {
+                symbol: 'N(1440)',
+                jp: '1/2+',
+                formula: '9π⁵ + 2π³ + π²/2 - π',
+                calc_mev: 1439.986,
+                exp_mev: 1440.0,
+                error_kev: -13.7,
+                width: 300.0,
+                anomaly: 'First radial excitation appears below orbital excitations'
+            },
+            'N_1535': {
+                symbol: 'N(1535)',
+                jp: '1/2-',
+                formula: '9π⁵ + 2π⁴ + π²/2 + π/3',
+                calc_mev: 1509.990,
+                exp_mev: 1510.0,
+                error_kev: -9.7,
+                width: 170.0,
+                anomaly: 'Nearly degenerate with opposite-parity Roper'
+            },
+            'Lambda_1520': {
+                symbol: 'Λ(1520)',
+                jp: '3/2-',
+                formula: '9π⁵ + 2π⁴ + π³ - 2π - 1/(2π)',
+                calc_mev: 1519.486,
+                exp_mev: 1519.5,
+                error_kev: -14.3,
+                width: 15.6,
+                anomaly: 'Unusually narrow width; well-established D-wave state'
+            },
+            'N_1680': {
+                symbol: 'N(1680)',
+                jp: '5/2+',
+                formula: '9π⁵ + 6π⁴ - π³ - π² - 1/π',
+                calc_mev: 1684.987,
+                exp_mev: 1685.0,
+                error_kev: -12.9,
+                width: 130.0,
+                anomaly: 'F15 resonance; shares 9π⁵ + 6π⁴ base structure'
+            },
+            'Delta_1700': {
+                symbol: 'Δ(1700)',
+                jp: '3/2-',
+                formula: '9π⁵ + 6π⁴ - π² - 2',
+                calc_mev: 1699.972,
+                exp_mev: 1700.0,
+                error_kev: -28.1,
+                width: 300.0,
+                anomaly: 'D33 resonance; shares 9π⁵ + 6π⁴ base structure'
+            },
+            'X_3872': {
+                symbol: 'X(3872)',
+                jp: '1++',
+                formula: '8π⁶ - π⁵ + 2π⁴ - π - 1/(2π)',
+                calc_mev: 3871.640,
+                exp_mev: 3871.65,
+                error_kev: -9.6,
+                width: 1.19,
+                anomaly: 'Sits exactly at D⁰D̄*⁰ threshold; likely molecular or tetraquark'
+            },
+            'N_2190': {
+                symbol: 'N(2190)',
+                jp: '7/2-',
+                formula: 'π⁷ + π⁶ + π⁵ - 2',
+                calc_mev: 2189.989,
+                exp_mev: 2190.0,
+                error_kev: -10.7,
+                width: 500.0,
+                anomaly: 'High-spin G17 resonance; mass equals [3]_π · π⁵ - 2 (q-integer structure)'
+            }
+        };
+
+        // Virtual node to resonance mapping from data/cycle.py
+        const nodeResonances = {
+            'v7': ['Lambda_1405'],
+            'vS6pi3': ['Roper'],
+            'vSs6pi4': ['N_1535'],
+            'vXs6pi4': ['Lambda_1520'],
+            'vOm6pi4': ['N_1680', 'Delta_1700']
+        };
+
         function getSigmaColor(sigma) {
             if (sigma < 1) return '#2ecc71';      // green
             if (sigma < 2) return '#3498db';      // blue
@@ -1216,9 +1309,39 @@
 
         function showInfo(d) {
             if (d.type === 'virtual') {
+                // Get resonances for this virtual node
+                const resKeys = nodeResonances[d.id] || [];
+                let resHtml = '';
+
+                if (resKeys.length > 0) {
+                    resHtml = `<hr style="border-color:#333; margin:12px 0">
+                        <div style="color:#e74c3c; font-size:0.9em; margin-bottom:8px;">RESONANCES</div>`;
+
+                    for (const key of resKeys) {
+                        const res = resonances[key];
+                        if (res) {
+                            const errorSign = res.error_kev >= 0 ? '+' : '';
+                            resHtml += `
+                                <div style="margin-bottom:12px; padding:8px; background:#252540; border-radius:4px;">
+                                    <div style="font-size:1.4em; color:#fff; margin-bottom:4px;">${res.symbol} <span style="font-size:0.5em; color:#888; margin-left:4px;">${res.jp}</span></div>
+                                    <div style="font-size:1.0em; margin-bottom:4px; display:flex; justify-content:space-between;">
+                                        <span class="formula">${res.formula}</span>
+                                        <span style="color:#888">${res.calc_mev.toFixed(2)}</span>
+                                    </div>
+                                    <div style="font-size:0.85em; color:#888;">
+                                        <span>Exp: ${res.exp_mev} MeV</span>
+                                        <span style="margin-left:12px; color:${Math.abs(res.error_kev) < 50 ? '#2ecc71' : '#f39c12'}">${errorSign}${res.error_kev.toFixed(1)} keV</span>
+                                    </div>
+                                </div>`;
+                        }
+                    }
+                }
+
                 document.getElementById('info').innerHTML = `
-                    <div><span class="label">Level:</span> <span class="formula">${d.formula}</span></div>
-                    <div style="margin-top:8px">${d.description || ''}</div>`;
+                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${d.label}</div>
+                    <div style="font-size:1.3em; margin-bottom:8px;"><span class="formula">${d.formula}</span></div>
+                    <div style="color:#888; font-size:0.9em;">${d.description || ''}</div>
+                    ${resHtml}`;
             } else {
                 const fullFormula = d.correction ? d.formula + ' ' + d.correction : d.formula;
                 // Use pre-calculated values from Python
