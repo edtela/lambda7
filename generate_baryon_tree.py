@@ -175,6 +175,8 @@ def get_residual_me(p):
 def compute_mass_data(p, unc_key):
     """Pre-calculate mass, error, and sigma for a particle."""
     calc_mev = p.mass_mev()
+    base_mev = p.mass_base() * M_E
+    corr_mev = p.correction() * M_E if p.correction_func else 0
     exp_mev = p.mass_exp
     error_mev = calc_mev - exp_mev
     error_kev = error_mev * 1000
@@ -182,6 +184,8 @@ def compute_mass_data(p, unc_key):
     sigma = abs(error_mev) / unc if unc > 0 else 0
     return {
         'calc_mev': calc_mev,
+        'base_mev': base_mev,
+        'corr_mev': corr_mev,
         'error_kev': error_kev,
         'sigma': sigma,
         'uncertainty': unc
@@ -1135,6 +1139,8 @@ def enrich_nodes_with_mass_data(nodes):
             p = ALL_PARTICLES[particle_key]
             data = compute_mass_data(p, particle_key)
             node['calc_mev'] = data['calc_mev']
+            node['base_mev'] = data['base_mev']
+            node['corr_mev'] = data['corr_mev']
             node['error_kev'] = data['error_kev']
             node['sigma'] = data['sigma']
             node['uncertainty'] = data['uncertainty']
@@ -1350,12 +1356,20 @@ def generate_html():
                     `;
                 }}
 
+                const baseMev = d.base_mev || 0;
+                const corrMev = d.corr_mev || 0;
+                const hasCorr = d.correction && corrMev !== 0;
+
                 document.getElementById('info').innerHTML = `
-                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label.split('\\n')[0]}}</div>
-                    <div style="font-size:1.3em; margin-bottom:12px"><span class="formula">${{fullFormula}}</span></div>
-                    <div><span class="label">Charge:</span> ${{d.charge}}</div>
-                    <div><span class="label">Spin:</span> ${{d.spin}}</div>
-                    <div><span class="label">Strangeness:</span> ${{d.strangeness !== undefined ? d.strangeness : 'N/A'}}</div>
+                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label.split('\\n')[0]}} <span style="font-size:0.55em; color:#888; margin-left:6px">${{d.spin}}<sup>${{d.charge > 0 ? '+' : d.charge < 0 ? '−' : '0'}}</sup></span></div>
+                    <div style="font-size:1.1em; margin-bottom:4px; display:flex; justify-content:space-between;">
+                        <span class="formula">${{d.formula}}</span>
+                        <span style="color:#888; margin-left:12px">${{baseMev.toFixed(2)}}</span>
+                    </div>
+                    ${{hasCorr ? `<div style="font-size:1.1em; margin-bottom:8px; display:flex; justify-content:space-between;">
+                        <span class="formula">${{d.correction}}</span>
+                        <span style="color:#888; margin-left:12px">${{corrMev >= 0 ? '+' : ''}}${{corrMev.toFixed(2)}}</span>
+                    </div>` : ''}}
                     <hr style="border-color:#333; margin:12px 0">
                     <div><span class="label">Calculated:</span> <span class="value">${{calcMev.toFixed(4)}} MeV</span></div>
                     <div><span class="label">Experimental:</span> <span class="value">${{expMev.toFixed(4)}} MeV</span></div>
