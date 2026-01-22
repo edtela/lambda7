@@ -1350,6 +1350,170 @@
             'vOm6pi4': ['Delta_1700']
         };
 
+        // Mesons from data/mesons.py
+        const mesons = {
+            'pi_pm': {
+                symbol: 'π±',
+                name: 'Pion±',
+                formula: 'π⁵ -π³ -π +1 + 6e^{-π}',
+                calc_mev: 139.570,
+                exp_mev: 139.57039,
+                error_kev: -0.7,
+                quark_content: 'ud̄'
+            },
+            'pi_0': {
+                symbol: 'π⁰',
+                name: 'Pion⁰',
+                formula: 'π⁵ -π³ -π² -1',
+                calc_mev: 134.977,
+                exp_mev: 134.9768,
+                error_kev: 0.4,
+                quark_content: 'uū, dd̄'
+            },
+            'rho': {
+                symbol: 'ρ',
+                name: 'Rho',
+                formula: '5π⁵ -π² -6/5π +2/5',
+                calc_mev: 775.113,
+                exp_mev: 775.11,
+                error_kev: 3.3,
+                quark_content: 'ud̄'
+            },
+            'omega': {
+                symbol: 'ω',
+                name: 'Omega',
+                formula: '5π⁵ +3/5π -2/5',
+                calc_mev: 782.637,
+                exp_mev: 782.66,
+                error_kev: -22.5,
+                quark_content: 'uū, dd̄'
+            },
+            'K_pm': {
+                symbol: 'K±',
+                name: 'Kaon±',
+                formula: '3π⁵ +π³ +2π² -4/5π',
+                calc_mev: 493.774,
+                exp_mev: 493.677,
+                error_kev: 96.8,
+                quark_content: 'us̄'
+            },
+            'K_0': {
+                symbol: 'K⁰',
+                name: 'Kaon⁰',
+                formula: '3π⁵ +2π³ -2π',
+                calc_mev: 497.605,
+                exp_mev: 497.611,
+                error_kev: -6.1,
+                quark_content: 'ds̄'
+            },
+            'eta': {
+                symbol: 'η',
+                name: 'Eta',
+                formula: '3π⁵ +π⁴ +2π³ -2π +1',
+                calc_mev: 547.892,
+                exp_mev: 547.862,
+                error_kev: 29.8,
+                quark_content: 'uū, dd̄, ss̄'
+            },
+            'eta_prime': {
+                symbol: 'η\'',
+                name: 'Eta\'',
+                formula: '6π⁵ +π³ +2π +1',
+                calc_mev: 957.820,
+                exp_mev: 957.78,
+                error_kev: 40.3,
+                quark_content: 'uū, dd̄, ss̄'
+            },
+            'phi': {
+                symbol: 'φ',
+                name: 'Phi',
+                formula: '6π⁵ +2π⁴ -π³ -7/5π -2/5',
+                calc_mev: 1019.510,
+                exp_mev: 1019.461,
+                error_kev: 49.2,
+                quark_content: 'ss̄'
+            },
+            'D_pm': {
+                symbol: 'D±',
+                name: 'D±',
+                formula: '12π⁵ -2π² +2π',
+                calc_mev: 1869.633,
+                exp_mev: 1869.66,
+                error_kev: -27.2,
+                quark_content: 'cd̄'
+            },
+            'D_0': {
+                symbol: 'D⁰',
+                name: 'D⁰',
+                formula: '12π⁵ -2π² -π',
+                calc_mev: 1864.817,
+                exp_mev: 1864.84,
+                error_kev: -23.2,
+                quark_content: 'cū'
+            },
+            'D_s': {
+                symbol: 'Ds',
+                name: 'Ds',
+                formula: '13π⁵ -π⁴ -π³ +4/5π -2/5',
+                calc_mev: 1968.344,
+                exp_mev: 1968.35,
+                error_kev: -5.6,
+                quark_content: 'cs̄'
+            },
+            'J_psi': {
+                symbol: 'J/ψ',
+                name: 'J/ψ',
+                formula: '20π⁵ -2π³ +4/5π -2/5',
+                calc_mev: 3096.906,
+                exp_mev: 3096.9,
+                error_kev: 6.3,
+                quark_content: 'cc̄'
+            },
+            'B_pm': {
+                symbol: 'B±',
+                name: 'B±',
+                formula: '34π⁵ -2π³ -3π -9/5',
+                calc_mev: 5279.351,
+                exp_mev: 5279.34,
+                error_kev: 10.9,
+                quark_content: 'ub̄'
+            },
+            'B_0': {
+                symbol: 'B⁰',
+                name: 'B⁰',
+                formula: '34π⁵ -2π³ -3π -6/5',
+                calc_mev: 5279.657,
+                exp_mev: 5279.65,
+                error_kev: 7.5,
+                quark_content: 'db̄'
+            },
+            'B_s': {
+                symbol: 'Bs',
+                name: 'Bs',
+                formula: '34π⁵ +π⁴ +4/5π -9/5',
+                calc_mev: 5366.916,
+                exp_mev: 5366.92,
+                error_kev: -4.5,
+                quark_content: 'sb̄'
+            },
+            'Upsilon': {
+                symbol: 'Υ',
+                name: 'Υ(1S)',
+                formula: '61π⁵ -π⁴ -2π³ +6/5π +9/5',
+                calc_mev: 9460.302,
+                exp_mev: 9460.3,
+                error_kev: 1.9,
+                quark_content: 'bb̄'
+            }
+        };
+
+        // Virtual node to meson mapping from data/cycle.py
+        const nodeMesons = {
+            'v7': ['eta_prime'],
+            'vS6pi3': ['K_0'],
+            'vXs6pi4': ['phi']
+        };
+
         function getSigmaColor(sigma) {
             if (sigma < 1) return '#2ecc71';      // green
             if (sigma < 2) return '#3498db';      // blue
@@ -1391,11 +1555,40 @@
                     }
                 }
 
+                // Get mesons for this virtual node
+                const mesonKeys = nodeMesons[d.id] || [];
+                let mesonHtml = '';
+
+                if (mesonKeys.length > 0) {
+                    mesonHtml = `<hr style="border-color:#333; margin:12px 0">
+                        <div style="color:#2ecc71; font-size:0.9em; margin-bottom:8px;">MESONS</div>`;
+
+                    for (const key of mesonKeys) {
+                        const m = mesons[key];
+                        if (m) {
+                            const errorSign = m.error_kev >= 0 ? '+' : '';
+                            mesonHtml += `
+                                <div style="margin-bottom:12px; padding:10px; background:#1a3a2a; border-radius:4px; border-left:3px solid #2ecc71;">
+                                    <div style="font-size:1.4em; color:#fff; margin-bottom:4px;">${m.symbol} <span style="font-size:0.6em; color:#888; margin-left:4px;">${m.quark_content}</span></div>
+                                    <div style="font-size:1.0em; margin-bottom:4px; display:flex; justify-content:space-between;">
+                                        <span class="formula">${m.formula}</span>
+                                        <span style="color:#888">${m.calc_mev.toFixed(2)}</span>
+                                    </div>
+                                    <div style="font-size:0.85em; color:#888; margin-bottom:6px;">
+                                        <span>Exp: ${m.exp_mev} MeV</span>
+                                        <span style="margin-left:12px; color:${Math.abs(m.error_kev) < 500 ? '#2ecc71' : '#f39c12'}">${errorSign}${m.error_kev.toFixed(1)} keV</span>
+                                    </div>
+                                </div>`;
+                        }
+                    }
+                }
+
                 document.getElementById('info').innerHTML = `
                     <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${d.label}</div>
                     <div style="font-size:1.3em; margin-bottom:8px;"><span class="formula">${d.formula}</span></div>
                     <div style="color:#888; font-size:0.9em;">${d.description || ''}</div>
-                    ${resHtml}`;
+                    ${resHtml}
+                    ${mesonHtml}`;
             } else {
                 const fullFormula = d.correction ? d.formula + ' ' + d.correction : d.formula;
                 // Use pre-calculated values from Python

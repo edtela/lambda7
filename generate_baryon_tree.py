@@ -19,6 +19,7 @@ from data.baryons import (
 )
 from data.magnetic import MAGNETIC_MOMENTS
 from data.resonances import RESONANCES
+from data.mesons import MESONS
 from data.cycle import LIGHT_CYCLE, CHARM_CYCLE, BOTTOM_CYCLE
 
 # Combine all particle dicts for easy access
@@ -114,6 +115,66 @@ def generate_node_resonances_js():
     lines = []
     for node_id, res_keys in mapping.items():
         keys_str = ', '.join(f"'{k}'" for k in res_keys)
+        lines.append(f"            '{node_id}': [{keys_str}]")
+
+    return ',\n'.join(lines)
+
+
+def generate_mesons_js():
+    """Generate JavaScript object for mesons data."""
+    lines = []
+    for key, meson in MESONS.items():
+        calc_mev = meson.mass_mev()
+        error_kev = meson.error_kev()
+        # Convert LaTeX formula to display format
+        formula = meson.formula_latex()
+        # Handle \frac patterns
+        formula = formula.replace(r'\frac{1}{2\pi}', '1/(2π)')
+        formula = formula.replace(r'\frac{1}{\pi}', '1/π')
+        formula = formula.replace(r'\frac{\pi^2}{2}', 'π²/2')
+        formula = formula.replace(r'\frac{\pi}{3}', 'π/3')
+        formula = formula.replace(r'\frac{1}{2}', '½')
+        # Handle remaining \frac{a}{b} patterns
+        formula = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'\1/\2', formula)
+        # Now replace \pi and superscripts
+        formula = formula.replace(r'\pi', 'π')
+        formula = formula.replace('^5', '⁵').replace('^4', '⁴').replace('^3', '³').replace('^2', '²')
+        formula = formula.replace('^6', '⁶').replace('^7', '⁷')
+
+        # Convert quark content LaTeX to display format (e.g., u\bar{d} -> ud̄)
+        quark = meson.quark_content
+        quark = re.sub(r'\\bar\{(\w)\}', r'\1̄', quark)  # \bar{d} -> d̄
+
+        # Escape single quotes for JavaScript strings
+        symbol = meson.symbol.replace("'", "\\'")
+        name = meson.name.replace("'", "\\'")
+
+        lines.append(f"""            '{key}': {{
+                symbol: '{symbol}',
+                name: '{name}',
+                formula: '{formula}',
+                calc_mev: {calc_mev:.3f},
+                exp_mev: {meson.mass_exp},
+                error_kev: {error_kev:.1f},
+                quark_content: '{quark}'
+            }}""")
+
+    return ',\n'.join(lines)
+
+
+def generate_node_mesons_js():
+    """Generate JavaScript mapping of virtual node IDs to meson keys."""
+    # Build mapping from cycle data
+    mapping = {}
+    for cycle in [LIGHT_CYCLE, CHARM_CYCLE, BOTTOM_CYCLE]:
+        for node_id, node in cycle['nodes'].items():
+            mesons = node.get('mesons', [])
+            if mesons:
+                mapping[node_id] = mesons
+
+    lines = []
+    for node_id, meson_keys in mapping.items():
+        keys_str = ', '.join(f"'{k}'" for k in meson_keys)
         lines.append(f"            '{node_id}': [{keys_str}]")
 
     return ',\n'.join(lines)
@@ -1436,6 +1497,16 @@ def generate_html():
 {generate_node_resonances_js()}
         }};
 
+        // Mesons from data/mesons.py
+        const mesons = {{
+{generate_mesons_js()}
+        }};
+
+        // Virtual node to meson mapping from data/cycle.py
+        const nodeMesons = {{
+{generate_node_mesons_js()}
+        }};
+
         function getSigmaColor(sigma) {{
             if (sigma < 1) return '#2ecc71';      // green
             if (sigma < 2) return '#3498db';      // blue
@@ -1477,11 +1548,40 @@ def generate_html():
                     }}
                 }}
 
+                // Get mesons for this virtual node
+                const mesonKeys = nodeMesons[d.id] || [];
+                let mesonHtml = '';
+
+                if (mesonKeys.length > 0) {{
+                    mesonHtml = `<hr style="border-color:#333; margin:12px 0">
+                        <div style="color:#2ecc71; font-size:0.9em; margin-bottom:8px;">MESONS</div>`;
+
+                    for (const key of mesonKeys) {{
+                        const m = mesons[key];
+                        if (m) {{
+                            const errorSign = m.error_kev >= 0 ? '+' : '';
+                            mesonHtml += `
+                                <div style="margin-bottom:12px; padding:10px; background:#1a3a2a; border-radius:4px; border-left:3px solid #2ecc71;">
+                                    <div style="font-size:1.4em; color:#fff; margin-bottom:4px;">${{m.symbol}} <span style="font-size:0.6em; color:#888; margin-left:4px;">${{m.quark_content}}</span></div>
+                                    <div style="font-size:1.0em; margin-bottom:4px; display:flex; justify-content:space-between;">
+                                        <span class="formula">${{m.formula}}</span>
+                                        <span style="color:#888">${{m.calc_mev.toFixed(2)}}</span>
+                                    </div>
+                                    <div style="font-size:0.85em; color:#888; margin-bottom:6px;">
+                                        <span>Exp: ${{m.exp_mev}} MeV</span>
+                                        <span style="margin-left:12px; color:${{Math.abs(m.error_kev) < 500 ? '#2ecc71' : '#f39c12'}}">${{errorSign}}${{m.error_kev.toFixed(1)}} keV</span>
+                                    </div>
+                                </div>`;
+                        }}
+                    }}
+                }}
+
                 document.getElementById('info').innerHTML = `
                     <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label}}</div>
                     <div style="font-size:1.3em; margin-bottom:8px;"><span class="formula">${{d.formula}}</span></div>
                     <div style="color:#888; font-size:0.9em;">${{d.description || ''}}</div>
-                    ${{resHtml}}`;
+                    ${{resHtml}}
+                    ${{mesonHtml}}`;
             }} else {{
                 const fullFormula = d.correction ? d.formula + ' ' + d.correction : d.formula;
                 // Use pre-calculated values from Python

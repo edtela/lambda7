@@ -27,6 +27,7 @@ LIGHT_CYCLE = {
             'parent': None,
             'particles': ['proton', 'neutron'],
             'resonances': [],
+            'mesons': [],
         },
 
         'vD6pi4': {
@@ -39,6 +40,7 @@ LIGHT_CYCLE = {
             'parent': 'root6',
             'particles': ['Delta'],
             'resonances': ['Delta_1700'],  # 9π⁵+6π⁴ mirrors this
+            'mesons': [],
         },
 
         # === S=-1 Level (7π⁵) ===
@@ -52,6 +54,7 @@ LIGHT_CYCLE = {
             'parent': 'root6',
             'particles': ['Lambda'],
             'resonances': ['Lambda_1405'],  # λ-type mirror
+            'mesons': ['eta_prime'],  # 6π⁵ + π³ shares strangeness structure
         },
 
         'vS6pi3': {
@@ -64,6 +67,7 @@ LIGHT_CYCLE = {
             'parent': 'v7',
             'particles': ['Sigma_plus', 'Sigma_zero', 'Sigma_minus'],
             'resonances': ['Roper'],  # σ-type mirror (N not Σ, but mirrors Σ structure)
+            'mesons': ['K_0'],  # 3π⁵ + 2π³ shares π³ structure
         },
 
         'vSs6pi4': {
@@ -76,6 +80,7 @@ LIGHT_CYCLE = {
             'parent': 'v7',
             'particles': ['Sigma_star_plus', 'Sigma_star_zero', 'Sigma_star_minus'],
             'resonances': ['N_1535'],  # η-type mirror
+            'mesons': [],
         },
 
         # === S=-2 Level (8π⁵) ===
@@ -89,6 +94,7 @@ LIGHT_CYCLE = {
             'parent': 'v7',
             'particles': [],
             'resonances': [],
+            'mesons': [],
         },
 
         'vXpi4pi3': {
@@ -101,6 +107,7 @@ LIGHT_CYCLE = {
             'parent': 'v8',
             'particles': ['Xi_zero', 'Xi_minus'],
             'resonances': ['N_1680'],  # 6π⁴ - tentative, inverted coeff
+            'mesons': [],
         },
 
         'vXs6pi4': {
@@ -113,6 +120,7 @@ LIGHT_CYCLE = {
             'parent': 'v8',
             'particles': ['Xi_star_zero', 'Xi_star_minus'],
             'resonances': ['Lambda_1520'],  # η'-type mirror (2π⁴)
+            'mesons': ['phi'],  # 6π⁵ + 2π⁴ - π³ shares -π³
         },
 
         # === S=-3 Level (9π⁵) ===
@@ -126,6 +134,7 @@ LIGHT_CYCLE = {
             'parent': 'v8',
             'particles': [],
             'resonances': [],
+            'mesons': [],
         },
 
         'vOm6pi4': {
@@ -138,6 +147,7 @@ LIGHT_CYCLE = {
             'parent': 'v9',
             'particles': ['Omega'],
             'resonances': ['Delta_1700'],  # 9π⁵+6π⁴ family
+            'mesons': [],
         },
     },
 
@@ -175,6 +185,7 @@ CHARM_CYCLE = {
             'parent': None,
             'particles': ['Lambda_c'],
             'resonances': [],
+            'mesons': [],
         },
 
         'vSc': {
@@ -187,6 +198,7 @@ CHARM_CYCLE = {
             'parent': 'root14',
             'particles': ['Sigma_c_pp', 'Sigma_c_plus', 'Sigma_c_zero'],
             'resonances': [],
+            'mesons': [],
         },
 
         'vScs': {
@@ -199,6 +211,7 @@ CHARM_CYCLE = {
             'parent': 'root14',
             'particles': ['Sigma_c_star_pp', 'Sigma_c_star_plus', 'Sigma_c_star_zero'],
             'resonances': [],
+            'mesons': [],
         },
 
         'v15': {
@@ -211,6 +224,7 @@ CHARM_CYCLE = {
             'parent': 'root14',
             'particles': [],
             'resonances': [],
+            'mesons': [],
         },
 
         'vXc': {
@@ -223,6 +237,7 @@ CHARM_CYCLE = {
             'parent': 'v15',
             'particles': ['Xi_c_plus', 'Xi_c_zero'],
             'resonances': [],
+            'mesons': [],
         },
 
         'vXcs': {
@@ -235,6 +250,7 @@ CHARM_CYCLE = {
             'parent': 'v15',
             'particles': ['Xi_c_star_plus', 'Xi_c_star_zero'],
             'resonances': [],
+            'mesons': [],
         },
 
         'v16': {
@@ -247,6 +263,7 @@ CHARM_CYCLE = {
             'parent': 'v15',
             'particles': ['Omega_c', 'Omega_c_star'],
             'resonances': [],
+            'mesons': [],
         },
     },
 
@@ -280,6 +297,7 @@ BOTTOM_CYCLE = {
             'parent': None,
             'particles': ['Lambda_b', 'Sigma_b_plus', 'Sigma_b_minus'],
             'resonances': [],
+            'mesons': [],
         },
 
         'v37': {
@@ -292,6 +310,7 @@ BOTTOM_CYCLE = {
             'parent': 'root36',
             'particles': ['Xi_b_zero', 'Xi_b_minus'],
             'resonances': [],
+            'mesons': [],
         },
 
         'v38': {
@@ -304,6 +323,7 @@ BOTTOM_CYCLE = {
             'parent': 'v37',
             'particles': ['Omega_b'],
             'resonances': [],
+            'mesons': [],
         },
     },
 
@@ -340,6 +360,12 @@ def get_resonances_for_node(cycle, node_id):
     return node.get('resonances', []) if node else []
 
 
+def get_mesons_for_node(cycle, node_id):
+    """Get meson keys for a node."""
+    node = get_node(cycle, node_id)
+    return node.get('mesons', []) if node else []
+
+
 def get_children(cycle, node_id):
     """Get child node IDs for a given node."""
     children = []
@@ -363,4 +389,5 @@ if __name__ == '__main__':
         for node_id, node in cycle['nodes'].items():
             particles = node.get('particles', [])
             resonances = node.get('resonances', [])
-            print(f"  {node_id:12} {node['formula']:20} P:{len(particles)} R:{len(resonances)}")
+            mesons = node.get('mesons', [])
+            print(f"  {node_id:12} {node['formula']:20} P:{len(particles)} R:{len(resonances)} M:{len(mesons)}")
