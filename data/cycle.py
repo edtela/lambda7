@@ -25,8 +25,20 @@ LIGHT_CYCLE = {
             'strangeness': 0,
             'description': 'Light baryon base (S=0)',
             'parent': None,
-            'particles': ['proton', 'neutron', 'Delta'],
+            'particles': ['proton', 'neutron'],
             'resonances': [],
+        },
+
+        'vD6pi4': {
+            'label': '+6π⁴',
+            'sublabel': 'Δ base',
+            'formula': '6π⁵ + 6π⁴',
+            'c5': 6, 'c4': 6,
+            'strangeness': 0,
+            'description': 'Delta decuplet base (6π⁴)',
+            'parent': 'root6',
+            'particles': ['Delta'],
+            'resonances': ['Delta_1700'],  # 9π⁵+6π⁴ mirrors this
         },
 
         # === S=-1 Level (7π⁵) ===
@@ -131,6 +143,7 @@ LIGHT_CYCLE = {
 
     # Edge list (can be derived from parent field, but explicit for clarity)
     'edges': [
+        ('root6', 'vD6pi4'),
         ('root6', 'v7'),
         ('v7', 'vS6pi3'),
         ('v7', 'vSs6pi4'),

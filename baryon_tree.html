@@ -144,9 +144,17 @@
                 "uncertainty": 5.4e-10
         },
         {
+                "id": "vD6pi4",
+                "label": "+6\u03c0\u2074",
+                "sublabel": "\u0394 base",
+                "type": "virtual",
+                "formula": "6\u03c0\u2075 + 6\u03c0\u2074",
+                "description": "Delta decuplet base (6\u03c0\u2074)"
+        },
+        {
                 "id": "D",
                 "label": "\u0394",
-                "sublabel": "6\u03c0\u2074 - \u03c0\u00b2",
+                "sublabel": "-\u03c0\u00b2",
                 "type": "spin32",
                 "formula": "6\u03c0\u2075 + 6\u03c0\u2074 - \u03c0\u00b2",
                 "correction": null,
@@ -470,6 +478,10 @@
         },
         {
                 "source": "root6",
+                "target": "vD6pi4"
+        },
+        {
+                "source": "vD6pi4",
                 "target": "D"
         },
         {
@@ -1293,6 +1305,7 @@
 
         // Virtual node to resonance mapping from data/cycle.py
         const nodeResonances = {
+            'vD6pi4': ['Delta_1700'],
             'v7': ['Lambda_1405'],
             'vS6pi3': ['Roper'],
             'vSs6pi4': ['N_1535'],

@@ -389,10 +389,21 @@ def generate_light_baryon_data():
     })
     edges.append({'source': 'root6', 'target': n.node_id})
 
-    # === DELTA (6π⁵ + 6π⁴ - π²) - parent: root6 (6π⁵) ===
+    # === Delta decuplet: share 6π⁴ ===
+    nodes.append({
+        'id': 'vD6pi4',
+        'label': '+6π⁴',
+        'sublabel': 'Δ base',
+        'type': 'virtual',
+        'formula': '6π⁵ + 6π⁴',
+        'description': 'Delta decuplet base (6π⁴)'
+    })
+    edges.append({'source': 'root6', 'target': 'vD6pi4'})
+
+    # DELTA (6π⁵ + 6π⁴ - π²) - parent: vD6pi4 (c5=6, c4=6)
     delta = ALL_PARTICLES['Delta']
     corr_d = get_correction_display('Delta')
-    diff_d = format_diff(delta, parent_c5=6)
+    diff_d = format_diff(delta, parent_c5=6, parent_c4=6)
     nodes.append({
         'id': delta.node_id,
         'label': 'Δ',
@@ -407,7 +418,7 @@ def generate_light_baryon_data():
         'spin': '3/2',
         'strangeness': 0
     })
-    edges.append({'source': 'root6', 'target': delta.node_id})
+    edges.append({'source': 'vD6pi4', 'target': delta.node_id})
 
     # === 7π⁵ LEVEL (S=-1) ===
     nodes.append({
