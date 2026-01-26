@@ -99,7 +99,7 @@
         {
                 "id": "root6",
                 "label": "6\u03c0\u2075",
-                "sublabel": "S=0",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "6\u03c0\u2075",
                 "description": "Light baryon base (S=0)"
@@ -117,6 +117,7 @@
                 "charge": "+1",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "uud",
                 "calc_mev": 938.2720914411451,
                 "base_mev": 938.2544256276585,
                 "corr_mev": 0.017665813486538756,
@@ -137,6 +138,7 @@
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "udd",
                 "calc_mev": 939.5556737685748,
                 "base_mev": 938.2544256276585,
                 "corr_mev": 1.3012481409162924,
@@ -146,7 +148,7 @@
         },
         {
                 "id": "vD6pi4",
-                "label": "+6\u03c0\u2074",
+                "label": "6\u03c0\u2074",
                 "sublabel": "\u0394 base",
                 "type": "virtual",
                 "formula": "6\u03c0\u2075 + 6\u03c0\u2074",
@@ -158,13 +160,14 @@
                 "sublabel": "-\u03c0\u00b2",
                 "type": "spin32",
                 "formula": "6\u03c0\u2075 + 6\u03c0\u2074 - \u03c0\u00b2",
-                "correction": null,
+                "correction": "(1/5)(\u03c0 - 2 + 4e\u207b\u1d56\u2071)",
                 "mass_me": 2410.7030505146136,
                 "actual_mev": 1232.0,
                 "residual_me": 0.2608076303008602,
                 "charge": "++,+,0,-",
                 "spin": "3/2",
                 "strangeness": 0,
+                "quarks": "uud",
                 "calc_mev": 1232.0010639177135,
                 "base_mev": 1231.8667275747644,
                 "corr_mev": 0.13433634294895835,
@@ -174,8 +177,8 @@
         },
         {
                 "id": "v7",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-1",
+                "label": "7\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "7\u03c0\u2075",
                 "description": "Strangeness -1 level"
@@ -186,23 +189,24 @@
                 "sublabel": "\u03c0\u00b3 + \u03c0\u00b2",
                 "type": "particle",
                 "formula": "7\u03c0\u2075 + \u03c0\u00b3 + \u03c0\u00b2",
-                "correction": "+1/\u03c0",
+                "correction": "+\\varphi/5",
                 "mass_me": 2183.0136745783593,
                 "actual_mev": 1115.683,
                 "residual_me": 0.3234927485013941,
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": -1,
-                "calc_mev": 1115.6803515627976,
+                "quarks": "uds",
+                "calc_mev": 1115.6830582790462,
                 "base_mev": 1115.5176955451832,
-                "corr_mev": 0.16265601761453655,
-                "error_kev": -2.6484372024242475,
-                "sigma": 0.44140620040404127,
+                "corr_mev": 0.1653627338631016,
+                "error_kev": 0.05827904624311486,
+                "sigma": 0.009713174373852477,
                 "uncertainty": 0.006
         },
         {
                 "id": "vS6pi3",
-                "label": "+6\u03c0\u00b3",
+                "label": "6\u03c0\u00b3",
                 "sublabel": "\u03a3 base",
                 "type": "virtual",
                 "formula": "7\u03c0\u2075 + 6\u03c0\u00b3",
@@ -221,6 +225,7 @@
                 "charge": "+1",
                 "spin": "1/2",
                 "strangeness": -1,
+                "quarks": "uus",
                 "calc_mev": 1189.3699001592954,
                 "base_mev": 1189.6952121945246,
                 "corr_mev": -0.3253120352290731,
@@ -241,6 +246,7 @@
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": -1,
+                "quarks": "uds",
                 "calc_mev": 1192.6945738803968,
                 "base_mev": 1194.7385696803967,
                 "corr_mev": -2.0439958,
@@ -261,6 +267,7 @@
                 "charge": "-1",
                 "spin": "1/2",
                 "strangeness": -1,
+                "quarks": "dds",
                 "calc_mev": 1197.431331996269,
                 "base_mev": 1199.7819271662688,
                 "corr_mev": -2.3505951699999996,
@@ -270,7 +277,7 @@
         },
         {
                 "id": "vSs6pi4",
-                "label": "+6\u03c0\u2074",
+                "label": "6\u03c0\u2074",
                 "sublabel": "\u03a3* base",
                 "type": "virtual",
                 "formula": "7\u03c0\u2075 + 6\u03c0\u2074",
@@ -282,13 +289,14 @@
                 "sublabel": "-2\u03c0\u00b2",
                 "type": "spin32",
                 "formula": "7\u03c0\u2075 + 6\u03c0\u2074 - 2\u03c0\u00b2",
-                "correction": null,
+                "correction": "(1/5)(\u03c0 - 7 - e\u207b\u1d56\u2071)",
                 "mass_me": 2706.853130898806,
                 "actual_mev": 1382.8,
                 "residual_me": -0.7810342731668243,
                 "charge": "+1",
                 "spin": "3/2",
                 "strangeness": -1,
+                "quarks": "uus",
                 "calc_mev": 1382.800362819593,
                 "base_mev": 1383.1991076935021,
                 "corr_mev": -0.3987448739092151,
@@ -309,6 +317,7 @@
                 "charge": "0",
                 "spin": "3/2",
                 "strangeness": -1,
+                "quarks": "uds",
                 "calc_mev": 1383.7101066435023,
                 "base_mev": 1383.1991076935021,
                 "corr_mev": 0.51099895,
@@ -329,6 +338,7 @@
                 "charge": "-1",
                 "spin": "3/2",
                 "strangeness": -1,
+                "quarks": "dds",
                 "calc_mev": 1387.2204672793744,
                 "base_mev": 1388.2424651793742,
                 "corr_mev": -1.0219979,
@@ -338,15 +348,15 @@
         },
         {
                 "id": "v8",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-2",
+                "label": "8\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "8\u03c0\u2075",
                 "description": "Strangeness -2 level (Xi)"
         },
         {
                 "id": "vXpi4pi3",
-                "label": "+\u03c0\u2074+\u03c0\u00b3",
+                "label": "\u03c0\u2074+\u03c0\u00b3",
                 "sublabel": "\u039e base",
                 "type": "virtual",
                 "formula": "8\u03c0\u2075 + \u03c0\u2074 + \u03c0\u00b3",
@@ -365,6 +375,7 @@
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": -2,
+                "quarks": "uss",
                 "calc_mev": 1314.8580123378238,
                 "base_mev": 1316.6260189027505,
                 "corr_mev": -1.7680065649266343,
@@ -385,6 +396,7 @@
                 "charge": "-1",
                 "spin": "1/2",
                 "strangeness": -2,
+                "quarks": "dss",
                 "calc_mev": 1321.7019075921453,
                 "base_mev": 1321.6693763886226,
                 "corr_mev": 0.0325312035229073,
@@ -394,7 +406,7 @@
         },
         {
                 "id": "vXs6pi4",
-                "label": "+6\u03c0\u2074-\u03c0\u00b3",
+                "label": "6\u03c0\u2074-\u03c0\u00b3",
                 "sublabel": "\u039e* base",
                 "type": "virtual",
                 "formula": "8\u03c0\u2075 + 6\u03c0\u2074 - \u03c0\u00b3",
@@ -413,6 +425,7 @@
                 "charge": "0",
                 "spin": "3/2",
                 "strangeness": -2,
+                "quarks": "uss",
                 "calc_mev": 1531.8032357355012,
                 "base_mev": 1533.8173854428132,
                 "corr_mev": -2.014149707312098,
@@ -433,6 +446,7 @@
                 "charge": "-1",
                 "spin": "3/2",
                 "strangeness": -2,
+                "quarks": "dss",
                 "calc_mev": 1534.999466090663,
                 "base_mev": 1533.8173854428132,
                 "corr_mev": 1.1820806478496784,
@@ -442,8 +456,8 @@
         },
         {
                 "id": "v9",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-3",
+                "label": "9\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "9\u03c0\u2075",
                 "description": "Strangeness -3 level (Omega)"
@@ -461,6 +475,7 @@
                 "charge": "-1",
                 "spin": "3/2",
                 "strangeness": -3,
+                "quarks": "sss",
                 "calc_mev": 1672.4490262838356,
                 "base_mev": 1674.3489482203804,
                 "corr_mev": -1.899921936544709,
@@ -566,7 +581,7 @@
         {
                 "id": "root14",
                 "label": "14\u03c0\u2075",
-                "sublabel": "C=1",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "14\u03c0\u2075",
                 "description": "Charm baryon base (C=1)"
@@ -584,6 +599,7 @@
                 "charge": "+1",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "udc",
                 "calc_mev": 2286.461617772196,
                 "base_mev": 2288.812212942196,
                 "corr_mev": -2.3505951699999996,
@@ -593,7 +609,7 @@
         },
         {
                 "id": "vSc",
-                "label": "+5\u03c0\u2074+\u03c0\u00b3",
+                "label": "5\u03c0\u2074+\u03c0\u00b3",
                 "sublabel": "\u03a3c base",
                 "type": "virtual",
                 "formula": "14\u03c0\u2075 + 5\u03c0\u2074 + \u03c0\u00b3",
@@ -605,13 +621,14 @@
                 "sublabel": "",
                 "type": "particle",
                 "formula": "14\u03c0\u2075 + 5\u03c0\u2074 + \u03c0\u00b3",
-                "correction": null,
+                "correction": "-\u03c0/5 + 3/5",
                 "mass_me": 4802.327318844252,
                 "actual_mev": 2453.97,
                 "residual_me": -0.02782292552274157,
                 "charge": "2",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "uuc",
                 "calc_mev": 2453.969746746265,
                 "base_mev": 2453.9842174857276,
                 "corr_mev": -0.014470739462419613,
@@ -625,13 +642,14 @@
                 "sublabel": "",
                 "type": "particle",
                 "formula": "14\u03c0\u2075 + 5\u03c0\u2074 + \u03c0\u00b3",
-                "correction": null,
+                "correction": "3\u03c0/5 - 4",
                 "mass_me": 4802.327318844252,
                 "actual_mev": 2452.9,
                 "residual_me": -2.1217606919299214,
                 "charge": "1",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "udc",
                 "calc_mev": 2452.903432014115,
                 "base_mev": 2453.9842174857276,
                 "corr_mev": -1.0807854716127412,
@@ -645,13 +663,14 @@
                 "sublabel": "",
                 "type": "particle",
                 "formula": "14\u03c0\u2075 + 5\u03c0\u2074 + \u03c0\u00b3",
-                "correction": null,
+                "correction": "\u03c0 - 18/5",
                 "mass_me": 4802.327318844252,
                 "actual_mev": 2453.75,
                 "residual_me": -0.4583521859049142,
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "ddc",
                 "calc_mev": 2453.74997181304,
                 "base_mev": 2453.9842174857276,
                 "corr_mev": -0.234245672687902,
@@ -661,7 +680,7 @@
         },
         {
                 "id": "vScs",
-                "label": "+6\u03c0\u2074+2\u03c0\u00b3",
+                "label": "6\u03c0\u2074+2\u03c0\u00b3",
                 "sublabel": "\u03a3c* base",
                 "type": "virtual",
                 "formula": "14\u03c0\u2075 + 6\u03c0\u2074 + 2\u03c0\u00b3",
@@ -673,13 +692,14 @@
                 "sublabel": "",
                 "type": "spin32",
                 "formula": "14\u03c0\u2075 + 6\u03c0\u2074 + 2\u03c0\u00b3",
-                "correction": null,
+                "correction": "-\u03c0 + 4/5",
                 "mass_me": 4930.742686558554,
                 "actual_mev": 2518.41,
                 "residual_me": -2.337256371270996,
                 "charge": "2",
                 "spin": "3/2",
                 "strangeness": 0,
+                "quarks": "uuc",
                 "calc_mev": 2518.407784164288,
                 "base_mev": 2519.6043355516,
                 "corr_mev": -1.196551387312098,
@@ -693,13 +713,14 @@
                 "sublabel": "",
                 "type": "spin32",
                 "formula": "14\u03c0\u2075 + 6\u03c0\u2074 + 2\u03c0\u00b3",
-                "correction": null,
+                "correction": "-4\u03c0/5 - 8/5",
                 "mass_me": 4930.742686558554,
                 "actual_mev": 2517.5,
                 "residual_me": -4.118081948308827,
                 "charge": "1",
                 "spin": "3/2",
                 "strangeness": 0,
+                "quarks": "udc",
                 "calc_mev": 2517.5024567937503,
                 "base_mev": 2519.6043355516,
                 "corr_mev": -2.101878757849678,
@@ -720,6 +741,7 @@
                 "charge": "0",
                 "spin": "3/2",
                 "strangeness": 0,
+                "quarks": "ddc",
                 "calc_mev": 2518.4801378616,
                 "base_mev": 2519.6043355516,
                 "corr_mev": -1.12419769,
@@ -729,15 +751,15 @@
         },
         {
                 "id": "v15",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-1",
+                "label": "15\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "15\u03c0\u2075",
                 "description": "Charm + strange"
         },
         {
                 "id": "vXc",
-                "label": "+2\u03c0\u2074+\u03c0\u00b3",
+                "label": "2\u03c0\u2074+\u03c0\u00b3",
                 "sublabel": "\u039ec base",
                 "type": "virtual",
                 "formula": "15\u03c0\u2075 + 2\u03c0\u2074 + \u03c0\u00b3",
@@ -749,13 +771,14 @@
                 "sublabel": "\u03c0\u00b2",
                 "type": "particle",
                 "formula": "15\u03c0\u2075 + 2\u03c0\u2074 + \u03c0\u00b3 + \u03c0\u00b2",
-                "correction": null,
+                "correction": "7\u03c0/5 - 6/5",
                 "mass_me": 4825.989334928615,
                 "actual_mev": 2467.71,
                 "residual_me": 3.1986702522181076,
                 "charge": "+1",
                 "spin": "1/2",
                 "strangeness": -1,
+                "quarks": "usc",
                 "calc_mev": 2467.709774885957,
                 "base_mev": 2466.0754828597205,
                 "corr_mev": 1.634292026236937,
@@ -769,13 +792,14 @@
                 "sublabel": "2\u03c0\u00b2",
                 "type": "particle",
                 "formula": "15\u03c0\u2075 + 2\u03c0\u2074 + \u03c0\u00b3 + 2\u03c0\u00b2",
-                "correction": null,
+                "correction": "-\u03c0 + 9/5",
                 "mass_me": 4835.858939329704,
                 "actual_mev": 2470.44,
                 "residual_me": -1.32845741775418,
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": -1,
+                "quarks": "dsc",
                 "calc_mev": 2470.4332879082804,
                 "base_mev": 2471.118840345592,
                 "corr_mev": -0.6855524373120979,
@@ -785,7 +809,7 @@
         },
         {
                 "id": "vXcs",
-                "label": "+6\u03c0\u2074",
+                "label": "6\u03c0\u2074",
                 "sublabel": "\u039ec* base",
                 "type": "virtual",
                 "formula": "15\u03c0\u2075 + 6\u03c0\u2074",
@@ -804,6 +828,7 @@
                 "charge": "1",
                 "spin": "3/2",
                 "strangeness": -1,
+                "quarks": "usc",
                 "calc_mev": 2645.576003939974,
                 "base_mev": 2644.291723502124,
                 "corr_mev": 1.2842804378496784,
@@ -824,6 +849,7 @@
                 "charge": "0",
                 "spin": "3/2",
                 "strangeness": -1,
+                "quarks": "dsc",
                 "calc_mev": 2646.3786792136298,
                 "base_mev": 2644.291723502124,
                 "corr_mev": 2.0869557115057273,
@@ -833,8 +859,8 @@
         },
         {
                 "id": "v16",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-2",
+                "label": "16\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "16\u03c0\u2075",
                 "description": "Charm + double strange"
@@ -845,13 +871,14 @@
                 "sublabel": "4\u03c0\u2074 - \u03c0\u00b2",
                 "type": "particle",
                 "formula": "16\u03c0\u2075 + 4\u03c0\u2074 - \u03c0\u00b2",
-                "correction": null,
+                "correction": "-4\u03c0/5 + 4/5",
                 "mass_me": 5276.081716299423,
                 "actual_mev": 2695.2,
                 "residual_me": -1.7068863707108903,
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": -2,
+                "quarks": "ssc",
                 "calc_mev": 2695.1967358653533,
                 "base_mev": 2696.0722171432026,
                 "corr_mev": -0.8754812778496783,
@@ -865,38 +892,48 @@
                 "sublabel": "5\u03c0\u2074 + \u03c0\u00b3",
                 "type": "spin32",
                 "formula": "16\u03c0\u2075 + 5\u03c0\u2074 + \u03c0\u00b3",
-                "correction": "-8/5",
+                "correction": "-ln(\u03c0) - 1/2",
                 "mass_me": 5414.366688414814,
                 "actual_mev": 2765.9,
                 "residual_me": -1.6354098084684665,
                 "charge": "0",
                 "spin": "3/2",
                 "strangeness": -2,
-                "calc_mev": 2765.9180943749466,
+                "quarks": "ssc",
+                "calc_mev": 2765.895237450244,
                 "base_mev": 2766.735692694947,
-                "corr_mev": -0.81759832,
-                "error_kev": 18.094374946485914,
-                "sigma": 0.03618874989297183,
+                "corr_mev": -0.8404552447026633,
+                "error_kev": -4.762549755923828,
+                "sigma": 0.009525099511847657,
                 "uncertainty": 0.5
+        },
+        {
+                "id": "v7pi6",
+                "label": "7\u03c0\u2076",
+                "sublabel": "\u039ecc base",
+                "type": "virtual",
+                "formula": "7\u03c0\u2076",
+                "description": "Double charm level (C=2)"
         },
         {
                 "id": "Xcc",
                 "label": "\u039ecc\u207a\u207a",
-                "sublabel": "7\u03c0\u2076 - 14\u03c0\u2075 + 3\u03c0\u2074 + 2\u03c0\u00b3",
+                "sublabel": "22\u03c0\u2075 + 3\u03c0\u2074 + 2\u03c0\u00b3",
                 "type": "particle",
-                "formula": "7\u03c0\u2076 + 3\u03c0\u2074 + 2\u03c0\u00b3",
-                "correction": null,
-                "mass_me": 7083.964181489737,
+                "formula": "22\u03c0\u2075 + 3\u03c0\u2074 + 2\u03c0\u00b3",
+                "correction": "+\u03c0/6",
+                "mass_me": 7086.672891738798,
                 "actual_mev": 3621.55,
-                "residual_me": 3.2323773290254394,
+                "residual_me": 0.5236670799640706,
                 "charge": "++",
                 "spin": "1/2",
                 "strangeness": 0,
-                "calc_mev": 3621.5547090211767,
-                "base_mev": 3619.8982585788644,
-                "corr_mev": 1.6564504423120978,
-                "error_kev": 4.709021176495298,
-                "sigma": 0.011772552941238246,
+                "quarks": "ucc",
+                "calc_mev": 3621.549965096541,
+                "base_mev": 3621.282406671989,
+                "corr_mev": 0.2675584245520163,
+                "error_kev": -0.03490345898171654,
+                "sigma": 8.725864745429135e-05,
                 "uncertainty": 0.4
         }
 ], edges: [
@@ -977,7 +1014,11 @@
                 "target": "Ocs_zero"
         },
         {
-                "source": "root14",
+                "source": "v16",
+                "target": "v7pi6"
+        },
+        {
+                "source": "v7pi6",
                 "target": "Xcc"
         }
 ] },
@@ -985,7 +1026,7 @@
         {
                 "id": "root36",
                 "label": "36\u03c0\u2075",
-                "sublabel": "B=-1",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "36\u03c0\u2075",
                 "description": "Bottom baryon base (B=-1)"
@@ -1003,6 +1044,7 @@
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": 0,
+                "quarks": "udb",
                 "calc_mev": 5619.600373848938,
                 "base_mev": 5619.439838794207,
                 "corr_mev": 0.1605350547312098,
@@ -1011,49 +1053,109 @@
                 "uncertainty": 0.06
         },
         {
+                "id": "vSb3pi4",
+                "label": "3\u03c0\u2074+2\u03c0\u00b3",
+                "sublabel": "\u03a3b\u207a base",
+                "type": "virtual",
+                "formula": "36\u03c0\u2075 + 3\u03c0\u2074 + 2\u03c0\u00b3",
+                "description": "Sigma_b+ family base"
+        },
+        {
                 "id": "Sb_plus",
                 "label": "\u03a3b\u207a",
-                "sublabel": "3\u03c0\u2074 + \u03c0\u00b3 + 2\u03c0\u00b2",
+                "sublabel": "(base)",
                 "type": "particle",
-                "formula": "36\u03c0\u2075 + 3\u03c0\u2074 + \u03c0\u00b3 + 2\u03c0\u00b2",
-                "correction": "+18\u03c0/5",
-                "mass_me": 11359.681410854617,
+                "formula": "36\u03c0\u2075 + 3\u03c0\u2074 + 2\u03c0\u00b3",
+                "correction": "+1/30",
+                "mass_me": 11370.948478732736,
                 "actual_mev": 5810.56,
-                "residual_me": 11.300858287033407,
+                "residual_me": 0.03379040891377372,
                 "charge": "+1",
                 "spin": "1/2",
                 "strangeness": 0,
-                "calc_mev": 5810.564535251551,
-                "base_mev": 5804.785273281227,
-                "corr_mev": 5.779261970323552,
-                "error_kev": 4.535251550805697,
-                "sigma": 0.009070503101611394,
+                "quarks": "uub",
+                "calc_mev": 5810.559766434858,
+                "base_mev": 5810.542733136525,
+                "corr_mev": 0.017033298333333332,
+                "error_kev": -0.23356514248007443,
+                "sigma": 0.00046713028496014886,
                 "uncertainty": 0.5
+        },
+        {
+                "id": "Sbs_plus",
+                "label": "\u03a3b*\u207a",
+                "sublabel": "4\u03c0\u00b2",
+                "type": "spin32",
+                "formula": "36\u03c0\u2075 + 3\u03c0\u2074 + 2\u03c0\u00b3 + 4\u03c0\u00b2",
+                "correction": "-7/9",
+                "mass_me": 11410.426896337094,
+                "actual_mev": 5830.32,
+                "residual_me": -0.7752718083156651,
+                "charge": "+1",
+                "spin": "3/2",
+                "strangeness": 0,
+                "quarks": "uub",
+                "calc_mev": 5830.318719452236,
+                "base_mev": 5830.716163080014,
+                "corr_mev": -0.39744362777777775,
+                "error_kev": -1.2805477635993157,
+                "sigma": 0.0025610955271986313,
+                "uncertainty": 0.5
+        },
+        {
+                "id": "vSb4pi4",
+                "label": "4\u03c0\u2074",
+                "sublabel": "\u03a3b\u207b base",
+                "type": "virtual",
+                "formula": "36\u03c0\u2075 + 4\u03c0\u2074",
+                "description": "Sigma_b- family base"
         },
         {
                 "id": "Sb_minus",
                 "label": "\u03a3b\u207b",
-                "sublabel": "5\u03c0\u2074 - 3\u03c0\u00b3 - 3\u03c0\u00b2",
+                "sublabel": "-\u03c0\u00b3",
                 "type": "particle",
-                "formula": "36\u03c0\u2075 + 5\u03c0\u2074 - 3\u03c0\u00b3 - 3\u03c0\u00b2",
-                "correction": "-1/5",
-                "mass_me": 11381.126464195975,
+                "formula": "36\u03c0\u2075 + 4\u03c0\u2074 - \u03c0\u00b3",
+                "correction": "+28/5",
+                "mass_me": 11375.33873972584,
                 "actual_mev": 5815.64,
-                "residual_me": -0.2028830418439611,
+                "residual_me": 5.584841428291838,
                 "charge": "-1",
                 "spin": "1/2",
                 "strangeness": 0,
-                "calc_mev": 5815.641473231355,
-                "base_mev": 5815.743673021356,
-                "corr_mev": -0.10219979,
-                "error_kev": 1.4732313547938247,
-                "sigma": 0.0029464627095876494,
+                "quarks": "ddb",
+                "calc_mev": 5815.647746014227,
+                "base_mev": 5812.786151894226,
+                "corr_mev": 2.8615941199999995,
+                "error_kev": 7.746014226540865,
+                "sigma": 0.01549202845308173,
+                "uncertainty": 0.5
+        },
+        {
+                "id": "Sbs_minus",
+                "label": "\u03a3b*\u207b",
+                "sublabel": "\u03c0\u00b2",
+                "type": "spin32",
+                "formula": "36\u03c0\u2075 + 4\u03c0\u2074 + \u03c0\u00b2",
+                "correction": "+21/10",
+                "mass_me": 11416.214620807228,
+                "actual_mev": 5834.74,
+                "residual_me": 2.0867279528829386,
+                "charge": "-1",
+                "spin": "3/2",
+                "strangeness": 0,
+                "quarks": "ddb",
+                "calc_mev": 5834.746782002141,
+                "base_mev": 5833.673684207141,
+                "corr_mev": 1.073097795,
+                "error_kev": 6.782002141335397,
+                "sigma": 0.013564004282670794,
                 "uncertainty": 0.5
         },
         {
                 "id": "v37",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-1",
+                "label": "37\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "37\u03c0\u2075",
                 "description": "Bottom + strange"
@@ -1061,47 +1163,49 @@
         {
                 "id": "Xb_zero",
                 "label": "\u039eb\u2070",
-                "sublabel": "\u03c0\u2074 - 3\u03c0\u00b3 + \u03c0\u00b2",
+                "sublabel": "\u03c0\u00b2",
                 "type": "particle",
-                "formula": "37\u03c0\u2075 + \u03c0\u2074 - 3\u03c0\u00b3 + \u03c0\u00b2",
-                "correction": "-4\u03c0/5",
-                "mass_me": 11336.988202449604,
+                "formula": "37\u03c0\u2075 + \u03c0\u00b2",
+                "correction": "+19/10",
+                "mass_me": 11332.5979414565,
                 "actual_mev": 5791.9,
-                "residual_me": -2.522642393169008,
+                "residual_me": 1.8676185999338486,
                 "charge": "0",
                 "spin": "1/2",
                 "strangeness": -1,
-                "calc_mev": 5791.904787176285,
-                "base_mev": 5793.189067614135,
-                "corr_mev": -1.2842804378496784,
-                "error_kev": 4.78717628539016,
-                "sigma": 0.0119679407134754,
+                "quarks": "usb",
+                "calc_mev": 5791.916546861433,
+                "base_mev": 5790.945648856433,
+                "corr_mev": 0.9708980049999999,
+                "error_kev": 16.5468614331985,
+                "sigma": 0.04136715358299625,
                 "uncertainty": 0.4
         },
         {
                 "id": "Xb_minus",
                 "label": "\u039eb\u207b",
-                "sublabel": "\u03c0\u2074 - \u03c0\u00b3 - 3\u03c0\u00b2",
+                "sublabel": "2\u03c0\u00b2",
                 "type": "particle",
-                "formula": "37\u03c0\u2075 + \u03c0\u2074 - \u03c0\u00b3 - 3\u03c0\u00b2",
-                "correction": "-24\u03c0/5",
-                "mass_me": 11359.522338205847,
+                "formula": "37\u03c0\u2075 + 2\u03c0\u00b2",
+                "correction": "+2",
+                "mass_me": 11342.467545857591,
                 "actual_mev": 5797.0,
-                "residual_me": -15.07632711326005,
+                "residual_me": 1.978465234995383,
                 "charge": "-1",
                 "spin": "1/2",
                 "strangeness": -1,
-                "calc_mev": 5796.998304697634,
-                "base_mev": 5804.703987324732,
-                "corr_mev": -7.70568262709807,
-                "error_kev": -1.6953023659880273,
-                "sigma": 0.004238255914970068,
+                "quarks": "dsb",
+                "calc_mev": 5797.011004242306,
+                "base_mev": 5795.989006342305,
+                "corr_mev": 1.0219979,
+                "error_kev": 11.004242305716616,
+                "sigma": 0.02751060576429154,
                 "uncertainty": 0.4
         },
         {
                 "id": "v38",
-                "label": "+\u03c0\u2075",
-                "sublabel": "S=-2",
+                "label": "38\u03c0\u2075",
+                "sublabel": "",
                 "type": "virtual",
                 "formula": "38\u03c0\u2075",
                 "description": "Bottom + double strange"
@@ -1109,21 +1213,22 @@
         {
                 "id": "Ob",
                 "label": "\u03a9b\u207b",
-                "sublabel": "2\u03c0\u2074 - \u03c0\u00b2",
+                "sublabel": "2\u03c0\u2074 + \u03c0\u00b2",
                 "type": "particle",
-                "formula": "38\u03c0\u2075 + 2\u03c0\u2074 - \u03c0\u00b2",
-                "correction": "+29\u03c0/5",
-                "mass_me": 11813.696599507612,
+                "formula": "38\u03c0\u2075 + 2\u03c0\u2074 + \u03c0\u00b2",
+                "correction": "-3/2",
+                "mass_me": 11833.435808309789,
                 "actual_mev": 6046.1,
-                "residual_me": 18.22595140956946,
+                "residual_me": -1.5132573926075565,
                 "charge": "-1",
                 "spin": "1/2",
                 "strangeness": -2,
-                "calc_mev": 6046.09759114137,
-                "base_mev": 6036.78655796696,
-                "corr_mev": 9.311033174410168,
-                "error_kev": -2.408858630587929,
-                "sigma": 0.010949357411763313,
+                "quarks": "ssb",
+                "calc_mev": 6046.1067745137025,
+                "base_mev": 6046.873272938703,
+                "corr_mev": -0.766498425,
+                "error_kev": 6.774513702112017,
+                "sigma": 0.030793244100509168,
                 "uncertainty": 0.22
         }
 ], edges: [
@@ -1133,11 +1238,27 @@
         },
         {
                 "source": "root36",
+                "target": "vSb3pi4"
+        },
+        {
+                "source": "vSb3pi4",
                 "target": "Sb_plus"
         },
         {
+                "source": "vSb3pi4",
+                "target": "Sbs_plus"
+        },
+        {
                 "source": "root36",
+                "target": "vSb4pi4"
+        },
+        {
+                "source": "vSb4pi4",
                 "target": "Sb_minus"
+        },
+        {
+                "source": "vSb4pi4",
+                "target": "Sbs_minus"
         },
         {
                 "source": "root36",
@@ -1165,13 +1286,17 @@
 
         function buildElements(data) {
             const elements = [];
-            data.nodes.forEach(n => {
+            // Sort nodes by mass so siblings are ordered lightest-to-heaviest
+            const sortedNodes = [...data.nodes].sort((a, b) => {
+                return (a.actual_mev || 0) - (b.actual_mev || 0);
+            });
+            sortedNodes.forEach(n => {
                 let nodeType = n.type;
                 // Distinguish virtual node subtypes:
-                // - 'virtual': strangeness levels (root nodes, +π⁵ nodes) -> ellipse
-                // - 'virtual-coeff': coefficient bases (+6π⁴, +6π³, etc.) -> hexagon
+                // - 'virtual': strangeness levels (root nodes, empty sublabel) -> ellipse
+                // - 'virtual-coeff': coefficient bases (have sublabel like "Σ base") -> hexagon
                 if (n.type === 'virtual') {
-                    const isStrangenessLevel = n.id.startsWith('root') || n.label === '+π⁵';
+                    const isStrangenessLevel = n.id.startsWith('root') || n.sublabel === '';
                     nodeType = isStrangenessLevel ? 'virtual' : 'virtual-coeff';
                 }
                 const lbl = (nodeType === 'virtual' || nodeType === 'virtual-coeff')
@@ -1199,28 +1324,28 @@
                 style: [
                     { selector: 'node[type="particle"]', style: {
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '16px', 'font-weight': 'bold', 'color': '#fff',
+                        'font-size': '20px', 'font-weight': 'bold', 'color': '#fff',
                         'text-wrap': 'wrap', 'text-max-width': '150px',
-                        'shape': 'round-rectangle', 'width': 120, 'height': 55,
+                        'shape': 'round-rectangle', 'width': 130, 'height': 60,
                         'background-color': '#3498db', 'border-width': 2, 'border-color': '#fff'
                     } },
                     { selector: 'node[type="spin32"]', style: {
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '16px', 'font-weight': 'bold', 'color': '#fff',
+                        'font-size': '20px', 'font-weight': 'bold', 'color': '#fff',
                         'text-wrap': 'wrap', 'text-max-width': '150px',
-                        'shape': 'round-rectangle', 'width': 120, 'height': 55,
+                        'shape': 'round-rectangle', 'width': 130, 'height': 60,
                         'background-color': '#e74c3c', 'border-width': 2, 'border-color': '#fff'
                     } },
                     { selector: 'node[type="virtual"]', style: {
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '16px', 'color': '#fff', 'text-wrap': 'wrap',
-                        'shape': 'ellipse', 'width': 70, 'height': 70, 'background-color': '#9b59b6',
+                        'font-size': '20px', 'color': '#fff', 'text-wrap': 'wrap',
+                        'shape': 'ellipse', 'width': 85, 'height': 85, 'background-color': '#9b59b6',
                         'border-width': 2, 'border-style': 'dashed', 'border-color': '#fff'
                     } },
                     { selector: 'node[type="virtual-coeff"]', style: {
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '14px', 'color': '#fff', 'text-wrap': 'wrap',
-                        'shape': 'hexagon', 'width': 80, 'height': 80, 'background-color': '#8e44ad',
+                        'font-size': '20px', 'color': '#fff', 'text-wrap': 'wrap',
+                        'shape': 'hexagon', 'width': 95, 'height': 95, 'background-color': '#8e44ad',
                         'border-width': 2, 'border-style': 'solid', 'border-color': '#fff'
                     } },
                     { selector: 'edge', style: { 'width': 2, 'line-color': '#555', 'target-arrow-color': '#555', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier' } },
@@ -1234,13 +1359,22 @@
                         'elk.spacing.nodeNode': 60,
                         'elk.layered.spacing.nodeNodeBetweenLayers': 100,
                         'elk.partitioning.activate': true,
-                        'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP'
+                        'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+                        'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES'
                     },
                     padding: 30
                 }
             });
             cy.on('tap', 'node', e => showInfo(e.target.data()));
             cy.on('tap', e => { if(e.target === cy) document.getElementById('info').innerHTML = '<p style="color:#666">Click a node</p>'; });
+
+            // Set default zoom per tab
+            cy.one('layoutstop', () => {
+                if (tab === 'bottom') {
+                    cy.zoom(0.8);
+                    cy.center();
+                }
+            });
         }
 
         // Magnetic moments from data/magnetic.py
@@ -1260,62 +1394,62 @@
             'Lambda_1405': {
                 symbol: 'Λ(1405)',
                 jp: '1/2-',
-                formula: '9π⁵ - π - 1 - 1/π',
-                calc_mev: 1405.103,
+                formula: 'π⁷ - π⁵ + π⁴ - 2π³',
+                calc_mev: 1405.079,
                 exp_mev: 1405.1,
-                error_kev: 2.6,
+                error_kev: -21.5,
                 width: 50.5,
-                anomaly: 'Too light by ~100-200 MeV; may be K̄N molecular state'
+                anomaly: 'Pure π-polynomial; alternating sign pattern in powers'
             },
             'Roper': {
                 symbol: 'N(1440)',
                 jp: '1/2+',
-                formula: '9π⁵ + 2π³ + π²/2 - π',
-                calc_mev: 1439.986,
+                formula: 'π⁷ - 2π⁴ - 7',
+                calc_mev: 1440.238,
                 exp_mev: 1440.0,
-                error_kev: -13.7,
+                error_kev: 237.8,
                 width: 300.0,
-                anomaly: 'First radial excitation appears below orbital excitations'
+                anomaly: 'First radial excitation; correction includes the number 7'
             },
             'N_1535': {
                 symbol: 'N(1535)',
                 jp: '1/2-',
-                formula: '9π⁵ + 2π⁴ + π²/2 + π/3',
-                calc_mev: 1509.990,
-                exp_mev: 1510.0,
-                error_kev: -9.7,
+                formula: 'π⁷ - 2⁴',
+                calc_mev: 1535.191,
+                exp_mev: 1535.0,
+                error_kev: 190.7,
                 width: 170.0,
-                anomaly: 'Nearly degenerate with opposite-parity Roper'
+                anomaly: 'Nearly degenerate with opposite-parity Roper; correction is 2⁴=16'
             },
             'Lambda_1520': {
                 symbol: 'Λ(1520)',
                 jp: '3/2-',
-                formula: '9π⁵ + 2π⁴ + π³ - 2π - 1/(2π)',
-                calc_mev: 1519.486,
+                formula: 'π⁷ - π³ - 2⁴',
+                calc_mev: 1519.347,
                 exp_mev: 1519.5,
-                error_kev: -14.3,
+                error_kev: -153.5,
                 width: 15.6,
-                anomaly: 'Unusually narrow width; well-established D-wave state'
+                anomaly: 'Unusually narrow width; shares 2⁴=16 with N(1535)'
             },
             'N_1680': {
                 symbol: 'N(1680)',
                 jp: '5/2+',
-                formula: '9π⁵ + 6π⁴ - π³ - π² - 1/π',
-                calc_mev: 1684.987,
+                formula: 'π⁷ + π⁵ - π³',
+                calc_mev: 1683.898,
                 exp_mev: 1685.0,
-                error_kev: -12.9,
+                error_kev: -1101.8,
                 width: 130.0,
-                anomaly: 'F15 resonance; shares 9π⁵ + 6π⁴ base structure'
+                anomaly: 'F15 resonance; π⁷ + π⁵ base above resonance scale'
             },
             'Delta_1700': {
                 symbol: 'Δ(1700)',
                 jp: '3/2-',
-                formula: '9π⁵ + 6π⁴ - π² - 2',
-                calc_mev: 1699.972,
+                formula: 'π⁷ + π⁵',
+                calc_mev: 1699.742,
                 exp_mev: 1700.0,
-                error_kev: -28.1,
+                error_kev: -257.6,
                 width: 300.0,
-                anomaly: 'D33 resonance; shares 9π⁵ + 6π⁴ base structure'
+                anomaly: 'D33 resonance; exactly π⁷ + π⁵ (simplest above-scale formula)'
             },
             'X_3872': {
                 symbol: 'X(3872)',
@@ -1330,12 +1464,12 @@
             'N_2190': {
                 symbol: 'N(2190)',
                 jp: '7/2-',
-                formula: 'π⁷ + π⁶ + π⁵ - 2',
-                calc_mev: 2189.989,
+                formula: 'π⁷ + π⁶ + π⁵',
+                calc_mev: 2191.011,
                 exp_mev: 2190.0,
-                error_kev: -10.7,
+                error_kev: 1011.3,
                 width: 500.0,
-                anomaly: 'High-spin G17 resonance; mass equals [3]_π · π⁵ - 2 (q-integer structure)'
+                anomaly: 'High-spin G17 resonance; mass equals [3]_π · π⁵ (q-integer structure)'
             }
         };
 
@@ -1511,6 +1645,7 @@
         const nodeMesons = {
             'v7': ['eta_prime'],
             'vS6pi3': ['K_0'],
+            'vSs6pi4': ['eta'],
             'vXs6pi4': ['phi']
         };
 
@@ -1621,7 +1756,7 @@
                 const hasCorr = d.correction && corrMev !== 0;
 
                 document.getElementById('info').innerHTML = `
-                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${d.label.split('\n')[0]} <span style="font-size:0.55em; color:#888; margin-left:6px">${d.spin}<sup>${d.charge > 0 ? '+' : d.charge < 0 ? '−' : '0'}</sup></span></div>
+                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${d.label.split('\n')[0]} <span style="font-size:0.55em; color:#888; margin-left:6px">${d.quarks ? '(' + d.quarks + ')' : ''} ${d.spin}<sup>${d.charge > 0 ? '+' : d.charge < 0 ? '−' : '0'}</sup></span></div>
                     <div style="font-size:1.1em; margin-bottom:4px; display:flex; justify-content:space-between;">
                         <span class="formula">${d.formula}</span>
                         <span style="color:#888; margin-left:12px">${baseMev.toFixed(2)}</span>
@@ -1761,9 +1896,153 @@
             },
             'Lb': {
                 lifetime: '1.5×10⁻¹² s',
+                note: 'Longest-lived bottom baryon',
                 modes: [
-                    { products: 'Λc⁺ + ...', percent: 60, type: 'weak' },
-                    { products: 'p + ...', percent: 30, type: 'weak' }
+                    { products: 'Λc⁺ + π⁻', percent: 0.5, type: 'weak' },
+                    { products: 'Λc⁺ + π⁻ + π⁺ + π⁻', percent: 2.6, type: 'weak' },
+                    { products: 'J/ψ + Λ', percent: 0.04, type: 'weak' },
+                    { products: 'p + π⁻', percent: 0.0004, type: 'weak' }
+                ]
+            },
+            // Charm baryons
+            'Sc_pp': {
+                lifetime: '~2×10⁻²² s',
+                note: 'Strong decay to Λc⁺',
+                modes: [
+                    { products: 'Λc⁺ + π⁺', percent: 100, type: 'strong' }
+                ]
+            },
+            'Sc_plus': {
+                lifetime: '~5×10⁻²¹ s',
+                note: 'EM decay (isospin forbids strong)',
+                modes: [
+                    { products: 'Λc⁺ + γ', percent: 100, type: 'em' }
+                ]
+            },
+            'Sc_zero': {
+                lifetime: '~2×10⁻²² s',
+                note: 'Strong decay to Λc⁺',
+                modes: [
+                    { products: 'Λc⁺ + π⁻', percent: 100, type: 'strong' }
+                ]
+            },
+            'Scs_pp': {
+                lifetime: '~5×10⁻²³ s',
+                modes: [
+                    { products: 'Λc⁺ + π⁺', percent: 100, type: 'strong' }
+                ]
+            },
+            'Scs_plus': {
+                lifetime: '~5×10⁻²³ s',
+                modes: [
+                    { products: 'Λc⁺ + π⁰', percent: 100, type: 'strong' }
+                ]
+            },
+            'Scs_zero': {
+                lifetime: '~5×10⁻²³ s',
+                modes: [
+                    { products: 'Λc⁺ + π⁻', percent: 100, type: 'strong' }
+                ]
+            },
+            'Xc_plus': {
+                lifetime: '4.6×10⁻¹³ s',
+                modes: [
+                    { products: 'Ξ⁻ + π⁺ + π⁺', percent: 2.9, type: 'weak' },
+                    { products: 'pK⁻π⁺', percent: 1.1, type: 'weak' }
+                ]
+            },
+            'Xc_zero': {
+                lifetime: '1.5×10⁻¹³ s',
+                note: 'Shorter-lived than Ξc⁺',
+                modes: [
+                    { products: 'Ξ⁻ + π⁺', percent: 1.8, type: 'weak' },
+                    { products: 'pK⁻K⁻π⁺', percent: 0.6, type: 'weak' }
+                ]
+            },
+            'Xcs_plus': {
+                lifetime: '~3×10⁻²¹ s',
+                modes: [
+                    { products: 'Ξc⁰ + π⁺', percent: 50, type: 'strong' },
+                    { products: 'Ξc⁺ + π⁰', percent: 50, type: 'strong' }
+                ]
+            },
+            'Xcs_zero': {
+                lifetime: '~3×10⁻²¹ s',
+                modes: [
+                    { products: 'Ξc⁺ + π⁻', percent: 50, type: 'strong' },
+                    { products: 'Ξc⁰ + π⁰', percent: 50, type: 'strong' }
+                ]
+            },
+            'Oc_zero': {
+                lifetime: '2.7×10⁻¹³ s',
+                modes: [
+                    { products: 'Ω⁻ + π⁺', percent: 0.5, type: 'weak' },
+                    { products: 'Ξ⁰ + K⁻ + π⁺', percent: 0.5, type: 'weak' }
+                ]
+            },
+            'Ocs_zero': {
+                lifetime: '~10⁻²¹ s',
+                modes: [
+                    { products: 'Ωc⁰ + γ', percent: 100, type: 'em' }
+                ]
+            },
+            'Xcc': {
+                lifetime: '2.6×10⁻¹³ s',
+                note: 'Double charm baryon',
+                modes: [
+                    { products: 'Λc⁺ + K⁻ + π⁺ + π⁺', percent: 5.9, type: 'weak' },
+                    { products: 'Ξc⁺ + π⁺', percent: 1.0, type: 'weak' }
+                ]
+            },
+            // Bottom baryons
+            'Sb_plus': {
+                lifetime: '~6×10⁻²² s',
+                note: 'Strong decay to Λb⁰',
+                modes: [
+                    { products: 'Λb⁰ + π⁺', percent: 100, type: 'strong' }
+                ]
+            },
+            'Sb_minus': {
+                lifetime: '~6×10⁻²² s',
+                note: 'Strong decay to Λb⁰',
+                modes: [
+                    { products: 'Λb⁰ + π⁻', percent: 100, type: 'strong' }
+                ]
+            },
+            'Sbs_plus': {
+                lifetime: '~10⁻²⁰ s',
+                note: 'EM decay (20 MeV splitting)',
+                modes: [
+                    { products: 'Σb⁺ + γ', percent: 100, type: 'em' }
+                ]
+            },
+            'Sbs_minus': {
+                lifetime: '~10⁻²⁰ s',
+                note: 'EM decay (19 MeV splitting)',
+                modes: [
+                    { products: 'Σb⁻ + γ', percent: 100, type: 'em' }
+                ]
+            },
+            'Xb_zero': {
+                lifetime: '1.5×10⁻¹² s',
+                modes: [
+                    { products: 'Ξc⁺ + π⁻', percent: 1.0, type: 'weak' },
+                    { products: 'J/ψ + Ξ⁰', percent: 0.1, type: 'weak' }
+                ]
+            },
+            'Xb_minus': {
+                lifetime: '1.6×10⁻¹² s',
+                modes: [
+                    { products: 'Ξc⁰ + π⁻', percent: 1.0, type: 'weak' },
+                    { products: 'J/ψ + Ξ⁻', percent: 0.1, type: 'weak' }
+                ]
+            },
+            'Ob': {
+                lifetime: '1.6×10⁻¹² s',
+                note: 'Bottom + double strange',
+                modes: [
+                    { products: 'J/ψ + Ω⁻', percent: 0.3, type: 'weak' },
+                    { products: 'Ωc⁰ + π⁻', percent: 0.5, type: 'weak' }
                 ]
             }
         };

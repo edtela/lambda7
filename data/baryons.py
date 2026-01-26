@@ -23,9 +23,9 @@ from dataclasses import dataclass
 from typing import Optional, Callable, List
 
 try:
-    from .common import PI, M_E, E_NEG_PI, PI2, PI3, PI4, PI5, PI6, PI7, Q3_PI
+    from .common import PI, M_E, E_NEG_PI, PI2, PI3, PI4, PI5, PI6, PI7, Q3_PI, LN_PI, PHI
 except ImportError:
-    from common import PI, M_E, E_NEG_PI, PI2, PI3, PI4, PI5, PI6, PI7, Q3_PI
+    from common import PI, M_E, E_NEG_PI, PI2, PI3, PI4, PI5, PI6, PI7, Q3_PI, LN_PI, PHI
 
 
 @dataclass
@@ -62,6 +62,7 @@ class Particle:
     charge: int = 0
     strangeness: int = 0
     multiplet: str = ""
+    quarks: str = ""  # Quark content (e.g., "uud", "uds", "css")
 
     def mass_base(self) -> float:
         """Base mass from polynomial (in m_e)."""
@@ -156,7 +157,8 @@ def neutron_corr():
     return 8 / PI
 
 def lambda_corr():
-    return 1 / PI
+    """Λ correction: φ/5 (golden ratio / F₅)."""
+    return PHI / 5
 
 def sigma_plus_corr():
     return -2 / PI  # ~-0.637 m_e
@@ -236,7 +238,8 @@ def omega_c_corr():
     return -(4/5) * PI + 4/5
 
 def omega_c_star_corr():
-    return -8/5
+    """Ωc*⁰ correction: -ln(π) - 1/2."""
+    return -LN_PI - 1/2
 
 
 # =============================================================================
@@ -244,8 +247,8 @@ def omega_c_star_corr():
 # =============================================================================
 
 def xi_cc_pp_corr():
-    """Ξcc++ correction: π + 1/10 (from 7π⁶ formula)."""
-    return PI + 1/10
+    """Ξcc++ correction: π/6 (from 22π⁵ Archimedes formula)."""
+    return PI / 6
 
 
 # =============================================================================
@@ -257,24 +260,32 @@ def lambda_b_corr():
     return PI / 10
 
 def sigma_b_plus_corr():
-    """Σb⁺ correction: 18π/5."""
-    return (18/5) * PI
+    """Σb⁺ correction: 1/30."""
+    return 1/30
 
 def sigma_b_minus_corr():
-    """Σb⁻ correction: -1/5 (from 36π⁵ + 5π⁴ - 3π³ - 3π²)."""
-    return -1/5
+    """Σb⁻ correction: 28/5 = (L₄×L₃)/F₅."""
+    return 28/5
 
 def xi_b_zero_corr():
-    """Ξb⁰ correction: -4π/5."""
-    return -(4/5) * PI
+    """Ξb⁰ correction: 19/10."""
+    return 19/10
 
 def xi_b_minus_corr():
-    """Ξb⁻ correction: -24π/5."""
-    return -(24/5) * PI
+    """Ξb⁻ correction: 2 (integer)."""
+    return 2
 
 def omega_b_corr():
-    """Ωb⁻ correction: 29π/5."""
-    return (29/5) * PI
+    """Ωb⁻ correction: -3/2."""
+    return -3/2
+
+def sigma_b_star_plus_corr():
+    """Σb*⁺ correction: -7/9."""
+    return -7/9
+
+def sigma_b_star_minus_corr():
+    """Σb*⁻ correction: 21/10 = F₈/(2F₅)."""
+    return 21/10
 
 
 # =============================================================================
@@ -290,7 +301,7 @@ PARTICLES = {
         c5=6,
         correction_func=proton_corr,
         correction_latex=r'\frac{4}{5}e^{-\pi}',
-        spin='1/2', charge=1, strangeness=0, multiplet='octet'
+        spin='1/2', charge=1, strangeness=0, multiplet='octet', quarks='uud'
     ),
 
     'neutron': Particle(
@@ -299,7 +310,7 @@ PARTICLES = {
         c5=6,
         correction_func=neutron_corr,
         correction_latex=r'\frac{8}{\pi}',
-        spin='1/2', charge=0, strangeness=0, multiplet='octet'
+        spin='1/2', charge=0, strangeness=0, multiplet='octet', quarks='udd'
     ),
 
     'Lambda': Particle(
@@ -307,8 +318,8 @@ PARTICLES = {
         mass_exp=1115.683, node_id='L0',
         c5=7, c3=1, c2=1,
         correction_func=lambda_corr,
-        correction_latex=r'\frac{1}{\pi}',
-        spin='1/2', charge=0, strangeness=-1, multiplet='octet'
+        correction_latex=r'\frac{\varphi}{5}',
+        spin='1/2', charge=0, strangeness=-1, multiplet='octet', quarks='uds'
     ),
 
     'Sigma_plus': Particle(
@@ -317,7 +328,7 @@ PARTICLES = {
         c5=7, c3=6,
         correction_func=sigma_plus_corr,
         correction_latex=r'-\frac{2}{\pi}',
-        spin='1/2', charge=1, strangeness=-1, multiplet='octet'
+        spin='1/2', charge=1, strangeness=-1, multiplet='octet', quarks='uus'
     ),
 
     'Sigma_zero': Particle(
@@ -326,7 +337,7 @@ PARTICLES = {
         c5=7, c3=6, c2=1,
         correction_func=sigma_zero_corr,
         correction_latex=r'-4',
-        spin='1/2', charge=0, strangeness=-1, multiplet='octet'
+        spin='1/2', charge=0, strangeness=-1, multiplet='octet', quarks='uds'
     ),
 
     'Sigma_minus': Particle(
@@ -335,7 +346,7 @@ PARTICLES = {
         c5=7, c3=6, c2=2,
         correction_func=sigma_minus_corr,
         correction_latex=r'-\frac{23}{5}',
-        spin='1/2', charge=-1, strangeness=-1, multiplet='octet'
+        spin='1/2', charge=-1, strangeness=-1, multiplet='octet', quarks='dds'
     ),
 
     'Xi_zero': Particle(
@@ -344,7 +355,7 @@ PARTICLES = {
         c5=8, c4=1, c3=1,
         correction_func=xi_zero_corr,
         correction_latex=r'-\pi - \frac{1}{\pi}',
-        spin='1/2', charge=0, strangeness=-2, multiplet='octet'
+        spin='1/2', charge=0, strangeness=-2, multiplet='octet', quarks='uss'
     ),
 
     'Xi_minus': Particle(
@@ -353,7 +364,7 @@ PARTICLES = {
         c5=8, c4=1, c3=1, c2=1,
         correction_func=xi_minus_corr,
         correction_latex=r'\frac{1}{5\pi}',
-        spin='1/2', charge=-1, strangeness=-2, multiplet='octet'
+        spin='1/2', charge=-1, strangeness=-2, multiplet='octet', quarks='dss'
     ),
 
     # --- DECUPLET (spin-3/2, c4=6) ---
@@ -365,7 +376,7 @@ PARTICLES = {
         c5=6, c4=6, c2=-1,
         correction_func=delta_corr,
         correction_latex=r'\frac{1}{5}\left(\pi - 2 + 4e^{-\pi}\right)',
-        spin='3/2', charge=0, strangeness=0, multiplet='decuplet'
+        spin='3/2', charge=0, strangeness=0, multiplet='decuplet', quarks='uud'
     ),
 
     'Sigma_star_plus': Particle(
@@ -374,7 +385,7 @@ PARTICLES = {
         c5=7, c4=6, c2=-2,
         correction_func=sigma_star_plus_corr,
         correction_latex=r'\frac{1}{5}\left(\pi - 7 - e^{-\pi}\right)',
-        spin='3/2', charge=1, strangeness=-1, multiplet='decuplet'
+        spin='3/2', charge=1, strangeness=-1, multiplet='decuplet', quarks='uus'
     ),
 
     'Sigma_star_zero': Particle(
@@ -383,7 +394,7 @@ PARTICLES = {
         c5=7, c4=6, c2=-2,
         correction_func=sigma_star_zero_corr,
         correction_latex=r'+1',
-        spin='3/2', charge=0, strangeness=-1, multiplet='decuplet'
+        spin='3/2', charge=0, strangeness=-1, multiplet='decuplet', quarks='uds'
     ),
 
     'Sigma_star_minus': Particle(
@@ -392,7 +403,7 @@ PARTICLES = {
         c5=7, c4=6, c2=-1,
         correction_func=sigma_star_minus_corr,
         correction_latex=r'-2',
-        spin='3/2', charge=-1, strangeness=-1, multiplet='decuplet'
+        spin='3/2', charge=-1, strangeness=-1, multiplet='decuplet', quarks='dds'
     ),
 
     'Xi_star_zero': Particle(
@@ -401,7 +412,7 @@ PARTICLES = {
         c5=8, c4=6, c3=-1,
         correction_func=xi_star_zero_corr,
         correction_latex=r'-\frac{1}{5}(5\pi + 4)',
-        spin='3/2', charge=0, strangeness=-2, multiplet='decuplet'
+        spin='3/2', charge=0, strangeness=-2, multiplet='decuplet', quarks='uss'
     ),
 
     'Xi_star_minus': Particle(
@@ -410,7 +421,7 @@ PARTICLES = {
         c5=8, c4=6, c3=-1,
         correction_func=xi_star_minus_corr,
         correction_latex=r'\frac{1}{5}(4\pi - 1)',
-        spin='3/2', charge=-1, strangeness=-2, multiplet='decuplet'
+        spin='3/2', charge=-1, strangeness=-2, multiplet='decuplet', quarks='dss'
     ),
 
     'Omega': Particle(
@@ -419,7 +430,7 @@ PARTICLES = {
         c5=9, c4=6, c3=-2,
         correction_func=omega_corr,
         correction_latex=r'-\frac{6}{5}\left(\pi - e^{-\pi}\right)',
-        spin='3/2', charge=-1, strangeness=-3, multiplet='decuplet'
+        spin='3/2', charge=-1, strangeness=-3, multiplet='decuplet', quarks='sss'
     ),
 }
 
@@ -437,7 +448,7 @@ CHARM_PARTICLES = {
         c5=14, c4=2,
         correction_func=lambda_c_corr,
         correction_latex=r'-\frac{23}{5}',
-        spin='1/2', charge=1, strangeness=0, multiplet='charm-octet'
+        spin='1/2', charge=1, strangeness=0, multiplet='charm-octet', quarks='udc'
     ),
 
     'Sigma_c_pp': Particle(
@@ -446,7 +457,7 @@ CHARM_PARTICLES = {
         c5=14, c4=5, c3=1,
         correction_func=sigma_c_pp_corr,
         correction_latex=r'-\frac{\pi}{5} + \frac{3}{5}',
-        spin='1/2', charge=2, strangeness=0, multiplet='charm-octet'
+        spin='1/2', charge=2, strangeness=0, multiplet='charm-octet', quarks='uuc'
     ),
 
     'Sigma_c_plus': Particle(
@@ -455,7 +466,7 @@ CHARM_PARTICLES = {
         c5=14, c4=5, c3=1,
         correction_func=sigma_c_p_corr,
         correction_latex=r'\frac{3\pi}{5} - 4',
-        spin='1/2', charge=1, strangeness=0, multiplet='charm-octet'
+        spin='1/2', charge=1, strangeness=0, multiplet='charm-octet', quarks='udc'
     ),
 
     'Sigma_c_zero': Particle(
@@ -464,7 +475,7 @@ CHARM_PARTICLES = {
         c5=14, c4=5, c3=1,
         correction_func=sigma_c_0_corr,
         correction_latex=r'\pi - \frac{18}{5}',
-        spin='1/2', charge=0, strangeness=0, multiplet='charm-octet'
+        spin='1/2', charge=0, strangeness=0, multiplet='charm-octet', quarks='ddc'
     ),
 
     'Xi_c_plus': Particle(
@@ -473,7 +484,7 @@ CHARM_PARTICLES = {
         c5=15, c4=2, c3=1, c2=1,
         correction_func=xi_c_p_corr,
         correction_latex=r'\frac{7\pi}{5} - \frac{6}{5}',
-        spin='1/2', charge=1, strangeness=-1, multiplet='charm-octet'
+        spin='1/2', charge=1, strangeness=-1, multiplet='charm-octet', quarks='usc'
     ),
 
     'Xi_c_zero': Particle(
@@ -482,7 +493,7 @@ CHARM_PARTICLES = {
         c5=15, c4=2, c3=1, c2=2,
         correction_func=xi_c_0_corr,
         correction_latex=r'-\pi + \frac{9}{5}',
-        spin='1/2', charge=0, strangeness=-1, multiplet='charm-octet'
+        spin='1/2', charge=0, strangeness=-1, multiplet='charm-octet', quarks='dsc'
     ),
 
     'Omega_c': Particle(
@@ -491,7 +502,7 @@ CHARM_PARTICLES = {
         c5=16, c4=4, c2=-1,
         correction_func=omega_c_corr,
         correction_latex=r'-\frac{4\pi}{5} + \frac{4}{5}',
-        spin='1/2', charge=0, strangeness=-2, multiplet='charm-octet'
+        spin='1/2', charge=0, strangeness=-2, multiplet='charm-octet', quarks='ssc'
     ),
 
     # --- CHARM DECUPLET-LIKE (spin-3/2, c4=6) ---
@@ -502,7 +513,7 @@ CHARM_PARTICLES = {
         c5=14, c4=6, c3=2,
         correction_func=sigma_c_star_pp_corr,
         correction_latex=r'-\pi + \frac{4}{5}',
-        spin='3/2', charge=2, strangeness=0, multiplet='charm-decuplet'
+        spin='3/2', charge=2, strangeness=0, multiplet='charm-decuplet', quarks='uuc'
     ),
 
     'Sigma_c_star_plus': Particle(
@@ -511,7 +522,7 @@ CHARM_PARTICLES = {
         c5=14, c4=6, c3=2,
         correction_func=sigma_c_star_p_corr,
         correction_latex=r'-\frac{4\pi}{5} - \frac{8}{5}',
-        spin='3/2', charge=1, strangeness=0, multiplet='charm-decuplet'
+        spin='3/2', charge=1, strangeness=0, multiplet='charm-decuplet', quarks='udc'
     ),
 
     'Sigma_c_star_zero': Particle(
@@ -520,7 +531,7 @@ CHARM_PARTICLES = {
         c5=14, c4=6, c3=2,
         correction_func=sigma_c_star_0_corr,
         correction_latex=r'-\frac{11}{5}',
-        spin='3/2', charge=0, strangeness=0, multiplet='charm-decuplet'
+        spin='3/2', charge=0, strangeness=0, multiplet='charm-decuplet', quarks='ddc'
     ),
 
     'Xi_c_star_plus': Particle(
@@ -529,7 +540,7 @@ CHARM_PARTICLES = {
         c5=15, c4=6,
         correction_func=xi_c_star_p_corr,
         correction_latex=r'\frac{4\pi}{5}',
-        spin='3/2', charge=1, strangeness=-1, multiplet='charm-decuplet'
+        spin='3/2', charge=1, strangeness=-1, multiplet='charm-decuplet', quarks='usc'
     ),
 
     'Xi_c_star_zero': Particle(
@@ -538,7 +549,7 @@ CHARM_PARTICLES = {
         c5=15, c4=6,
         correction_func=xi_c_star_0_corr,
         correction_latex=r'\frac{13\pi}{10}',
-        spin='3/2', charge=0, strangeness=-1, multiplet='charm-decuplet'
+        spin='3/2', charge=0, strangeness=-1, multiplet='charm-decuplet', quarks='dsc'
     ),
 
     'Omega_c_star': Particle(
@@ -546,8 +557,8 @@ CHARM_PARTICLES = {
         mass_exp=2765.9, node_id='Ocs_zero',
         c5=16, c4=5, c3=1,
         correction_func=omega_c_star_corr,
-        correction_latex=r'-\frac{8}{5}',
-        spin='3/2', charge=0, strangeness=-2, multiplet='charm-decuplet'
+        correction_latex=r'-\ln\pi - \frac{1}{2}',
+        spin='3/2', charge=0, strangeness=-2, multiplet='charm-decuplet', quarks='ssc'
     ),
 }
 
@@ -560,10 +571,10 @@ DOUBLE_CHARM_PARTICLES = {
     'Xi_cc_pp': Particle(
         name='Xi_cc++', symbol='Ξcc⁺⁺', latex_symbol=r'\Xi_{cc}^{++}',
         mass_exp=3621.55, node_id='Xcc',
-        c6=7, c4=3, c3=2,
+        c5=22, c4=3, c3=2,
         correction_func=xi_cc_pp_corr,
-        correction_latex=r'\pi + \frac{1}{10}',
-        spin='1/2', charge=2, strangeness=0, multiplet='double-charm'
+        correction_latex=r'\frac{\pi}{6}',
+        spin='1/2', charge=2, strangeness=0, multiplet='double-charm', quarks='ucc'
     ),
 }
 
@@ -582,52 +593,71 @@ BOTTOM_PARTICLES = {
         c5=36, c2=-2,
         correction_func=lambda_b_corr,
         correction_latex=r'\frac{\pi}{10}',
-        spin='1/2', charge=0, strangeness=0, multiplet='bottom-octet'
+        spin='1/2', charge=0, strangeness=0, multiplet='bottom-octet', quarks='udb'
     ),
 
     'Sigma_b_plus': Particle(
         name='Sigma_b+', symbol='Σb⁺', latex_symbol=r'\Sigma_b^+',
         mass_exp=5810.56, node_id='Sb_plus',
-        c5=36, c4=3, c3=1, c2=2,
+        c5=36, c4=3, c3=2,
         correction_func=sigma_b_plus_corr,
-        correction_latex=r'\frac{18\pi}{5}',
-        spin='1/2', charge=1, strangeness=0, multiplet='bottom-octet'
+        correction_latex=r'\frac{1}{30}',
+        spin='1/2', charge=1, strangeness=0, multiplet='bottom-octet', quarks='uub'
     ),
 
     'Sigma_b_minus': Particle(
         name='Sigma_b-', symbol='Σb⁻', latex_symbol=r'\Sigma_b^-',
         mass_exp=5815.64, node_id='Sb_minus',
-        c5=36, c4=5, c3=-3, c2=-3,
+        c5=36, c4=4, c3=-1,
         correction_func=sigma_b_minus_corr,
-        correction_latex=r'-\frac{1}{5}',
-        spin='1/2', charge=-1, strangeness=0, multiplet='bottom-octet'
+        correction_latex=r'\frac{28}{5}',
+        spin='1/2', charge=-1, strangeness=0, multiplet='bottom-octet', quarks='ddb'
+    ),
+
+    # --- BOTTOM DECUPLET-LIKE (spin-3/2) ---
+    'Sigma_b_star_plus': Particle(
+        name='Sigma_b*+', symbol='Σb*⁺', latex_symbol=r'\Sigma_b^{*+}',
+        mass_exp=5830.32, node_id='Sbs_plus',
+        c5=36, c4=3, c3=2, c2=4,
+        correction_func=sigma_b_star_plus_corr,
+        correction_latex=r'-\frac{7}{9}',
+        spin='3/2', charge=1, strangeness=0, multiplet='bottom-decuplet', quarks='uub'
+    ),
+
+    'Sigma_b_star_minus': Particle(
+        name='Sigma_b*-', symbol='Σb*⁻', latex_symbol=r'\Sigma_b^{*-}',
+        mass_exp=5834.74, node_id='Sbs_minus',
+        c5=36, c4=4, c2=1,
+        correction_func=sigma_b_star_minus_corr,
+        correction_latex=r'\frac{21}{10}',
+        spin='3/2', charge=-1, strangeness=0, multiplet='bottom-decuplet', quarks='ddb'
     ),
 
     'Xi_b_zero': Particle(
         name='Xi_b0', symbol='Ξb⁰', latex_symbol=r'\Xi_b^0',
         mass_exp=5791.9, node_id='Xb_zero',
-        c5=37, c4=1, c3=-3, c2=1,
+        c5=37, c2=1,
         correction_func=xi_b_zero_corr,
-        correction_latex=r'-\frac{4\pi}{5}',
-        spin='1/2', charge=0, strangeness=-1, multiplet='bottom-octet'
+        correction_latex=r'\frac{19}{10}',
+        spin='1/2', charge=0, strangeness=-1, multiplet='bottom-octet', quarks='usb'
     ),
 
     'Xi_b_minus': Particle(
         name='Xi_b-', symbol='Ξb⁻', latex_symbol=r'\Xi_b^-',
         mass_exp=5797.0, node_id='Xb_minus',
-        c5=37, c4=1, c3=-1, c2=-3,
+        c5=37, c2=2,
         correction_func=xi_b_minus_corr,
-        correction_latex=r'-\frac{24\pi}{5}',
-        spin='1/2', charge=-1, strangeness=-1, multiplet='bottom-octet'
+        correction_latex=r'2',
+        spin='1/2', charge=-1, strangeness=-1, multiplet='bottom-octet', quarks='dsb'
     ),
 
     'Omega_b': Particle(
         name='Omega_b-', symbol='Ωb⁻', latex_symbol=r'\Omega_b^-',
         mass_exp=6046.1, node_id='Ob',
-        c5=38, c4=2, c2=-1,
+        c5=38, c4=2, c2=1,
         correction_func=omega_b_corr,
-        correction_latex=r'\frac{29\pi}{5}',
-        spin='1/2', charge=-1, strangeness=-2, multiplet='bottom-octet'
+        correction_latex=r'-\frac{3}{2}',
+        spin='1/2', charge=-1, strangeness=-2, multiplet='bottom-octet', quarks='ssb'
     ),
 }
 

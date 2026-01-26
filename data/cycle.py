@@ -19,7 +19,7 @@ LIGHT_CYCLE = {
         # === S=0 Level (6π⁵) ===
         'root6': {
             'label': '6π⁵',
-            'sublabel': 'S=0',
+            'sublabel': '',
             'formula': '6π⁵',
             'c5': 6,
             'strangeness': 0,
@@ -31,7 +31,7 @@ LIGHT_CYCLE = {
         },
 
         'vD6pi4': {
-            'label': '+6π⁴',
+            'label': '6π⁴',
             'sublabel': 'Δ base',
             'formula': '6π⁵ + 6π⁴',
             'c5': 6, 'c4': 6,
@@ -45,8 +45,8 @@ LIGHT_CYCLE = {
 
         # === S=-1 Level (7π⁵) ===
         'v7': {
-            'label': '+π⁵',
-            'sublabel': 'S=-1',
+            'label': '7π⁵',
+            'sublabel': '',
             'formula': '7π⁵',
             'c5': 7,
             'strangeness': -1,
@@ -58,7 +58,7 @@ LIGHT_CYCLE = {
         },
 
         'vS6pi3': {
-            'label': '+6π³',
+            'label': '6π³',
             'sublabel': 'Σ base',
             'formula': '7π⁵ + 6π³',
             'c5': 7, 'c3': 6,
@@ -71,7 +71,7 @@ LIGHT_CYCLE = {
         },
 
         'vSs6pi4': {
-            'label': '+6π⁴',
+            'label': '6π⁴',
             'sublabel': 'Σ* base',
             'formula': '7π⁵ + 6π⁴',
             'c5': 7, 'c4': 6,
@@ -80,13 +80,13 @@ LIGHT_CYCLE = {
             'parent': 'v7',
             'particles': ['Sigma_star_plus', 'Sigma_star_zero', 'Sigma_star_minus'],
             'resonances': ['N_1535'],  # η-type mirror
-            'mesons': [],
+            'mesons': ['eta'],  # 3π⁵ + π⁴ shares π⁴ structure
         },
 
         # === S=-2 Level (8π⁵) ===
         'v8': {
-            'label': '+π⁵',
-            'sublabel': 'S=-2',
+            'label': '8π⁵',
+            'sublabel': '',
             'formula': '8π⁵',
             'c5': 8,
             'strangeness': -2,
@@ -98,7 +98,7 @@ LIGHT_CYCLE = {
         },
 
         'vXpi4pi3': {
-            'label': '+π⁴+π³',
+            'label': 'π⁴+π³',
             'sublabel': 'Ξ base',
             'formula': '8π⁵ + π⁴ + π³',
             'c5': 8, 'c4': 1, 'c3': 1,
@@ -111,7 +111,7 @@ LIGHT_CYCLE = {
         },
 
         'vXs6pi4': {
-            'label': '+6π⁴-π³',
+            'label': '6π⁴-π³',
             'sublabel': 'Ξ* base',
             'formula': '8π⁵ + 6π⁴ - π³',
             'c5': 8, 'c4': 6, 'c3': -1,
@@ -125,8 +125,8 @@ LIGHT_CYCLE = {
 
         # === S=-3 Level (9π⁵) ===
         'v9': {
-            'label': '+π⁵',
-            'sublabel': 'S=-3',
+            'label': '9π⁵',
+            'sublabel': '',
             'formula': '9π⁵',
             'c5': 9,
             'strangeness': -3,
@@ -138,7 +138,7 @@ LIGHT_CYCLE = {
         },
 
         'vOm6pi4': {
-            'label': '+6π⁴-2π³',
+            'label': '6π⁴-2π³',
             'sublabel': 'Ω base',
             'formula': '9π⁵ + 6π⁴ - 2π³',
             'c5': 9, 'c4': 6, 'c3': -2,
@@ -177,7 +177,7 @@ CHARM_CYCLE = {
     'nodes': {
         'root14': {
             'label': '14π⁵',
-            'sublabel': 'C=1',
+            'sublabel': '',
             'formula': '14π⁵',
             'c5': 14,
             'strangeness': 0,
@@ -189,7 +189,7 @@ CHARM_CYCLE = {
         },
 
         'vSc': {
-            'label': '+5π⁴+π³',
+            'label': '5π⁴+π³',
             'sublabel': 'Σc base',
             'formula': '14π⁵ + 5π⁴ + π³',
             'c5': 14, 'c4': 5, 'c3': 1,
@@ -202,7 +202,7 @@ CHARM_CYCLE = {
         },
 
         'vScs': {
-            'label': '+6π⁴+2π³',
+            'label': '6π⁴+2π³',
             'sublabel': 'Σc* base',
             'formula': '14π⁵ + 6π⁴ + 2π³',
             'c5': 14, 'c4': 6, 'c3': 2,
@@ -215,8 +215,8 @@ CHARM_CYCLE = {
         },
 
         'v15': {
-            'label': '+π⁵',
-            'sublabel': 'S=-1',
+            'label': '15π⁵',
+            'sublabel': '',
             'formula': '15π⁵',
             'c5': 15,
             'strangeness': -1,
@@ -228,7 +228,7 @@ CHARM_CYCLE = {
         },
 
         'vXc': {
-            'label': '+2π⁴+π³',
+            'label': '2π⁴+π³',
             'sublabel': 'Ξc base',
             'formula': '15π⁵ + 2π⁴ + π³',
             'c5': 15, 'c4': 2, 'c3': 1,
@@ -241,7 +241,7 @@ CHARM_CYCLE = {
         },
 
         'vXcs': {
-            'label': '+6π⁴',
+            'label': '6π⁴',
             'sublabel': 'Ξc* base',
             'formula': '15π⁵ + 6π⁴',
             'c5': 15, 'c4': 6,
@@ -254,14 +254,28 @@ CHARM_CYCLE = {
         },
 
         'v16': {
-            'label': '+π⁵',
-            'sublabel': 'S=-2',
+            'label': '16π⁵',
+            'sublabel': '',
             'formula': '16π⁵',
             'c5': 16,
             'strangeness': -2,
             'description': 'Double-strange charm level',
             'parent': 'v15',
             'particles': ['Omega_c', 'Omega_c_star'],
+            'resonances': [],
+            'mesons': [],
+        },
+
+        # === Double Charm (7π⁶) ===
+        'v7pi6': {
+            'label': '7π⁶',
+            'sublabel': 'Ξcc base',
+            'formula': '7π⁶',
+            'c6': 7,
+            'strangeness': 0,
+            'description': 'Double charm level (C=2)',
+            'parent': 'v16',
+            'particles': ['Xi_cc_pp'],
             'resonances': [],
             'mesons': [],
         },
@@ -274,6 +288,7 @@ CHARM_CYCLE = {
         ('v15', 'vXc'),
         ('v15', 'vXcs'),
         ('v15', 'v16'),
+        ('v16', 'v7pi6'),
     ],
 }
 
@@ -289,20 +304,46 @@ BOTTOM_CYCLE = {
     'nodes': {
         'root36': {
             'label': '36π⁵',
-            'sublabel': 'B=-1',
+            'sublabel': '',
             'formula': '36π⁵',
             'c5': 36,
             'strangeness': 0,
             'description': 'Bottom baryon base (36 = 6²)',
             'parent': None,
-            'particles': ['Lambda_b', 'Sigma_b_plus', 'Sigma_b_minus'],
+            'particles': ['Lambda_b'],
+            'resonances': [],
+            'mesons': [],
+        },
+
+        'vSb3pi4': {
+            'label': '3π⁴+2π³',
+            'sublabel': 'Σb⁺ base',
+            'formula': '36π⁵ + 3π⁴ + 2π³',
+            'c5': 36, 'c4': 3, 'c3': 2,
+            'strangeness': 0,
+            'description': 'Sigma_b+ family base',
+            'parent': 'root36',
+            'particles': ['Sigma_b_plus', 'Sigma_b_star_plus'],
+            'resonances': [],
+            'mesons': [],
+        },
+
+        'vSb4pi4': {
+            'label': '4π⁴',
+            'sublabel': 'Σb⁻ base',
+            'formula': '36π⁵ + 4π⁴',
+            'c5': 36, 'c4': 4,
+            'strangeness': 0,
+            'description': 'Sigma_b- family base',
+            'parent': 'root36',
+            'particles': ['Sigma_b_minus', 'Sigma_b_star_minus'],
             'resonances': [],
             'mesons': [],
         },
 
         'v37': {
-            'label': '+π⁵',
-            'sublabel': 'S=-1',
+            'label': '37π⁵',
+            'sublabel': '',
             'formula': '37π⁵',
             'c5': 37,
             'strangeness': -1,
@@ -314,8 +355,8 @@ BOTTOM_CYCLE = {
         },
 
         'v38': {
-            'label': '+π⁵',
-            'sublabel': 'S=-2',
+            'label': '38π⁵',
+            'sublabel': '',
             'formula': '38π⁵',
             'c5': 38,
             'strangeness': -2,
@@ -328,6 +369,8 @@ BOTTOM_CYCLE = {
     },
 
     'edges': [
+        ('root36', 'vSb3pi4'),
+        ('root36', 'vSb4pi4'),
         ('root36', 'v37'),
         ('v37', 'v38'),
     ],

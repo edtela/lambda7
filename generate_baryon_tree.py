@@ -28,6 +28,17 @@ ALL_PARTICLES = {**PARTICLES, **CHARM_PARTICLES, **BOTTOM_PARTICLES, **DOUBLE_CH
 # Build node_id to key mapping from the particle data
 NODE_ID_TO_KEY = {p.node_id: key for key, p in ALL_PARTICLES.items()}
 
+# Build mapping from node_id to cycle node data
+CYCLE_NODES = {}
+for cycle in [LIGHT_CYCLE, CHARM_CYCLE, BOTTOM_CYCLE]:
+    for node_id, node in cycle['nodes'].items():
+        CYCLE_NODES[node_id] = node
+
+def get_cycle_node(node_id):
+    """Get label and sublabel from cycle data for a virtual node."""
+    node = CYCLE_NODES.get(node_id, {})
+    return node.get('label', node_id), node.get('sublabel', '')
+
 # Map magnetic moment keys to particle keys (magnetic.py uses different naming)
 MAG_KEY_TO_PARTICLE = {
     'p': 'proton', 'n': 'neutron', 'Lambda': 'Lambda',
@@ -214,6 +225,8 @@ UNCERTAINTIES = {
     'Lambda_b': 0.06,
     'Sigma_b_plus': 0.5,
     'Sigma_b_minus': 0.5,
+    'Sigma_b_star_plus': 0.5,
+    'Sigma_b_star_minus': 0.5,
     'Xi_b_zero': 0.4,
     'Xi_b_minus': 0.4,
     'Omega_b': 0.22,
@@ -234,6 +247,26 @@ def latex_to_display(latex):
     if s == r'-\frac{6}{5}\left(\pi - e^{-\pi}\right)':
         return '-(6/5)(π - e⁻ᵖⁱ)'
 
+    # Handle \frac{1}{5}\left(\pi - 2 + 4e^{-\pi}\right) pattern (Delta)
+    if s == r'\frac{1}{5}\left(\pi - 2 + 4e^{-\pi}\right)':
+        return '(1/5)(π - 2 + 4e⁻ᵖⁱ)'
+
+    # Handle \frac{1}{5}\left(\pi - 7 - e^{-\pi}\right) pattern (Sigma_star_plus)
+    if s == r'\frac{1}{5}\left(\pi - 7 - e^{-\pi}\right)':
+        return '(1/5)(π - 7 - e⁻ᵖⁱ)'
+
+    # Handle similar patterns for other Sigma* particles
+    # \frac{1}{5}\left(a\pi + b + ce^{-\pi}\right)
+    m = re.match(r'^([+-])?\\frac\{(\d+)\}\{(\d+)\}\\left\(([^)]+)\\right\)$', s)
+    if m:
+        sign = m.group(1) or ''
+        num = m.group(2)
+        denom = m.group(3)
+        inner = m.group(4)
+        # Convert inner expression
+        inner = inner.replace('\\pi', 'π').replace('e^{-\\pi}', 'e⁻ᵖⁱ')
+        return f"{sign}({num}/{denom})({inner})"
+
     # Complex formulas - return None
     if '\\left' in latex or '\\right' in latex:
         return None
@@ -241,6 +274,10 @@ def latex_to_display(latex):
     # Handle -π - 1/π pattern (Xi0)
     if s == r'-\pi - \frac{1}{\pi}':
         return '-π - 1/π'
+
+    # Handle -\ln\pi - \frac{1}{2} pattern (Omega_c_star)
+    if s == r'-\ln\pi - \frac{1}{2}':
+        return '-ln(π) - 1/2'
 
     # Handle Ξ* patterns: -\frac{1}{5}(5\pi + 4) and \frac{1}{5}(4\pi - 1)
     if s == r'-\frac{1}{5}(5\pi + 4)':
@@ -271,6 +308,45 @@ def latex_to_display(latex):
         num = m.group(2)
         denom = m.group(3)
         return f"{sign}({num}/{denom})e⁻ᵖⁱ"
+
+    # Compound patterns for charm baryons:
+    # \frac{3\pi}{5} - 4 (Sigma_c_plus)
+    m = re.match(r'^([+-])?\\frac\{([^}]+)\}\{([^}]+)\}\s*([+-])\s*(\d+)$', s)
+    if m:
+        sign1 = m.group(1) or ''
+        num = m.group(2).replace('\\pi', 'π')
+        denom = m.group(3).replace('\\pi', 'π')
+        sign2 = m.group(4)
+        val = m.group(5)
+        return f"{sign1}{num}/{denom} {sign2} {val}"
+
+    # -\frac{\pi}{5} + \frac{3}{5} (Sigma_c_pp)
+    m = re.match(r'^([+-])?\\frac\{([^}]+)\}\{([^}]+)\}\s*([+-])\s*\\frac\{([^}]+)\}\{([^}]+)\}$', s)
+    if m:
+        sign1 = m.group(1) or ''
+        num1 = m.group(2).replace('\\pi', 'π')
+        denom1 = m.group(3).replace('\\pi', 'π')
+        sign2 = m.group(4)
+        num2 = m.group(5).replace('\\pi', 'π')
+        denom2 = m.group(6).replace('\\pi', 'π')
+        return f"{sign1}{num1}/{denom1} {sign2} {num2}/{denom2}"
+
+    # \pi - \frac{18}{5} (Sigma_c_zero)
+    m = re.match(r'^([+-])?\\pi\s*([+-])\s*\\frac\{([^}]+)\}\{([^}]+)\}$', s)
+    if m:
+        sign1 = m.group(1) or ''
+        sign2 = m.group(2)
+        num = m.group(3).replace('\\pi', 'π')
+        denom = m.group(4).replace('\\pi', 'π')
+        return f"{sign1}π {sign2} {num}/{denom}"
+
+    # Simple \pi +/- number patterns
+    m = re.match(r'^([+-])?\\pi\s*([+-])\s*(\d+)$', s)
+    if m:
+        sign1 = m.group(1) or ''
+        sign2 = m.group(2)
+        val = m.group(3)
+        return f"{sign1}π {sign2} {val}"
 
     return None
 
@@ -372,12 +448,14 @@ def format_remainder(p, base_c5):
     return "".join(p for p in parts if p) if parts else ""
 
 
-def format_diff(p, parent_c5=0, parent_c4=0, parent_c3=0, parent_c2=0):
+def format_diff(p, parent_c6=0, parent_c5=0, parent_c4=0, parent_c3=0, parent_c2=0):
     """Format what this particle adds beyond its parent node."""
     parts = []
     # c6 term (for double charm)
     if hasattr(p, 'c6') and p.c6:
-        parts.append(format_coeff(p.c6, "π⁶", is_first=len(parts)==0))
+        diff_c6 = p.c6 - parent_c6
+        if diff_c6:
+            parts.append(format_coeff(diff_c6, "π⁶", is_first=len(parts)==0))
     # Differences from parent
     diff_c5 = p.c5 - parent_c5
     if diff_c5:
@@ -405,10 +483,11 @@ def generate_light_baryon_data():
     edges = []
 
     # === ROOT: 6π⁵ (virtual) ===
+    lbl, sublbl = get_cycle_node('root6')
     nodes.append({
         'id': 'root6',
-        'label': '6π⁵',
-        'sublabel': 'S=0',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '6π⁵',
         'description': 'Light baryon base (S=0)'
@@ -431,7 +510,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(p),
         'charge': '+1',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': p.quarks
     })
     edges.append({'source': 'root6', 'target': p.node_id})
 
@@ -452,15 +532,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(n),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': n.quarks
     })
     edges.append({'source': 'root6', 'target': n.node_id})
 
     # === Delta decuplet: share 6π⁴ ===
+    lbl, sublbl = get_cycle_node('vD6pi4')
     nodes.append({
         'id': 'vD6pi4',
-        'label': '+6π⁴',
-        'sublabel': 'Δ base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '6π⁵ + 6π⁴',
         'description': 'Delta decuplet base (6π⁴)'
@@ -483,15 +565,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(delta),
         'charge': '++,+,0,-',
         'spin': '3/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': delta.quarks
     })
     edges.append({'source': 'vD6pi4', 'target': delta.node_id})
 
     # === 7π⁵ LEVEL (S=-1) ===
+    lbl, sublbl = get_cycle_node('v7')
     nodes.append({
         'id': 'v7',
-        'label': '+π⁵',
-        'sublabel': 'S=-1',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '7π⁵',
         'description': 'Strangeness -1 level'
@@ -515,15 +599,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(lam),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': lam.quarks
     })
     edges.append({'source': 'v7', 'target': lam.node_id})
 
     # === Sigma octet: share 6π³ ===
+    lbl, sublbl = get_cycle_node('vS6pi3')
     nodes.append({
         'id': 'vS6pi3',
-        'label': '+6π³',
-        'sublabel': 'Σ base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '7π⁵ + 6π³',
         'description': 'Sigma octet base (6π³)'
@@ -547,7 +633,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(sp),
         'charge': '+1',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': sp.quarks
     })
     edges.append({'source': 'vS6pi3', 'target': sp.node_id})
 
@@ -568,7 +655,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(s0),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': s0.quarks
     })
     edges.append({'source': 'vS6pi3', 'target': s0.node_id})
 
@@ -589,15 +677,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(sm),
         'charge': '-1',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': sm.quarks
     })
     edges.append({'source': 'vS6pi3', 'target': sm.node_id})
 
     # === Sigma* decuplet: share 6π⁴ ===
+    lbl, sublbl = get_cycle_node('vSs6pi4')
     nodes.append({
         'id': 'vSs6pi4',
-        'label': '+6π⁴',
-        'sublabel': 'Σ* base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '7π⁵ + 6π⁴',
         'description': 'Sigma* decuplet base (6π⁴)'
@@ -621,7 +711,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(ssp),
         'charge': '+1',
         'spin': '3/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': ssp.quarks
     })
     edges.append({'source': 'vSs6pi4', 'target': ssp.node_id})
 
@@ -642,7 +733,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(ss0),
         'charge': '0',
         'spin': '3/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': ss0.quarks
     })
     edges.append({'source': 'vSs6pi4', 'target': ss0.node_id})
 
@@ -663,15 +755,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(ssm),
         'charge': '-1',
         'spin': '3/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': ssm.quarks
     })
     edges.append({'source': 'vSs6pi4', 'target': ssm.node_id})
 
     # === 8π⁵ LEVEL (S=-2) ===
+    lbl, sublbl = get_cycle_node('v8')
     nodes.append({
         'id': 'v8',
-        'label': '+π⁵',
-        'sublabel': 'S=-2',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '8π⁵',
         'description': 'Strangeness -2 level (Xi)'
@@ -679,10 +773,11 @@ def generate_light_baryon_data():
     edges.append({'source': 'v7', 'target': 'v8'})
 
     # === Xi octet: share π⁴ + π³ ===
+    lbl, sublbl = get_cycle_node('vXpi4pi3')
     nodes.append({
         'id': 'vXpi4pi3',
-        'label': '+π⁴+π³',
-        'sublabel': 'Ξ base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '8π⁵ + π⁴ + π³',
         'description': 'Xi octet base'
@@ -706,7 +801,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(x0),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': x0.quarks
     })
     edges.append({'source': 'vXpi4pi3', 'target': x0.node_id})
 
@@ -727,15 +823,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(xm),
         'charge': '-1',
         'spin': '1/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': xm.quarks
     })
     edges.append({'source': 'vXpi4pi3', 'target': xm.node_id})
 
     # === Xi* decuplet: share 6π⁴ - π³ ===
+    lbl, sublbl = get_cycle_node('vXs6pi4')
     nodes.append({
         'id': 'vXs6pi4',
-        'label': '+6π⁴-π³',
-        'sublabel': 'Ξ* base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '8π⁵ + 6π⁴ - π³',
         'description': 'Xi* decuplet base'
@@ -759,7 +857,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(xs0),
         'charge': '0',
         'spin': '3/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': xs0.quarks
     })
     edges.append({'source': 'vXs6pi4', 'target': xs0.node_id})
 
@@ -780,15 +879,17 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(xsm),
         'charge': '-1',
         'spin': '3/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': xsm.quarks
     })
     edges.append({'source': 'vXs6pi4', 'target': xsm.node_id})
 
     # === 9π⁵ LEVEL (S=-3) ===
+    lbl, sublbl = get_cycle_node('v9')
     nodes.append({
         'id': 'v9',
-        'label': '+π⁵',
-        'sublabel': 'S=-3',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '9π⁵',
         'description': 'Strangeness -3 level (Omega)'
@@ -812,7 +913,8 @@ def generate_light_baryon_data():
         'residual_me': get_residual_me(om),
         'charge': '-1',
         'spin': '3/2',
-        'strangeness': -3
+        'strangeness': -3,
+        'quarks': om.quarks
     })
     edges.append({'source': 'v9', 'target': om.node_id})
 
@@ -825,10 +927,11 @@ def generate_charm_baryon_data():
     edges = []
 
     # === ROOT: 14π⁵ (virtual) ===
+    lbl, sublbl = get_cycle_node('root14')
     nodes.append({
         'id': 'root14',
-        'label': '14π⁵',
-        'sublabel': 'C=1',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '14π⁵',
         'description': 'Charm baryon base (C=1)'
@@ -851,15 +954,17 @@ def generate_charm_baryon_data():
         'residual_me': get_residual_me(lc),
         'charge': '+1',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': lc.quarks
     })
     edges.append({'source': 'root14', 'target': lc.node_id})
 
     # === Sigma_c: share 5π⁴ + π³ ===
+    lbl, sublbl = get_cycle_node('vSc')
     nodes.append({
         'id': 'vSc',
-        'label': '+5π⁴+π³',
-        'sublabel': 'Σc base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '14π⁵ + 5π⁴ + π³',
         'description': 'Sigma_c base'
@@ -884,15 +989,17 @@ def generate_charm_baryon_data():
             'residual_me': get_residual_me(s),
             'charge': str(s.charge),
             'spin': '1/2',
-            'strangeness': 0
+            'strangeness': 0,
+            'quarks': s.quarks
         })
         edges.append({'source': 'vSc', 'target': s.node_id})
 
     # === Sigma_c*: share 6π⁴ + 2π³ ===
+    lbl, sublbl = get_cycle_node('vScs')
     nodes.append({
         'id': 'vScs',
-        'label': '+6π⁴+2π³',
-        'sublabel': 'Σc* base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '14π⁵ + 6π⁴ + 2π³',
         'description': 'Sigma_c* base'
@@ -917,15 +1024,17 @@ def generate_charm_baryon_data():
             'residual_me': get_residual_me(s),
             'charge': str(s.charge),
             'spin': '3/2',
-            'strangeness': 0
+            'strangeness': 0,
+            'quarks': s.quarks
         })
         edges.append({'source': 'vScs', 'target': s.node_id})
 
     # === 15π⁵ LEVEL (charm + strange) ===
+    lbl, sublbl = get_cycle_node('v15')
     nodes.append({
         'id': 'v15',
-        'label': '+π⁵',
-        'sublabel': 'S=-1',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '15π⁵',
         'description': 'Charm + strange'
@@ -933,10 +1042,11 @@ def generate_charm_baryon_data():
     edges.append({'source': 'root14', 'target': 'v15'})
 
     # Xi_c: share 2π⁴ + π³
+    lbl, sublbl = get_cycle_node('vXc')
     nodes.append({
         'id': 'vXc',
-        'label': '+2π⁴+π³',
-        'sublabel': 'Ξc base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '15π⁵ + 2π⁴ + π³',
         'description': 'Xi_c base'
@@ -960,7 +1070,8 @@ def generate_charm_baryon_data():
         'residual_me': get_residual_me(xcp),
         'charge': '+1',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': xcp.quarks
     })
     edges.append({'source': 'vXc', 'target': xcp.node_id})
 
@@ -981,15 +1092,17 @@ def generate_charm_baryon_data():
         'residual_me': get_residual_me(xc0),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': xc0.quarks
     })
     edges.append({'source': 'vXc', 'target': xc0.node_id})
 
     # Xi_c*: share 6π⁴
+    lbl, sublbl = get_cycle_node('vXcs')
     nodes.append({
         'id': 'vXcs',
-        'label': '+6π⁴',
-        'sublabel': 'Ξc* base',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '15π⁵ + 6π⁴',
         'description': 'Xi_c* base'
@@ -1014,15 +1127,17 @@ def generate_charm_baryon_data():
             'residual_me': get_residual_me(x),
             'charge': str(x.charge),
             'spin': '3/2',
-            'strangeness': -1
+            'strangeness': -1,
+            'quarks': x.quarks
         })
         edges.append({'source': 'vXcs', 'target': x.node_id})
 
     # === 16π⁵ LEVEL (charm + 2 strange) ===
+    lbl, sublbl = get_cycle_node('v16')
     nodes.append({
         'id': 'v16',
-        'label': '+π⁵',
-        'sublabel': 'S=-2',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '16π⁵',
         'description': 'Charm + double strange'
@@ -1046,7 +1161,8 @@ def generate_charm_baryon_data():
         'residual_me': get_residual_me(oc),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': oc.quarks
     })
     edges.append({'source': 'v16', 'target': oc.node_id})
 
@@ -1067,14 +1183,27 @@ def generate_charm_baryon_data():
         'residual_me': get_residual_me(ocs),
         'charge': '0',
         'spin': '3/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': ocs.quarks
     })
     edges.append({'source': 'v16', 'target': ocs.node_id})
 
-    # === Double charm (separate branch) - parent: root14 (c5=14) ===
+    # === Double charm: 7π⁶ level (child of v16) ===
+    lbl, sublbl = get_cycle_node('v7pi6')
+    nodes.append({
+        'id': 'v7pi6',
+        'label': lbl,
+        'sublabel': sublbl,
+        'type': 'virtual',
+        'formula': '7π⁶',
+        'description': 'Double charm level (C=2)'
+    })
+    edges.append({'source': 'v16', 'target': 'v7pi6'})
+
+    # Xi_cc++: parent v7pi6 (c6=7)
     xcc = ALL_PARTICLES['Xi_cc_pp']
     corr_xcc = get_correction_display('Xi_cc_pp')
-    poly_xcc = format_diff(xcc, parent_c5=14)
+    poly_xcc = format_diff(xcc, parent_c6=7)
     diff_xcc = poly_xcc + format_correction(corr_xcc, has_poly=bool(poly_xcc))
     nodes.append({
         'id': xcc.node_id,
@@ -1088,9 +1217,10 @@ def generate_charm_baryon_data():
         'residual_me': get_residual_me(xcc),
         'charge': '++',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': xcc.quarks
     })
-    edges.append({'source': 'root14', 'target': xcc.node_id})
+    edges.append({'source': 'v7pi6', 'target': xcc.node_id})
 
     return nodes, edges
 
@@ -1101,10 +1231,11 @@ def generate_bottom_baryon_data():
     edges = []
 
     # === ROOT: 36π⁵ (virtual) ===
+    lbl, sublbl = get_cycle_node('root36')
     nodes.append({
         'id': 'root36',
-        'label': '36π⁵',
-        'sublabel': 'B=-1',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '36π⁵',
         'description': 'Bottom baryon base (B=-1)'
@@ -1127,19 +1258,32 @@ def generate_bottom_baryon_data():
         'residual_me': get_residual_me(lb),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': lb.quarks
     })
     edges.append({'source': 'root36', 'target': lb.node_id})
 
-    # Sigma_b+ (Tier 1) - parent: root36 (c5=36)
+    # === 3π⁴ + 2π³ base (Σb⁺ family) ===
+    lbl, sublbl = get_cycle_node('vSb3pi4')
+    nodes.append({
+        'id': 'vSb3pi4',
+        'label': lbl,
+        'sublabel': sublbl,
+        'type': 'virtual',
+        'formula': '36π⁵ + 3π⁴ + 2π³',
+        'description': 'Sigma_b+ family base'
+    })
+    edges.append({'source': 'root36', 'target': 'vSb3pi4'})
+
+    # Sigma_b+ - parent: vSb3pi4 (c5=36, c4=3, c3=2)
     sbp = ALL_PARTICLES['Sigma_b_plus']
     corr_sbp = get_correction_display('Sigma_b_plus')
-    poly_sbp = format_diff(sbp, parent_c5=36)
+    poly_sbp = format_diff(sbp, parent_c5=36, parent_c4=3, parent_c3=2)
     diff_sbp = poly_sbp + format_correction(corr_sbp, has_poly=bool(poly_sbp))
     nodes.append({
         'id': sbp.node_id,
         'label': 'Σb⁺',
-        'sublabel': diff_sbp,
+        'sublabel': diff_sbp if diff_sbp else '(base)',
         'type': 'particle',
         'formula': format_full_formula(sbp),
         'correction': corr_sbp,
@@ -1148,14 +1292,49 @@ def generate_bottom_baryon_data():
         'residual_me': get_residual_me(sbp),
         'charge': '+1',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': sbp.quarks
     })
-    edges.append({'source': 'root36', 'target': sbp.node_id})
+    edges.append({'source': 'vSb3pi4', 'target': sbp.node_id})
 
-    # Sigma_b- - parent: root36 (c5=36)
+    # Σb*⁺ (spin-3/2) - parent: vSb3pi4 (c5=36, c4=3, c3=2)
+    sbsp = ALL_PARTICLES['Sigma_b_star_plus']
+    corr_sbsp = get_correction_display('Sigma_b_star_plus')
+    poly_sbsp = format_diff(sbsp, parent_c5=36, parent_c4=3, parent_c3=2)
+    diff_sbsp = poly_sbsp + format_correction(corr_sbsp, has_poly=bool(poly_sbsp))
+    nodes.append({
+        'id': sbsp.node_id,
+        'label': 'Σb*⁺',
+        'sublabel': diff_sbsp,
+        'type': 'spin32',
+        'formula': format_full_formula(sbsp),
+        'correction': corr_sbsp,
+        'mass_me': sbsp.mass_base(),
+        'actual_mev': sbsp.mass_exp,
+        'residual_me': get_residual_me(sbsp),
+        'charge': '+1',
+        'spin': '3/2',
+        'strangeness': 0,
+        'quarks': sbsp.quarks
+    })
+    edges.append({'source': 'vSb3pi4', 'target': sbsp.node_id})
+
+    # === 4π⁴ base (Σb⁻ family) ===
+    lbl, sublbl = get_cycle_node('vSb4pi4')
+    nodes.append({
+        'id': 'vSb4pi4',
+        'label': lbl,
+        'sublabel': sublbl,
+        'type': 'virtual',
+        'formula': '36π⁵ + 4π⁴',
+        'description': 'Sigma_b- family base'
+    })
+    edges.append({'source': 'root36', 'target': 'vSb4pi4'})
+
+    # Sigma_b- - parent: vSb4pi4 (c5=36, c4=4)
     sbm = ALL_PARTICLES['Sigma_b_minus']
     corr_sbm = get_correction_display('Sigma_b_minus')
-    poly_sbm = format_diff(sbm, parent_c5=36)
+    poly_sbm = format_diff(sbm, parent_c5=36, parent_c4=4)
     diff_sbm = poly_sbm + format_correction(corr_sbm, has_poly=bool(poly_sbm))
     nodes.append({
         'id': sbm.node_id,
@@ -1169,15 +1348,39 @@ def generate_bottom_baryon_data():
         'residual_me': get_residual_me(sbm),
         'charge': '-1',
         'spin': '1/2',
-        'strangeness': 0
+        'strangeness': 0,
+        'quarks': sbm.quarks
     })
-    edges.append({'source': 'root36', 'target': sbm.node_id})
+    edges.append({'source': 'vSb4pi4', 'target': sbm.node_id})
+
+    # Σb*⁻ (spin-3/2) - parent: vSb4pi4 (c5=36, c4=4)
+    sbsm = ALL_PARTICLES['Sigma_b_star_minus']
+    corr_sbsm = get_correction_display('Sigma_b_star_minus')
+    poly_sbsm = format_diff(sbsm, parent_c5=36, parent_c4=4)
+    diff_sbsm = poly_sbsm + format_correction(corr_sbsm, has_poly=bool(poly_sbsm))
+    nodes.append({
+        'id': sbsm.node_id,
+        'label': 'Σb*⁻',
+        'sublabel': diff_sbsm,
+        'type': 'spin32',
+        'formula': format_full_formula(sbsm),
+        'correction': corr_sbsm,
+        'mass_me': sbsm.mass_base(),
+        'actual_mev': sbsm.mass_exp,
+        'residual_me': get_residual_me(sbsm),
+        'charge': '-1',
+        'spin': '3/2',
+        'strangeness': 0,
+        'quarks': sbsm.quarks
+    })
+    edges.append({'source': 'vSb4pi4', 'target': sbsm.node_id})
 
     # === 37π⁵ LEVEL (bottom + strange) ===
+    lbl, sublbl = get_cycle_node('v37')
     nodes.append({
         'id': 'v37',
-        'label': '+π⁵',
-        'sublabel': 'S=-1',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '37π⁵',
         'description': 'Bottom + strange'
@@ -1201,7 +1404,8 @@ def generate_bottom_baryon_data():
         'residual_me': get_residual_me(xb0),
         'charge': '0',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': xb0.quarks
     })
     edges.append({'source': 'v37', 'target': xb0.node_id})
 
@@ -1222,15 +1426,17 @@ def generate_bottom_baryon_data():
         'residual_me': get_residual_me(xbm),
         'charge': '-1',
         'spin': '1/2',
-        'strangeness': -1
+        'strangeness': -1,
+        'quarks': xbm.quarks
     })
     edges.append({'source': 'v37', 'target': xbm.node_id})
 
     # === 38π⁵ LEVEL (bottom + 2 strange) ===
+    lbl, sublbl = get_cycle_node('v38')
     nodes.append({
         'id': 'v38',
-        'label': '+π⁵',
-        'sublabel': 'S=-2',
+        'label': lbl,
+        'sublabel': sublbl,
         'type': 'virtual',
         'formula': '38π⁵',
         'description': 'Bottom + double strange'
@@ -1254,7 +1460,8 @@ def generate_bottom_baryon_data():
         'residual_me': get_residual_me(ob),
         'charge': '-1',
         'spin': '1/2',
-        'strangeness': -2
+        'strangeness': -2,
+        'quarks': ob.quarks
     })
     edges.append({'source': 'v38', 'target': ob.node_id})
 
@@ -1404,13 +1611,17 @@ def generate_html():
 
         function buildElements(data) {{
             const elements = [];
-            data.nodes.forEach(n => {{
+            // Sort nodes by mass so siblings are ordered lightest-to-heaviest
+            const sortedNodes = [...data.nodes].sort((a, b) => {{
+                return (a.actual_mev || 0) - (b.actual_mev || 0);
+            }});
+            sortedNodes.forEach(n => {{
                 let nodeType = n.type;
                 // Distinguish virtual node subtypes:
-                // - 'virtual': strangeness levels (root nodes, +π⁵ nodes) -> ellipse
-                // - 'virtual-coeff': coefficient bases (+6π⁴, +6π³, etc.) -> hexagon
+                // - 'virtual': strangeness levels (root nodes, empty sublabel) -> ellipse
+                // - 'virtual-coeff': coefficient bases (have sublabel like "Σ base") -> hexagon
                 if (n.type === 'virtual') {{
-                    const isStrangenessLevel = n.id.startsWith('root') || n.label === '+π⁵';
+                    const isStrangenessLevel = n.id.startsWith('root') || n.sublabel === '';
                     nodeType = isStrangenessLevel ? 'virtual' : 'virtual-coeff';
                 }}
                 const lbl = (nodeType === 'virtual' || nodeType === 'virtual-coeff')
@@ -1438,28 +1649,28 @@ def generate_html():
                 style: [
                     {{ selector: 'node[type="particle"]', style: {{
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '16px', 'font-weight': 'bold', 'color': '#fff',
+                        'font-size': '20px', 'font-weight': 'bold', 'color': '#fff',
                         'text-wrap': 'wrap', 'text-max-width': '150px',
-                        'shape': 'round-rectangle', 'width': 120, 'height': 55,
+                        'shape': 'round-rectangle', 'width': 130, 'height': 60,
                         'background-color': '#3498db', 'border-width': 2, 'border-color': '#fff'
                     }} }},
                     {{ selector: 'node[type="spin32"]', style: {{
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '16px', 'font-weight': 'bold', 'color': '#fff',
+                        'font-size': '20px', 'font-weight': 'bold', 'color': '#fff',
                         'text-wrap': 'wrap', 'text-max-width': '150px',
-                        'shape': 'round-rectangle', 'width': 120, 'height': 55,
+                        'shape': 'round-rectangle', 'width': 130, 'height': 60,
                         'background-color': '#e74c3c', 'border-width': 2, 'border-color': '#fff'
                     }} }},
                     {{ selector: 'node[type="virtual"]', style: {{
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '16px', 'color': '#fff', 'text-wrap': 'wrap',
-                        'shape': 'ellipse', 'width': 70, 'height': 70, 'background-color': '#9b59b6',
+                        'font-size': '20px', 'color': '#fff', 'text-wrap': 'wrap',
+                        'shape': 'ellipse', 'width': 85, 'height': 85, 'background-color': '#9b59b6',
                         'border-width': 2, 'border-style': 'dashed', 'border-color': '#fff'
                     }} }},
                     {{ selector: 'node[type="virtual-coeff"]', style: {{
                         'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center',
-                        'font-size': '14px', 'color': '#fff', 'text-wrap': 'wrap',
-                        'shape': 'hexagon', 'width': 80, 'height': 80, 'background-color': '#8e44ad',
+                        'font-size': '20px', 'color': '#fff', 'text-wrap': 'wrap',
+                        'shape': 'hexagon', 'width': 95, 'height': 95, 'background-color': '#8e44ad',
                         'border-width': 2, 'border-style': 'solid', 'border-color': '#fff'
                     }} }},
                     {{ selector: 'edge', style: {{ 'width': 2, 'line-color': '#555', 'target-arrow-color': '#555', 'target-arrow-shape': 'triangle', 'curve-style': 'bezier' }} }},
@@ -1473,13 +1684,22 @@ def generate_html():
                         'elk.spacing.nodeNode': 60,
                         'elk.layered.spacing.nodeNodeBetweenLayers': 100,
                         'elk.partitioning.activate': true,
-                        'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP'
+                        'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+                        'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES'
                     }},
                     padding: 30
                 }}
             }});
             cy.on('tap', 'node', e => showInfo(e.target.data()));
             cy.on('tap', e => {{ if(e.target === cy) document.getElementById('info').innerHTML = '<p style="color:#666">Click a node</p>'; }});
+
+            // Set default zoom per tab
+            cy.one('layoutstop', () => {{
+                if (tab === 'bottom') {{
+                    cy.zoom(0.8);
+                    cy.center();
+                }}
+            }});
         }}
 
         // Magnetic moments from data/magnetic.py
@@ -1614,7 +1834,7 @@ def generate_html():
                 const hasCorr = d.correction && corrMev !== 0;
 
                 document.getElementById('info').innerHTML = `
-                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label.split('\\n')[0]}} <span style="font-size:0.55em; color:#888; margin-left:6px">${{d.spin}}<sup>${{d.charge > 0 ? '+' : d.charge < 0 ? '−' : '0'}}</sup></span></div>
+                    <div style="font-size:1.8em; margin-bottom:5px; color:#fff">${{d.label.split('\\n')[0]}} <span style="font-size:0.55em; color:#888; margin-left:6px">${{d.quarks ? '(' + d.quarks + ')' : ''}} ${{d.spin}}<sup>${{d.charge > 0 ? '+' : d.charge < 0 ? '−' : '0'}}</sup></span></div>
                     <div style="font-size:1.1em; margin-bottom:4px; display:flex; justify-content:space-between;">
                         <span class="formula">${{d.formula}}</span>
                         <span style="color:#888; margin-left:12px">${{baseMev.toFixed(2)}}</span>
@@ -1754,9 +1974,153 @@ def generate_html():
             }},
             'Lb': {{
                 lifetime: '1.5×10⁻¹² s',
+                note: 'Longest-lived bottom baryon',
                 modes: [
-                    {{ products: 'Λc⁺ + ...', percent: 60, type: 'weak' }},
-                    {{ products: 'p + ...', percent: 30, type: 'weak' }}
+                    {{ products: 'Λc⁺ + π⁻', percent: 0.5, type: 'weak' }},
+                    {{ products: 'Λc⁺ + π⁻ + π⁺ + π⁻', percent: 2.6, type: 'weak' }},
+                    {{ products: 'J/ψ + Λ', percent: 0.04, type: 'weak' }},
+                    {{ products: 'p + π⁻', percent: 0.0004, type: 'weak' }}
+                ]
+            }},
+            // Charm baryons
+            'Sc_pp': {{
+                lifetime: '~2×10⁻²² s',
+                note: 'Strong decay to Λc⁺',
+                modes: [
+                    {{ products: 'Λc⁺ + π⁺', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Sc_plus': {{
+                lifetime: '~5×10⁻²¹ s',
+                note: 'EM decay (isospin forbids strong)',
+                modes: [
+                    {{ products: 'Λc⁺ + γ', percent: 100, type: 'em' }}
+                ]
+            }},
+            'Sc_zero': {{
+                lifetime: '~2×10⁻²² s',
+                note: 'Strong decay to Λc⁺',
+                modes: [
+                    {{ products: 'Λc⁺ + π⁻', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Scs_pp': {{
+                lifetime: '~5×10⁻²³ s',
+                modes: [
+                    {{ products: 'Λc⁺ + π⁺', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Scs_plus': {{
+                lifetime: '~5×10⁻²³ s',
+                modes: [
+                    {{ products: 'Λc⁺ + π⁰', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Scs_zero': {{
+                lifetime: '~5×10⁻²³ s',
+                modes: [
+                    {{ products: 'Λc⁺ + π⁻', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Xc_plus': {{
+                lifetime: '4.6×10⁻¹³ s',
+                modes: [
+                    {{ products: 'Ξ⁻ + π⁺ + π⁺', percent: 2.9, type: 'weak' }},
+                    {{ products: 'pK⁻π⁺', percent: 1.1, type: 'weak' }}
+                ]
+            }},
+            'Xc_zero': {{
+                lifetime: '1.5×10⁻¹³ s',
+                note: 'Shorter-lived than Ξc⁺',
+                modes: [
+                    {{ products: 'Ξ⁻ + π⁺', percent: 1.8, type: 'weak' }},
+                    {{ products: 'pK⁻K⁻π⁺', percent: 0.6, type: 'weak' }}
+                ]
+            }},
+            'Xcs_plus': {{
+                lifetime: '~3×10⁻²¹ s',
+                modes: [
+                    {{ products: 'Ξc⁰ + π⁺', percent: 50, type: 'strong' }},
+                    {{ products: 'Ξc⁺ + π⁰', percent: 50, type: 'strong' }}
+                ]
+            }},
+            'Xcs_zero': {{
+                lifetime: '~3×10⁻²¹ s',
+                modes: [
+                    {{ products: 'Ξc⁺ + π⁻', percent: 50, type: 'strong' }},
+                    {{ products: 'Ξc⁰ + π⁰', percent: 50, type: 'strong' }}
+                ]
+            }},
+            'Oc_zero': {{
+                lifetime: '2.7×10⁻¹³ s',
+                modes: [
+                    {{ products: 'Ω⁻ + π⁺', percent: 0.5, type: 'weak' }},
+                    {{ products: 'Ξ⁰ + K⁻ + π⁺', percent: 0.5, type: 'weak' }}
+                ]
+            }},
+            'Ocs_zero': {{
+                lifetime: '~10⁻²¹ s',
+                modes: [
+                    {{ products: 'Ωc⁰ + γ', percent: 100, type: 'em' }}
+                ]
+            }},
+            'Xcc': {{
+                lifetime: '2.6×10⁻¹³ s',
+                note: 'Double charm baryon',
+                modes: [
+                    {{ products: 'Λc⁺ + K⁻ + π⁺ + π⁺', percent: 5.9, type: 'weak' }},
+                    {{ products: 'Ξc⁺ + π⁺', percent: 1.0, type: 'weak' }}
+                ]
+            }},
+            // Bottom baryons
+            'Sb_plus': {{
+                lifetime: '~6×10⁻²² s',
+                note: 'Strong decay to Λb⁰',
+                modes: [
+                    {{ products: 'Λb⁰ + π⁺', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Sb_minus': {{
+                lifetime: '~6×10⁻²² s',
+                note: 'Strong decay to Λb⁰',
+                modes: [
+                    {{ products: 'Λb⁰ + π⁻', percent: 100, type: 'strong' }}
+                ]
+            }},
+            'Sbs_plus': {{
+                lifetime: '~10⁻²⁰ s',
+                note: 'EM decay (20 MeV splitting)',
+                modes: [
+                    {{ products: 'Σb⁺ + γ', percent: 100, type: 'em' }}
+                ]
+            }},
+            'Sbs_minus': {{
+                lifetime: '~10⁻²⁰ s',
+                note: 'EM decay (19 MeV splitting)',
+                modes: [
+                    {{ products: 'Σb⁻ + γ', percent: 100, type: 'em' }}
+                ]
+            }},
+            'Xb_zero': {{
+                lifetime: '1.5×10⁻¹² s',
+                modes: [
+                    {{ products: 'Ξc⁺ + π⁻', percent: 1.0, type: 'weak' }},
+                    {{ products: 'J/ψ + Ξ⁰', percent: 0.1, type: 'weak' }}
+                ]
+            }},
+            'Xb_minus': {{
+                lifetime: '1.6×10⁻¹² s',
+                modes: [
+                    {{ products: 'Ξc⁰ + π⁻', percent: 1.0, type: 'weak' }},
+                    {{ products: 'J/ψ + Ξ⁻', percent: 0.1, type: 'weak' }}
+                ]
+            }},
+            'Ob': {{
+                lifetime: '1.6×10⁻¹² s',
+                note: 'Bottom + double strange',
+                modes: [
+                    {{ products: 'J/ψ + Ω⁻', percent: 0.3, type: 'weak' }},
+                    {{ products: 'Ωc⁰ + π⁻', percent: 0.5, type: 'weak' }}
                 ]
             }}
         }};

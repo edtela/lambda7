@@ -12,6 +12,7 @@ import math
 PI = math.pi
 M_E = 0.51099895  # Electron mass in MeV
 E_NEG_PI = math.exp(-PI)  # e^(-π) ≈ 0.04321
+PHI = (1 + math.sqrt(5)) / 2  # Golden ratio φ ≈ 1.61803
 
 # Powers of pi (precomputed for efficiency)
 PI2 = PI ** 2
@@ -20,6 +21,9 @@ PI4 = PI ** 4
 PI5 = PI ** 5
 PI6 = PI ** 6
 PI7 = PI ** 7
+
+# Logarithmic constant
+LN_PI = math.log(PI)  # ln(π) ≈ 1.1447
 
 # q-calculus integers at base π
 Q3_PI = PI2 + PI + 1  # [3]_π = π² + π + 1 ≈ 14.01 (charm base)
